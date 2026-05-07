@@ -28,4 +28,15 @@ public abstract class BiomeModel {
     protected int getHeight() {
         return bottomRight.y - topLeft.y;
     }
+
+    protected List<BlockModel> generateBaseLayer(){
+        List<BlockModel> blocks = new ArrayList<>();
+        BlockModel baseBlock = blockPalette.get(0);
+        for(int x = topLeft.x; x <  bottomRight.x; x++){
+            for(int y =  topLeft.y; y <  bottomRight.y; y++){
+                blocks.add(baseBlock.newBlock(x, y, 0));
+            }
+        }
+        return blocks;
+    }
 }
