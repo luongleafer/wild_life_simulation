@@ -15,6 +15,11 @@ public class WaterBlock extends BlockModel {
         this.totalStates = 3;
     }
 
+    @Override
+    public BlockModel newBlock(int x, int y, int initialState) {
+        return new WaterBlock(x, y, initialState);
+    }
+
     // example method to cycle water animation state
     public void animate() {
         this.currentState = (this.currentState + 1) % this.totalStates;

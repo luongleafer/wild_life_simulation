@@ -11,4 +11,9 @@ public class GrassBlock extends BlockModel {
         // grass typically has one visual state, but i dont touch grass so idfk
         this.totalStates = 1;
     }
+
+    @Override
+    public BlockModel newBlock(int x, int y, int initialState) {
+        return new GrassBlock(x, y, initialState);
+    }
 }

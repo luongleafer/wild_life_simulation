@@ -26,4 +26,14 @@ public abstract class BlockModel {
     public String getBlockType() {
         return blockType;
     }
+
+    /**
+     * Create a new block of the same type.
+     * Implementation can choose to just call the constructor, or do some extra things.
+     * @param x New block x-coordinate
+     * @param y New block y-coordinate
+     * @param initialState New block initial state
+     * @return The newly created block
+     */
+    abstract public BlockModel newBlock(int x, int y, int initialState);
 }
