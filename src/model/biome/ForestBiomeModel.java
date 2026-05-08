@@ -5,6 +5,7 @@ import model.block.BlockModel;
 import model.generation.GrassBlock;
 import model.generation.WoodBlock;
 
+import java.util.List;
 import java.util.Random;
 // clusters of feature blocks are placed inside rectangle
 public class ForestBiomeModel extends BiomeModel {
@@ -14,6 +15,7 @@ public class ForestBiomeModel extends BiomeModel {
 
     public ForestBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
         super(topLeft, bottomRight);
+        blockPalette = List.of(new GrassBlock(0,0,0));
     }
 
     @Override
@@ -22,13 +24,7 @@ public class ForestBiomeModel extends BiomeModel {
         int height = getHeight();
         BlockModel[] generatedBlocks = new BlockModel[width * height];
 
-        // fill entire area with background (Grass)
-        int index = 0;
-        for (int x = topLeft.x; x < bottomRight.x; x++) {
-            for (int y = topLeft.y; y < bottomRight.y; y++) {
-                generatedBlocks[index++] = new GrassBlock(x, y, 0);
-            }
-        }
+        generateBaseLayer().toArray(generatedBlocks);// put base layer into generatedBlocks
 
         // generate blobs (WoodBlocks) strictly within bounds
         for (int i = 0; i < numberOfBlobs; i++) {

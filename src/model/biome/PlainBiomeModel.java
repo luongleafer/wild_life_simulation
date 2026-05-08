@@ -5,6 +5,7 @@ import model.block.BlockModel;
 import model.generation.DirtBlock;
 import model.generation.GrassBlock;
 
+import java.util.List;
 import java.util.Random;
 
 //places a background block, then randomly scatters another block type
@@ -14,6 +15,10 @@ public class PlainBiomeModel extends BiomeModel {
 
     public PlainBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
         super(topLeft, bottomRight);
+        blockPalette = List.of(
+                new DirtBlock(0,0,0),
+                new GrassBlock(0, 0, 0)
+        );
     }
 
     @Override

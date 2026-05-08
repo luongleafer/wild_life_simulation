@@ -11,4 +11,9 @@ public class DirtBlock extends BlockModel {
         // not sure about this one, i dont know shit abt ecology
         this.totalStates = 1;
     }
+
+    @Override
+    public BlockModel newBlock(int x, int y, int initialState) {
+        return new DirtBlock(x, y, initialState);
+    }
 }
