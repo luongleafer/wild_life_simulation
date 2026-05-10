@@ -4,12 +4,11 @@ import model.block.BlockModel;
 
 public class DirtBlock extends BlockModel {
 
-    public DirtBlock(int x, int y, int initialState) {
+    public DirtBlock(int x, int y, int initialState, int sinkability) {
         super(x, y, initialState);
-        // unique string identifier required by BlockView
         this.blockType = "dirt";
-        // not sure about this one, i dont know shit abt ecology
         this.totalStates = 1;
+        this.sinkability = 2;
     }
 
     @Override

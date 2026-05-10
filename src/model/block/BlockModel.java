@@ -5,14 +5,16 @@ public abstract class BlockModel {
     protected int currentState;
     protected BlockCoordinate position;
     protected String blockType;
+    protected int sinkability; // block is harder as sinkability approaches 0
 
     public int getCurrentState() {
         return this.currentState;
     }
 
-    public BlockModel(int x, int y, int initialState) {
+    public BlockModel(int x, int y, int initialState, int sinkability) {
         this.position = new BlockCoordinate(x, y);
         this.currentState = initialState;
+        this.sinkability = sinkability;
     }
 
     public void setState(int newState) {
@@ -25,6 +27,15 @@ public abstract class BlockModel {
 
     public String getBlockType() {
         return blockType;
+    }
+
+    /**
+     * Returns whether this block should be affected by gravity.
+     * Subclasses should override this method to return true if they are affected by gravity.
+     * @return true if the block is affected by gravity, false otherwise.
+     */
+    public boolean isAffectedByGravity() {
+        return false;
     }
 
     /**
