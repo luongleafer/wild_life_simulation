@@ -3,13 +3,11 @@ package model.generation;
 import model.block.BlockModel;
 
 public class GrassBlock extends BlockModel {
-    public GrassBlock(int x, int y, int initialState) {
+    public GrassBlock(int x, int y, int initialState, int sinkability) {
         super(x, y, initialState);
-        // unique string identifier required by BlockView
         this.blockType = "grass";
-
-        // grass typically has one visual state, but i dont touch grass so idfk
         this.totalStates = 1;
+        this.sinkability = 3
     }
 
     @Override
