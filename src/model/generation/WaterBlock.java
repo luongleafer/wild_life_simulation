@@ -4,8 +4,8 @@ import model.block.BlockModel;
 
 public class WaterBlock extends BlockModel {
 
-    public WaterBlock(int x, int y, int initialState, int sinkability) {
-        super(x, y, initialState);
+    public WaterBlock(int x, int y, int initialState) {
+        super(x, y, initialState, 5);
         this.blockType = "water";
         // water might have 3 states (0, 1, 2) to represent
         // different frames of a flowing animation in the GUI

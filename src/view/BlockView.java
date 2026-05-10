@@ -15,6 +15,8 @@ public class BlockView {
         blockRenderMap.put("dirt", new String[]{"."});
         blockRenderMap.put("grass", new String[]{"g"});
         blockRenderMap.put("wood", new String[]{"T"});
+        blockRenderMap.put("mud", new String[]{"m"});
+        blockRenderMap.put("sand", new String[]{"s"});
         blockRenderMap.put("default", new String[]{"?"});
     }
 
