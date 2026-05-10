@@ -7,7 +7,7 @@ public class MudBlock extends BlockModel {
     private boolean isWet;
 
     public MudBlock(int x, int y, int initialState) {
-        super(x, y, initialState);
+        super(x, y, initialState, 4);
         this.blockType = "mud";
         this.sinkability = 4;
         this.totalStates = 2; // could be 2 for wet/dry
