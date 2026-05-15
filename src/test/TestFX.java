@@ -56,7 +56,7 @@ public class TestFX extends Application {
             return new  Task<Integer>(){
                 @Override
                 protected Integer call() throws Exception {
-                    world.generateTerrain();
+                    world.update();
                     return 0;
                 }
             };

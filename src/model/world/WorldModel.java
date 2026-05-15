@@ -70,4 +70,12 @@ public class WorldModel {
         tickCount += tickSpeed;
         // more code to loop through blocksData and update block states or trigger entity updates
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getLength() {
+        return length;
+    }
 }
