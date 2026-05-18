@@ -66,7 +66,7 @@ public class TestFX extends Application {
     private Label countLabel = new Label("Counting...");
     private Label textWorld = new Label();
     private GridPane gridPane = new GridPane();
-    private GuiBlockView guiBlockView = new GuiBlockView();
+    private GuiBlockView guiBlockView = GuiBlockView.getInstance();
     AnimationTimer timer = new AnimationTimer() {
         @Override
         public void handle(long l) {

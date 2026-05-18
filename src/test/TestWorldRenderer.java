@@ -23,6 +23,8 @@ public class TestWorldRenderer extends Application {
         Scene scene = new Scene(new VBox(grid), 640, 480);
         renderer.registerBlockTextures();
         renderer.renderWorld();
+        renderer.startUpdateWorldService(1);
+        renderer.startRendering();
         stage.setTitle("Wild Life Simulation");
         stage.setScene(scene);
         stage.show();

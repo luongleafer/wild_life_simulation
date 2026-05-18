@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class TestGuiBlockView extends Application {
-    GuiBlockView guiBlockView = new GuiBlockView();
+    GuiBlockView guiBlockView = GuiBlockView.getInstance();
     static void main() {
     }
 

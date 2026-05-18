@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import model.block.BlockModel;
 import model.world.WorldModel;
 
@@ -14,14 +15,22 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Lazy-loading Image of difference block
+ * Render the world.
+ * The world terrain is rendered as a grid. Each block occupy one cell of the grid.
  */
 public class WorldRenderer {
-    GuiBlockView guiBlockView = new GuiBlockView();
+    GuiBlockView guiBlockView = GuiBlockView.getInstance();
     WorldModel worldModel;
     GridPane worldGridPane;
     private ImageView[][] imageViews;
 
+    // Update world in a separate thread.
+    // ScheduledService is used to define a task that is run periodically
+    // The Object is declared with the use of anonymous class.
+    // (I use this syntax because I'm lazy, might change to concrete class in the future)
+    // Reference for anonymous class: https://dev.java/learn/classes-objects/nested-classes/#anonymous
+    // Reference for ScheduledService: https://openjfx.io/javadoc/26/javafx.graphics/javafx/concurrent/ScheduledService.html
+    // Note: this should belong to a Controller object, will change in the future.
     private ScheduledService<Object> updateWorldService = new ScheduledService<Object>() {
         @Override
         protected Task<Object> createTask() {
@@ -29,13 +38,17 @@ public class WorldRenderer {
                 @Override
                 protected Object call() throws Exception {
                     if(worldModel == null) return null;
-                    worldModel.update();
+                    worldModel.generateTerrain();
+                    //worldModel.update();
                     return null;
                 }
             };
         }
     };
 
+    // AnimationTimer is an abstract class that represent animation in JavaFX application
+    // The `handle()` method is called each frame.
+    // Reference for AnimationTimer: https://openjfx.io/javadoc/26/javafx.graphics/javafx/animation/AnimationTimer.html
     private AnimationTimer rerenderingTimer = new AnimationTimer() {
         @Override
         public void handle(long now) {
@@ -43,6 +56,11 @@ public class WorldRenderer {
         }
     };
 
+    /**
+     * Manage the rendering of a worldModel in a GridPane element.
+     * @param worldModel The model to render
+     * @param worldGridPane The target element
+     */
     public WorldRenderer(WorldModel worldModel, GridPane worldGridPane) {
         this.worldModel = worldModel;
         this.worldGridPane = worldGridPane;
@@ -50,14 +68,25 @@ public class WorldRenderer {
         setUpGrid();
     }
 
-    public void startUpdateWorldService() {
+    /**
+     * Start updating the world
+     * @param tps: Tick speed
+     */
+    public void startUpdateWorldService(long tps) {
+        updateWorldService.setPeriod(Duration.seconds(1.0/tps));
         updateWorldService.start();
     }
 
+    /**
+     * Start the rendering loop
+     */
     public void startRendering(){
         rerenderingTimer.start();
     }
 
+    /**
+     * Set up the world's grid. Each cell is an ImageView that can render an Image to the screen.
+     */
     public void setUpGrid(){
        if(worldGridPane == null) return;
        worldGridPane.getChildren().clear();
@@ -71,6 +100,13 @@ public class WorldRenderer {
        }
     }
 
+    /**
+     * Render the world to the gridPane.
+     * Each time, only the image of each ImageView in the cell is changed,
+     * instead of re-render the whole grid, which saves performance
+     * significantly.
+     * Entities will be rendered on top of the grid. (unimplemented)
+     */
     public void renderWorld(){
         if(worldGridPane == null) return;
         BlockModel[][] blocksData = worldModel.getBlocksData();
