@@ -28,6 +28,7 @@ public class ForestBiomeModel extends BiomeModel {
         int width = getWidth();
         int height = getHeight();
         BlockModel[] generatedBlocks = new BlockModel[width * height];
+        generateBaseLayer().toArray(generatedBlocks);
         int index = 0;
 
         // Generate base layer with grass and mud
@@ -40,6 +41,7 @@ public class ForestBiomeModel extends BiomeModel {
                 }
             }
         }
+
 
         // generate blobs (WoodBlocks) strictly within bounds
         for (int i = 0; i < numberOfBlobs; i++) {
@@ -68,6 +70,7 @@ public class ForestBiomeModel extends BiomeModel {
                 }
             }
         }
+
         return generatedBlocks;
     }
 }

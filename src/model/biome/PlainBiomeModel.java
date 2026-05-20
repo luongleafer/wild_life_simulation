@@ -29,6 +29,7 @@ public class PlainBiomeModel extends BiomeModel {
         int width = getWidth();
         int height = getHeight();
         BlockModel[] generatedBlocks = new BlockModel[width * height];
+        generateBaseLayer().toArray(generatedBlocks);
         int index = 0;
 
         for (int x = topLeft.x; x < bottomRight.x; x++) {
