@@ -63,7 +63,7 @@ public class ForestBiomeModel extends BiomeModel {
                             // find the block in the 1D array and replace it
                             int localX = targetX - topLeft.x;
                             int localY = targetY - topLeft.y;
-                            int arrayIndex = localY * width + localX; // Corrected index calculation
+                            int arrayIndex = localX * height + localY; // replaced y-major formula to x-major
                             generatedBlocks[arrayIndex] = new WoodBlock(targetX, targetY, 0);
                         }
                     }
