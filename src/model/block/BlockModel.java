@@ -36,28 +36,18 @@ public abstract class BlockModel {
     protected boolean destroyable;
 
     // Constructor used to initialize a new block object.
-    public BlockModel(
-            int x,
-            int y,
-            int initialState,
-            int sinkability
-    ) {
-
+    // parameters should be enclosed in a single line, no need for new lines (for ease of review)
+    public BlockModel(int x, int y, int initialState, int sinkability) { 
         // Create and assign block coordinates.
         this.position = new BlockCoordinate(x, y);
-
         // Set the starting state of the block.
         this.currentState = initialState;
-
         // Assign resistance level.
         this.sinkability = sinkability;
-
         // Newly created blocks are not destroyed.
         this.destroyed = false;
-
         // By default, blocks are movable.
         this.movable = true;
-
         // By default, blocks are destroyable.
         this.destroyable = true;
     }
@@ -128,17 +118,14 @@ public abstract class BlockModel {
     // Applies damage to the block.
     // Each hit decreases the current state by 1.
     public void damage() {
-
         // Ignore damage if the block is indestructible.
         if (!destroyable) {
             return;
         }
-
         // Reduce state only if still above zero.
         if (currentState > 0) {
             currentState--;
         }
-
         // Destroy the block once state reaches zero.
         if (currentState <= 0) {
             destroy();
@@ -163,9 +150,5 @@ public abstract class BlockModel {
 
     // Factory-style method used to create another block
     // of the same concrete type.
-    public abstract BlockModel newBlock(
-            int x,
-            int y,
-            int initialState
-    );
+    public abstract BlockModel newBlock(int x, int y, int initialState);
 }
