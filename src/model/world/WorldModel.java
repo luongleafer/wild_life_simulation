@@ -6,6 +6,9 @@ import model.biome.PlainBiomeModel;
 import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.entity.EntityModel;
+
+import java.util.List;
 
 public class WorldModel {
     private BiomeModel[] biomes;
@@ -14,6 +17,7 @@ public class WorldModel {
     private BlockModel[][] blocksData;
     private int width;
     private int length;
+    private List<EntityModel> entities;
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -69,6 +73,8 @@ public class WorldModel {
     public void update() {
         tickCount += tickSpeed;
         // more code to loop through blocksData and update block states or trigger entity updates
+        // Every entity age up after each tick
+        entities.forEach(EntityModel::ageUp);
     }
 
     public int getWidth() {
