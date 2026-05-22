@@ -21,7 +21,7 @@ public class Wolf extends AnimalModel {
                 100,
                 100,
                 "Hunting",
-                new Direction(1,0)
+                new Direction(Direction.SOUTH)
         );
         directionChangeChance = 0.15;
     }
