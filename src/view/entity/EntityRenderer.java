@@ -1,7 +1,10 @@
 package view.entity;
 
+import javafx.scene.image.Image;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
+
+import java.nio.file.Path;
 
 /**
  * Quan ly thong tin hien thi cua mot {@link EntityModel}.
@@ -19,7 +22,9 @@ public class EntityRenderer {
     private String entityType;
 
     // Duong dan toi anh/sprite dung khi ve entity bang giao dien do hoa.
-    private String spritePath;
+    private Path spritePath;
+
+    private Image sprite;
 
     // Ky tu dai dien cho entity khi hien thi o che do console/text.
     private char consoleSymbol;
@@ -39,16 +44,17 @@ public class EntityRenderer {
      * Tao renderer cho mot entity cu the.
      *
      * @param entity entity trong model can hien thi
-     * @param spritePath duong dan sprite mac dinh cua entity
+     * @param sprite duong dan sprite mac dinh cua entity
      * @param consoleSymbol ky tu dai dien khi hien thi bang console
      * @param width chieu rong khi render, tinh theo pixel
      * @param height chieu cao khi render, tinh theo pixel
      */
-    public EntityRenderer(EntityModel entity, String spritePath, char consoleSymbol, int width, int height) {
+    public EntityRenderer(EntityModel entity, Image sprite, char consoleSymbol, int width, int height) {
         this.entity = entity;
         this.entityType = entity.getClass().getSimpleName();
-        this.spritePath = spritePath;
+//        this.spritePath = spritePath;
         this.consoleSymbol = consoleSymbol;
+        this.sprite = sprite;
         this.width = width;
         this.height = height;
         this.visible = true;
@@ -109,7 +115,7 @@ public class EntityRenderer {
      *
      * @return duong dan den file sprite
      */
-    public String getSpritePath() {
+    public Path getSpritePath() {
         return spritePath;
     }
 
@@ -118,7 +124,7 @@ public class EntityRenderer {
      *
      * @param spritePath duong dan sprite moi
      */
-    public void setSpritePath(String spritePath) {
+    public void setSpritePath(Path spritePath) {
         this.spritePath = spritePath;
     }
 
@@ -223,5 +229,9 @@ public class EntityRenderer {
      */
     public int getCurrentState() {
         return entity.getCurrentState();
+    }
+
+    public Image getSprite() {
+        return sprite;
     }
 }

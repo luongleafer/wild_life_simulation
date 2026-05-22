@@ -3,13 +3,17 @@ package view;
 import javafx.animation.AnimationTimer;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import model.block.BlockModel;
+import model.entity.EntityCoordinate;
+import model.entity.Wolf;
 import model.world.WorldModel;
+import view.entity.EntityRenderer;
+import view.entity.EntityTextureMap;
+import view.entity.GuiEntityView;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -20,8 +24,11 @@ import java.util.List;
  */
 public class WorldRenderer {
     GuiBlockView guiBlockView = GuiBlockView.getInstance();
+    EntityTextureMap entityTextureMap = EntityTextureMap.getInstance();
+    GuiEntityView guiEntityView = GuiEntityView.getInstance();
     WorldModel worldModel;
     GridPane worldGridPane;
+    AnchorPane entityPane;
     private ImageView[][] imageViews;
 
     // Update world in a separate thread.
@@ -38,8 +45,8 @@ public class WorldRenderer {
                 @Override
                 protected Object call() throws Exception {
                     if(worldModel == null) return null;
-                    worldModel.generateTerrain();
-                    //worldModel.update();
+//                    worldModel.generateTerrain();
+                    worldModel.update();
                     return null;
                 }
             };
@@ -53,6 +60,7 @@ public class WorldRenderer {
         @Override
         public void handle(long now) {
             renderWorld();
+            renderEntity();
         }
     };
 
@@ -61,9 +69,10 @@ public class WorldRenderer {
      * @param worldModel The model to render
      * @param worldGridPane The target element
      */
-    public WorldRenderer(WorldModel worldModel, GridPane worldGridPane) {
+    public WorldRenderer(WorldModel worldModel, GridPane worldGridPane, AnchorPane entityPane) {
         this.worldModel = worldModel;
         this.worldGridPane = worldGridPane;
+        this.entityPane = entityPane;
         imageViews = new ImageView[worldModel.getWidth()][worldModel.getLength()];
         setUpGrid();
     }
@@ -121,6 +130,18 @@ public class WorldRenderer {
         }
     }
 
+    public void renderEntity(){
+        entityPane.getChildren().clear();
+        List<EntityRenderer> allEntityRenders =   guiEntityView.getRenderers();
+        allEntityRenders.forEach(entityRenderer -> {
+            entityRenderer.updateScreenPosition(1,0,0);
+            ImageView imageView = new ImageView(entityRenderer.getSprite());
+            imageView.setLayoutX(entityRenderer.getScreenX());
+            imageView.setLayoutY(entityRenderer.getScreenY());
+            entityPane.getChildren().add(imageView);
+        });
+    }
+
     public GridPane getWorldGridPane() {
         return worldGridPane;
     }
@@ -144,5 +165,10 @@ public class WorldRenderer {
         guiBlockView.registerTextures("mud", List.of(
                 Path.of("assets/mud.png")
         ));
+    }
+
+    public void registerEntityTextures(){
+        entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0,0)),
+                                        Path.of("assets/acacia_sapling.png"));
     }
 }

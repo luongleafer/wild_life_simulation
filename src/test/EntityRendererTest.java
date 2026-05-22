@@ -1,14 +1,17 @@
 package test;
 
+import javafx.scene.image.Image;
 import model.block.BlockModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 import view.entity.EntityRenderer;
 
+import java.nio.file.Path;
+
 public class EntityRendererTest {
     public static void main(String[] args) {
         TestEntity rabbit = new TestEntity(new EntityCoordinate(4.5, 3.0));
-        EntityRenderer renderer = new EntityRenderer(rabbit, "assets/rabbit.png", 'R', 32, 32);
+        EntityRenderer renderer = new EntityRenderer(rabbit, new Image("assets/rabbit.png"), 'R', 32, 32);
 
         assertEquals("entity type", "TestEntity", renderer.getEntityType());
         assertEquals("sprite path", "assets/rabbit.png", renderer.getSpritePath());
@@ -29,7 +32,7 @@ public class EntityRendererTest {
         assertEquals("updated current state", 1, renderer.getCurrentState());
 
         renderer.setVisible(false);
-        renderer.setSpritePath("assets/rabbit_adult.png");
+        renderer.setSpritePath(Path.of("assets/rabbit_adult.png"));
         renderer.setConsoleSymbol('A');
         renderer.setWidth(48);
         renderer.setHeight(48);

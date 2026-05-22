@@ -16,7 +16,7 @@ public abstract class AnimalModel extends EntityModel {
     private final String survivalStrategy;
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
-    private enum Direction {
+    public enum Direction {
         // Coords start from top left corner, not Cartesian
         NORTH(0, -1),
         SOUTH(0, 1),

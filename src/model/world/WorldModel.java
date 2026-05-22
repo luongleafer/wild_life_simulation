@@ -6,8 +6,12 @@ import model.biome.PlainBiomeModel;
 import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.entity.AnimalModel;
+import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
+import view.entity.GuiEntityView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorldModel {
@@ -17,7 +21,7 @@ public class WorldModel {
     private BlockModel[][] blocksData;
     private int width;
     private int length;
-    private List<EntityModel> entities;
+    private List<EntityModel> entities =  new ArrayList<>();
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -70,11 +74,21 @@ public class WorldModel {
         }
     }
 
+    public <T extends EntityModel> void spawnEntity(T entity) {
+        entities.add(entity);
+        GuiEntityView.getInstance().addView(entity);
+    }
+
     public void update() {
         tickCount += tickSpeed;
         // more code to loop through blocksData and update block states or trigger entity updates
         // Every entity age up after each tick
         entities.forEach(EntityModel::ageUp);
+        // Every animal move somewhere
+        entities.stream()
+                .filter(entity -> entity instanceof AnimalModel)
+                .map(entity -> (AnimalModel) entity)
+                .forEach(AnimalModel::move);
     }
 
     public int getWidth() {
