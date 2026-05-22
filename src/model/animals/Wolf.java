@@ -8,6 +8,10 @@ public class Wolf extends AnimalModel implements Edible {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
     }
 
+    public Wolf(EntityCoordinate position){
+        super(position);
+        // other variables here if needed, waiting for Luong's command
+    }
     @Override
     public void Interact(BlockModel block) {
         // Wolves usually do nothing with blocks

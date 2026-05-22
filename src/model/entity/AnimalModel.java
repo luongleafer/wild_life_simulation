@@ -14,11 +14,11 @@ public abstract class AnimalModel extends EntityModel {
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
     // but that is for later, when those behaviors are defined better
-    private final String survivalStrategy;
+    private String survivalStrategy;
 
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
-    private final Direction direction;
+    private Direction direction;
 
     // Getters and setters for mob attributes
     public float getHunger() {
@@ -89,6 +89,7 @@ public abstract class AnimalModel extends EntityModel {
         move(newX, newY);
     }
 
+    // Everything
     public AnimalModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState);
         this.hunger = hunger;
@@ -96,5 +97,10 @@ public abstract class AnimalModel extends EntityModel {
         this.energy = energy;
         this.survivalStrategy = survivalStrategy;
         this.direction = direction;
+    }
+
+    // Constructor for position ONLY
+    public AnimalModel(EntityCoordinate position) {
+        super(position);
     }
 }

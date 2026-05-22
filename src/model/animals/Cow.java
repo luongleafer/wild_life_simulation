@@ -8,6 +8,11 @@ public class Cow extends AnimalModel implements Edible {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
     }
 
+    public Cow(EntityCoordinate position){
+        super(position);
+        // other variables here if needed, waiting for Luong's command
+    }
+
     @Override
     public void Interact(EntityModel entity) {
         // Cows are herbivores: they eat grass

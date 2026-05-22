@@ -8,6 +8,11 @@ public class Pig extends AnimalModel implements Edible {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
     }
 
+    public Pig(EntityCoordinate position){
+        super(position);
+        // other variables here if needed, waiting for Luong's command
+    }
+
     @Override
     public void Interact(EntityModel entity) {
         // Pigs are herbivores: they eat other stuff
