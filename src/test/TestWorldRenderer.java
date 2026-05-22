@@ -1,5 +1,6 @@
 package test;
 
+import controller.WorldController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -25,12 +26,13 @@ public class TestWorldRenderer extends Application {
         GridPane terrainGrid = new GridPane();
         AnchorPane entityPane = new AnchorPane();
         WorldView renderer = new WorldView(model, terrainGrid, entityPane);
+        WorldController controller = new WorldController(model);
         model.generateTerrain();
         Scene scene = new Scene(new StackPane(terrainGrid, entityPane), 640, 480);
-        renderer.registerBlockTextures();
+        controller.registerBlockTextures();
         renderer.registerEntityTextures();
         renderer.renderWorld();
-        renderer.startUpdateWorldService(20);
+        controller.startUpdateWorldService(20);
         renderer.startRendering();
         model.spawnEntity(new Wolf(new EntityCoordinate(100,100)));
         model.spawnEntity(new Wolf(new EntityCoordinate(100,100)));

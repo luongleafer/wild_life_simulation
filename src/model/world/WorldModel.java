@@ -35,6 +35,18 @@ public class WorldModel {
         return blocksData;
     }
 
+    public List<EntityModel> getEntities() {
+        return entities;
+    }
+
+    void advanceTickCount(){
+        tickCount += tickSpeed;
+    }
+
+    void setTickSpeed(int tickSpeed) {
+        this.tickSpeed = tickSpeed;
+    }
+
     public void generateTerrain() {
         // world partitioning
         // split 100x100 matrix into 4 quadrants as an example

@@ -39,6 +39,10 @@ public class GuiBlockView {
      * @param texturesPath The Path for texture files, each correspond with a state of the blockModel.
      */
     public void registerTextures(String blockType, List<Path> texturesPath){
+        // check if blocks is already registered
+        if(blockTextureMap.containsKey(blockType)){
+            return;
+        }
         // check if path exists
         if(!texturesPath.stream().allMatch(Files::exists)) return; // temporary, should throw exception
 

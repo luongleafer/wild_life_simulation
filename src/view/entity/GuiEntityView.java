@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiEntityView {
-    private Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
+    private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
 
     private static GuiEntityView instance;
 
