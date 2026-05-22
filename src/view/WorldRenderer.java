@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import model.block.BlockModel;
+import model.entity.Bunny;
 import model.entity.EntityCoordinate;
 import model.entity.Wolf;
 import model.world.WorldModel;
@@ -170,5 +171,7 @@ public class WorldRenderer {
     public void registerEntityTextures(){
         entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0,0)),
                                         Path.of("assets/wolf.png"));
+        entityTextureMap.registerEntity(new Bunny(new EntityCoordinate(0, 0)),
+                                        Path.of("assets/bunny.png"));
     }
 }
