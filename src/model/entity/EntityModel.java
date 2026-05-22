@@ -100,7 +100,7 @@ public abstract class EntityModel {
         this.currentState += 1;
     }
 
-    // unsure
+    // UPDATE: still unsure about this one
     public abstract void Interact(BlockModel block);
     public abstract void Interact(EntityModel entity);
 }
