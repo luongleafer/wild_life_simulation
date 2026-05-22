@@ -4,14 +4,14 @@ import javafx.scene.image.Image;
 import model.block.BlockModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
-import view.entity.EntityRenderer;
+import view.entity.EntityView;
 
 import java.nio.file.Path;
 
 public class EntityRendererTest {
     public static void main(String[] args) {
         TestEntity rabbit = new TestEntity(new EntityCoordinate(4.5, 3.0));
-        EntityRenderer renderer = new EntityRenderer(rabbit, new Image("assets/rabbit.png"), 'R', 32, 32);
+        EntityView renderer = new EntityView(rabbit, new Image("assets/rabbit.png"), 'R', 32, 32);
 
         assertEquals("entity type", "TestEntity", renderer.getEntityType());
         assertEquals("sprite path", "assets/rabbit.png", renderer.getSpritePath());

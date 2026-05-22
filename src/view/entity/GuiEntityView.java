@@ -3,13 +3,12 @@ package view.entity;
 import javafx.scene.image.Image;
 import model.entity.EntityModel;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GuiEntityView {
-    private Map<EntityModel, EntityRenderer> modelViewMap = new HashMap<>();
+    private Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
 
     private static GuiEntityView instance;
 
@@ -24,11 +23,11 @@ public class GuiEntityView {
 
     public void addView(EntityModel model){
         Image texture = EntityTextureMap.getInstance().getEntityTexture(model);
-        EntityRenderer renderer = new EntityRenderer(model, texture, '?',32, 32);
+        EntityView renderer = new EntityView(model, texture, '?', 32, 32);
         modelViewMap.put(model, renderer);
     }
 
-    public List<EntityRenderer> getRenderers(){
+    public List<EntityView> getRenderers(){
         return modelViewMap.values().stream().toList();
     }
 }

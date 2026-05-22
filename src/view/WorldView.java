@@ -12,7 +12,7 @@ import model.entity.Bunny;
 import model.entity.EntityCoordinate;
 import model.entity.Wolf;
 import model.world.WorldModel;
-import view.entity.EntityRenderer;
+import view.entity.EntityView;
 import view.entity.EntityTextureMap;
 import view.entity.GuiEntityView;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * Render the world.
  * The world terrain is rendered as a grid. Each block occupy one cell of the grid.
  */
-public class WorldRenderer {
+public class WorldView {
     GuiBlockView guiBlockView = GuiBlockView.getInstance();
     EntityTextureMap entityTextureMap = EntityTextureMap.getInstance();
     GuiEntityView guiEntityView = GuiEntityView.getInstance();
@@ -70,7 +70,7 @@ public class WorldRenderer {
      * @param worldModel The model to render
      * @param worldGridPane The target element
      */
-    public WorldRenderer(WorldModel worldModel, GridPane worldGridPane, AnchorPane entityPane) {
+    public WorldView(WorldModel worldModel, GridPane worldGridPane, AnchorPane entityPane) {
         this.worldModel = worldModel;
         this.worldGridPane = worldGridPane;
         this.entityPane = entityPane;
@@ -133,12 +133,12 @@ public class WorldRenderer {
 
     public void renderEntity(){
         entityPane.getChildren().clear();
-        List<EntityRenderer> allEntityRenders =   guiEntityView.getRenderers();
-        allEntityRenders.forEach(entityRenderer -> {
-            entityRenderer.updateScreenPosition(1,0,0);
-            ImageView imageView = new ImageView(entityRenderer.getSprite());
-            imageView.setLayoutX(entityRenderer.getScreenX());
-            imageView.setLayoutY(entityRenderer.getScreenY());
+        List<EntityView> allEntityRenders =   guiEntityView.getRenderers();
+        allEntityRenders.forEach(entityView -> {
+            entityView.updateScreenPosition(1, 0, 0);
+            ImageView imageView = new ImageView(entityView.getSprite());
+            imageView.setLayoutX(entityView.getScreenX());
+            imageView.setLayoutY(entityView.getScreenY());
             entityPane.getChildren().add(imageView);
         });
     }

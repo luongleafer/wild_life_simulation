@@ -14,7 +14,7 @@ import java.nio.file.Path;
  * duong dan sprite, ky tu console, kich thuoc render, toa do tren man hinh va
  * trang thai an/hien.</p>
  */
-public class EntityRenderer {
+public class EntityView {
     // Entity goc trong model. Renderer doc vi tri va state tu doi tuong nay.
     private final EntityModel entity;
 
@@ -49,7 +49,7 @@ public class EntityRenderer {
      * @param width chieu rong khi render, tinh theo pixel
      * @param height chieu cao khi render, tinh theo pixel
      */
-    public EntityRenderer(EntityModel entity, Image sprite, char consoleSymbol, int width, int height) {
+    public EntityView(EntityModel entity, Image sprite, char consoleSymbol, int width, int height) {
         this.entity = entity;
         this.entityType = entity.getClass().getSimpleName();
 //        this.spritePath = spritePath;

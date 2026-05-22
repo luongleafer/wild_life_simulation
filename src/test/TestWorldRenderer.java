@@ -10,7 +10,7 @@ import model.entity.Bunny;
 import model.entity.EntityCoordinate;
 import model.entity.Wolf;
 import model.world.WorldModel;
-import view.WorldRenderer;
+import view.WorldView;
 
 public class TestWorldRenderer extends Application {
     WorldModel model = new WorldModel(50, 20);
@@ -24,7 +24,7 @@ public class TestWorldRenderer extends Application {
 
         GridPane terrainGrid = new GridPane();
         AnchorPane entityPane = new AnchorPane();
-        WorldRenderer renderer = new WorldRenderer(model,terrainGrid, entityPane);
+        WorldView renderer = new WorldView(model, terrainGrid, entityPane);
         model.generateTerrain();
         Scene scene = new Scene(new StackPane(terrainGrid, entityPane), 640, 480);
         renderer.registerBlockTextures();
