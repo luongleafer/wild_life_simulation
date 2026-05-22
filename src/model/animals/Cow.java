@@ -8,6 +8,7 @@ public class Cow extends AnimalModel implements Edible {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
     }
 
+    @Override
     public void Interact(EntityModel entity) {
         // Cows are herbivores: they eat grass
         // Will they interact with other cows? Probably
@@ -15,6 +16,7 @@ public class Cow extends AnimalModel implements Edible {
         // Which means this class is uh, blank
     }
 
+    @Override
     public void Interact(BlockModel block) {
         // Temporarily blank
     }

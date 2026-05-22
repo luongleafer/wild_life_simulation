@@ -17,7 +17,7 @@ public class Wolf extends AnimalModel implements Edible {
     public void Interact(EntityModel entity) {
         // They eat small animals, like cows and pigs I guess?
         boolean isPrey = entity instanceof Pig || entity instanceof Cow;
-        if (isPrey && entity instanceof Edible) {
+        if (isPrey) {
             this.eat((Edible) entity);
         }
     }
