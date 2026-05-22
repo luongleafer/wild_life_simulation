@@ -16,29 +16,8 @@ public abstract class AnimalModel extends EntityModel {
     private final String survivalStrategy;
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
-    public enum Direction {
-        // Coords start from top left corner, not Cartesian
-        NORTH(0, -1),
-        SOUTH(0, 1),
-        EAST(1, 0),
-        WEST(-1, 0);
+    protected double directionChangeChance = 0;
 
-        private final double dx;
-        private final double dy;
-
-        Direction(double dx, double dy) {
-            this.dx = dx;
-            this.dy = dy;
-        }
-
-        public double getDx() {
-            return dx;
-        }
-
-        public double getDy() {
-            return dy;
-        }
-    }
 
     private final Direction direction;
 
@@ -75,7 +54,13 @@ public abstract class AnimalModel extends EntityModel {
         double newX = getPosition().getPosX() + direction.getDx() * steps;
         double newY = getPosition().getPosY() + direction.getDy() * steps;
 
+        double newDirectionX = moveSteps.nextDouble(2) - 1;
+        double newDirectionY = moveSteps.nextDouble(2) - 1;
+        double changeDirection = moveSteps.nextDouble(1);
         move(newX, newY);
+        if(changeDirection < directionChangeChance) {
+            direction.setNew(newDirectionX, newDirectionY);
+        }
     }
 
     public AnimalModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {

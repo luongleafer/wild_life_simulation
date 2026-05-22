@@ -169,6 +169,6 @@ public class WorldRenderer {
 
     public void registerEntityTextures(){
         entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0,0)),
-                                        Path.of("assets/acacia_sapling.png"));
+                                        Path.of("assets/wolf.png"));
     }
 }

@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.entity.EntityCoordinate;
 import model.entity.Wolf;
@@ -32,8 +31,8 @@ public class TestWorldRenderer extends Application {
         renderer.renderWorld();
         renderer.startUpdateWorldService(20);
         renderer.startRendering();
-        model.spawnEntity(new Wolf(new EntityCoordinate(0,0)));
-        model.spawnEntity(new Wolf(new EntityCoordinate(12,12)));
+        model.spawnEntity(new Wolf(new EntityCoordinate(100,100)));
+        model.spawnEntity(new Wolf(new EntityCoordinate(200,100)));
         stage.setTitle("Wild Life Simulation");
         stage.setScene(scene);
         stage.show();

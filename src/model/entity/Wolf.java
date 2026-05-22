@@ -3,8 +3,9 @@ package model.entity;
 import model.block.BlockModel;
 
 public class Wolf extends AnimalModel {
-    public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, AnimalModel.Direction direction) {
+    public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
+        directionChangeChance = 0.15;
     }
 
     public Wolf(EntityCoordinate position){
@@ -20,8 +21,9 @@ public class Wolf extends AnimalModel {
                 100,
                 100,
                 "Hunting",
-                Direction.EAST
+                new Direction(1,0)
         );
+        directionChangeChance = 0.15;
     }
 
     @Override

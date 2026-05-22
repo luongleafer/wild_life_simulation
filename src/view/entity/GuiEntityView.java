@@ -24,7 +24,7 @@ public class GuiEntityView {
 
     public void addView(EntityModel model){
         Image texture = EntityTextureMap.getInstance().getEntityTexture(model);
-        EntityRenderer renderer = new EntityRenderer(model, texture, '?',16, 16);
+        EntityRenderer renderer = new EntityRenderer(model, texture, '?',32, 32);
         modelViewMap.put(model, renderer);
     }
 
