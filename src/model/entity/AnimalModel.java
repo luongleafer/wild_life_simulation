@@ -18,32 +18,40 @@ public abstract class AnimalModel extends EntityModel {
 
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
-    // Make it public, if not I get a warning
-    public enum Direction {
-        // Coords start from top left corner, not Cartesian
-        NORTH(0, -1),
-        SOUTH(0, 1),
-        EAST(1, 0),
-        WEST(-1, 0);
+    private final Direction direction;
 
-        private final double dx;
-        private final double dy;
-
-        Direction(double dx, double dy) {
-            this.dx = dx;
-            this.dy = dy;
-        }
-
-        public double getDx() {
-            return dx;
-        }
-
-        public double getDy() {
-            return dy;
-        }
+    // Getters and setters for mob attributes
+    public float getHunger() {
+        return hunger;
     }
 
-    private final Direction direction;
+    public void setHunger(float hunger) {
+        this.hunger = hunger;
+    }
+
+    public float getThirst() {
+        return thirst;
+    }
+
+    public void setThirst(float thirst) {
+        this.thirst = thirst;
+    }
+
+    public float getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(float energy) {
+        this.energy = energy;
+    }
+
+    public String getSurvivalStrategy() {
+        return survivalStrategy;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
 
     // Main methods
     // eat(food) food can be other Entity or Block, depend on the specific implementation of the animal

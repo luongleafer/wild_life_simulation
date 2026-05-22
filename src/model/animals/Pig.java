@@ -1,13 +1,10 @@
 package model.animals;
 
 import model.block.BlockModel;
-import model.entity.AnimalModel;
-import model.entity.EntityCoordinate;
-import model.entity.EntityModel;
-import model.entity.Edible;
+import model.entity.*;
 
 public class Pig extends AnimalModel implements Edible {
-    public Pig(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, AnimalModel.Direction direction) {
+    public Pig(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
     }
 

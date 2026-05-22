@@ -1,10 +1,7 @@
 package model.animals;
 
 import model.block.BlockModel;
-import model.entity.AnimalModel;
-import model.entity.EntityCoordinate;
-import model.entity.EntityModel;
-import model.entity.Edible;
+import model.entity.*;
 
 public class Wolf extends AnimalModel implements Edible {
     public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
