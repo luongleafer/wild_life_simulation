@@ -11,8 +11,5 @@ public class DirtBlock extends BlockModel {
         this.sinkability = 2;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new DirtBlock(x, y, initialState);
-    }
+
 }
