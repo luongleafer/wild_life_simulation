@@ -10,7 +10,15 @@ public class Pig extends AnimalModel implements Edible {
 
     public Pig(EntityCoordinate position){
         super(position);
-        // other variables here if needed, waiting for Luong's command
+        // Default values for pigs, can be changed later if needed
+        this.health = 10;
+        this.energy = 5;
+        this.hunger = 5;
+        this.thirst = 5;
+        this.survivalStrategy = "passive"; // Passive behavior, will never attack
+        this.direction = Direction.NORTH;
+        this.currentState = 1; // Adult by default
+        this.age = 10; // total lifespan is 10
     }
 
     @Override

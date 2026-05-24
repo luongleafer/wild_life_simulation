@@ -6,19 +6,19 @@ public abstract class AnimalModel extends EntityModel {
 
     // since we are following the Minecraft model here...
     // the values will be floats
-    private float hunger;
-    private float thirst;
-    private float energy;
+    protected float hunger;
+    protected float thirst;
+    protected float energy;
 
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
     // but that is for later, when those behaviors are defined better
-    private String survivalStrategy;
+    protected String survivalStrategy;
 
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
-    private Direction direction;
+    protected Direction direction;
 
     // Getters and setters for mob attributes
     public float getHunger() {

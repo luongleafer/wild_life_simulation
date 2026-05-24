@@ -10,7 +10,15 @@ public class Wolf extends AnimalModel implements Edible {
 
     public Wolf(EntityCoordinate position){
         super(position);
-        // other variables here if needed, waiting for Luong's command
+        // Default values for wolves, can be changed later if needed
+        this.health = 8;
+        this.energy = 10;
+        this.hunger = 5;
+        this.thirst = 5;
+        this.survivalStrategy = "passive"; // Passive behavior, will never attack
+        this.direction = Direction.NORTH;
+        this.currentState = 1; // Adult by default
+        this.age = 15; // total lifespan is 10
     }
     @Override
     public void Interact(BlockModel block) {
