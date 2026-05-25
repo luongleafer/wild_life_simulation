@@ -30,8 +30,5 @@ public class MudBlock extends BlockModel {
         return new DirtBlock(this.position.getX(), this.position.getY(), 0);
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new MudBlock(x, y, initialState);
-    }
+
 }

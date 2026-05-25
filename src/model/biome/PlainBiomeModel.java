@@ -2,6 +2,7 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.BlockModels;
 import model.generation.DirtBlock;
 import model.generation.GrassBlock;
 import model.generation.WaterBlock;
@@ -36,11 +37,11 @@ public class PlainBiomeModel extends BiomeModel {
             for (int y = topLeft.y; y < bottomRight.y; y++) {
                 double roll = random.nextDouble();
                 if (roll < waterChance) {
-                    generatedBlocks[index++] = blockPalette.get(2).newBlock(x, y, 0); // Water block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(2),x,y,0); // Water block
                 } else if (roll < waterChance + grassChance) {
-                    generatedBlocks[index++] = blockPalette.get(1).newBlock(x, y, 0); // Grass block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(1),x,y,0); // Grass block
                 } else {
-                    generatedBlocks[index++] = blockPalette.get(0).newBlock(x, y, 0);  // Dirt block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.getFirst(),x,y,0);  // Dirt block
                 }
             }
         }

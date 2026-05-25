@@ -11,8 +11,5 @@ public class WoodBlock extends BlockModel {
         this.sinkability = 0;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new WoodBlock(x, y, initialState);
-    }
+
 }

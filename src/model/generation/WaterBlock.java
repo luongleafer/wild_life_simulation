@@ -15,10 +15,7 @@ public class WaterBlock extends BlockModel implements Drinkable {
         this.sinkability = 5;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new WaterBlock(x, y, initialState);
-    }
+
 
     // example method to cycle water animation state
     public void animate() {

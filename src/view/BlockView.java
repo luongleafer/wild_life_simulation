@@ -17,6 +17,10 @@ public class BlockView {
         blockRenderMap.put("wood", new String[]{"T"});
         blockRenderMap.put("mud", new String[]{"m"});
         blockRenderMap.put("sand", new String[]{"s"});
+        // obstacle/food block symbols
+        blockRenderMap.put("rock", new String[]{"R"});
+        blockRenderMap.put("bush", new String[]{"b"});
+        blockRenderMap.put("berry", new String[]{"*"});
         blockRenderMap.put("default", new String[]{"?"});
     }
 
@@ -33,4 +37,3 @@ public class BlockView {
         return renders[0];
     }
 }
-
