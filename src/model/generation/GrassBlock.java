@@ -11,10 +11,7 @@ public class GrassBlock extends BlockModel implements Edible {
         this.sinkability = 3;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new GrassBlock(x, y, initialState);
-    }
+
 
     // Add temporary hunger and energy values for grass as a test
     @Override

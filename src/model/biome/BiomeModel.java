@@ -2,6 +2,7 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.BlockModels;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,10 +32,10 @@ public abstract class BiomeModel {
 
     protected List<BlockModel> generateBaseLayer(){
         List<BlockModel> blocks = new ArrayList<>();
-        BlockModel baseBlock = blockPalette.get(0);
+        BlockModel baseBlock = blockPalette.getFirst();
         for(int x = topLeft.x; x <  bottomRight.x; x++){
             for(int y =  topLeft.y; y <  bottomRight.y; y++){
-                blocks.add(baseBlock.newBlock(x, y, 0));
+                blocks.add(BlockModels.from(baseBlock, x, y, 0));
             }
         }
         return blocks;

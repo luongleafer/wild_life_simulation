@@ -2,6 +2,7 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.BlockModels;
 import model.generation.GrassBlock;
 import model.generation.MudBlock;
 import model.generation.WoodBlock;
@@ -35,9 +36,9 @@ public class ForestBiomeModel extends BiomeModel {
         for (int x = topLeft.x; x < bottomRight.x; x++) {
             for (int y = topLeft.y; y < bottomRight.y; y++) {
                 if (random.nextDouble() < mudChance) {
-                    generatedBlocks[index++] = blockPalette.get(1).newBlock(x, y, 0); // Mud block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(1),x,y,0); // Mud block
                 } else {
-                    generatedBlocks[index++] = blockPalette.get(0).newBlock(x, y, 0); // Grass block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.getFirst(), x, y, 0) ;// Grass block
                 }
             }
         }
