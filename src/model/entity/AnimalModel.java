@@ -6,52 +6,20 @@ public abstract class AnimalModel extends EntityModel {
 
     // since we are following the Minecraft model here...
     // the values will be floats
-    protected float hunger;
-    protected float thirst;
-    protected float energy;
-
+    private float hunger;
+    private float thirst;
+    private float energy;
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
     // but that is for later, when those behaviors are defined better
-    protected String survivalStrategy;
-
+    private final String survivalStrategy;
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
-    protected Direction direction;
+    protected double directionChangeChance = 0;
 
-    // Getters and setters for mob attributes
-    public float getHunger() {
-        return hunger;
-    }
 
-    public void setHunger(float hunger) {
-        this.hunger = hunger;
-    }
-
-    public float getThirst() {
-        return thirst;
-    }
-
-    public void setThirst(float thirst) {
-        this.thirst = thirst;
-    }
-
-    public float getEnergy() {
-        return energy;
-    }
-
-    public void setEnergy(float energy) {
-        this.energy = energy;
-    }
-
-    public String getSurvivalStrategy() {
-        return survivalStrategy;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
+    private final Direction direction;
 
     // Main methods
     // eat(food) food can be other Entity or Block, depend on the specific implementation of the animal
@@ -86,10 +54,15 @@ public abstract class AnimalModel extends EntityModel {
         double newX = getPosition().getPosX() + direction.getDx() * steps;
         double newY = getPosition().getPosY() + direction.getDy() * steps;
 
+        double newDirectionX = moveSteps.nextDouble(2) - 1;
+        double newDirectionY = moveSteps.nextDouble(2) - 1;
+        double changeDirection = moveSteps.nextDouble(1);
         move(newX, newY);
+        if(changeDirection < directionChangeChance) {
+            direction.setNew(newDirectionX, newDirectionY);
+        }
     }
 
-    // Everything
     public AnimalModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState);
         this.hunger = hunger;
@@ -97,10 +70,5 @@ public abstract class AnimalModel extends EntityModel {
         this.energy = energy;
         this.survivalStrategy = survivalStrategy;
         this.direction = direction;
-    }
-
-    // Constructor for position ONLY
-    public AnimalModel(EntityCoordinate position) {
-        super(position);
     }
 }

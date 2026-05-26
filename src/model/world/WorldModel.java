@@ -6,26 +6,27 @@ import model.biome.PlainBiomeModel;
 import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
-import model.block.FoodBlockModel;
-import model.block.ObstacleBlockModel;
+import model.entity.AnimalModel;
+import model.entity.EntityCoordinate;
+import model.entity.EntityModel;
+import view.entity.GuiEntityView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldModel {
     private BiomeModel[] biomes;
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
-    // separate layers for obstacles and food blocks.
-    private ObstacleBlockModel[][] obstacleData;
-    private FoodBlockModel[][] foodData;
     private int width;
     private int length;
+    private List<EntityModel> entities =  new ArrayList<>();
 
     public WorldModel(int width, int length) {
         this.width = width;
         this.length = length;
         this.blocksData = new BlockModel[width][length];
-        this.obstacleData = new ObstacleBlockModel[width][length];
-        this.foodData = new FoodBlockModel[width][length];
         this.tickCount = 0;
         this.tickSpeed = 1; // 1 tick per update
     }
@@ -34,12 +35,16 @@ public class WorldModel {
         return blocksData;
     }
 
-    public ObstacleBlockModel[][] getObstacleData() {
-        return obstacleData;
+    public List<EntityModel> getEntities() {
+        return entities;
     }
 
-    public FoodBlockModel[][] getFoodData() {
-        return foodData;
+    void advanceTickCount(){
+        tickCount += tickSpeed;
+    }
+
+    void setTickSpeed(int tickSpeed) {
+        this.tickSpeed = tickSpeed;
     }
 
     public void generateTerrain() {
@@ -81,31 +86,21 @@ public class WorldModel {
         }
     }
 
-    // Place an obstacle block without modifying the base terrain.
-    public void placeObstacle(ObstacleBlockModel obstacleBlock) {
-        int x = obstacleBlock.getPosition().x;
-        int y = obstacleBlock.getPosition().y;
-
-        // check world boundaries before placing
-        if (x >= 0 && x < width && y >= 0 && y < length) {
-            obstacleData[x][y] = obstacleBlock;
-        }
-    }
-
-    // Place a food block without modifying the base terrain.
-    public void placeFood(FoodBlockModel foodBlock) {
-        int x = foodBlock.getPosition().x;
-        int y = foodBlock.getPosition().y;
-
-        // check world boundaries before placing
-        if (x >= 0 && x < width && y >= 0 && y < length) {
-            foodData[x][y] = foodBlock;
-        }
+    public <T extends EntityModel> void spawnEntity(T entity) {
+        entities.add(entity);
+        GuiEntityView.getInstance().addView(entity);
     }
 
     public void update() {
         tickCount += tickSpeed;
         // more code to loop through blocksData and update block states or trigger entity updates
+        // Every entity age up after each tick
+        entities.forEach(EntityModel::ageUp);
+        // Every animal move somewhere
+        entities.stream()
+                .filter(entity -> entity instanceof AnimalModel)
+                .map(entity -> (AnimalModel) entity)
+                .forEach(AnimalModel::move);
     }
 
     public int getWidth() {
