@@ -1,21 +1,21 @@
 package view;
 
 import javafx.animation.AnimationTimer;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import model.animals.Cow;
+import model.animals.Pig;
+import model.animals.Wolf;
 import model.block.BlockModel;
-import model.entity.Bunny;
 import model.entity.EntityCoordinate;
-import model.entity.Wolf;
 import model.world.WorldModel;
 import view.entity.EntityView;
 import view.entity.EntityTextureMap;
 import view.entity.GuiEntityView;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -119,9 +119,13 @@ public class WorldView {
 
 
     public void registerEntityTextures(){
-        entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0,0)),
-                                        Path.of("assets/wolf.png"));
-        entityTextureMap.registerEntity(new Bunny(new EntityCoordinate(0, 0)),
-                                        Path.of("assets/bunny.png"));
+       entityTextureMap.registerEntity(new Pig(new EntityCoordinate(0, 0)),
+                                       Paths.get("assets/pig.png"));
+       entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0, 0)),
+                                       Paths.get("assets/wolf.png")
+                                       );
+       entityTextureMap.registerEntity(new Cow(new EntityCoordinate(0, 0)),
+                                       Paths.get("assets/cow.png")
+                                       );
     }
 }

@@ -6,20 +6,20 @@ public abstract class AnimalModel extends EntityModel {
 
     // since we are following the Minecraft model here...
     // the values will be floats
-    private float hunger;
-    private float thirst;
-    private float energy;
+    protected float hunger;
+    protected float thirst;
+    protected float energy;
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
     // but that is for later, when those behaviors are defined better
-    private final String survivalStrategy;
+    protected String survivalStrategy;
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
     protected double directionChangeChance = 0;
 
 
-    private final Direction direction;
+    protected Direction direction;
 
     // Main methods
     // eat(food) food can be other Entity or Block, depend on the specific implementation of the animal
@@ -70,5 +70,11 @@ public abstract class AnimalModel extends EntityModel {
         this.energy = energy;
         this.survivalStrategy = survivalStrategy;
         this.direction = direction;
+    }
+
+    public AnimalModel(EntityCoordinate position){
+        super(position);
+        this.survivalStrategy = "survival";
+        this.direction = new Direction(Direction.SOUTH);
     }
 }

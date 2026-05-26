@@ -53,6 +53,9 @@ public class WorldController {
 
     public void registerBlockTextures(){
         GuiBlockView guiBlockView = GuiBlockView.getInstance();
+        guiBlockView.registerTextures("dirt", List.of(
+                Path.of("assets/dirt.png")
+        ));
         guiBlockView.registerTextures("grass", List.of(
                 Path.of("assets/grass_block_top.png")
         ));
