@@ -1,14 +1,14 @@
 package model.entity;
 
-public enum Direction {
+public class Direction {
     // Coords start from top left corner, not Cartesian
-    NORTH(0, -1),
-    SOUTH(0, 1),
-    EAST(1, 0),
-    WEST(-1, 0);
+    static public Direction NORTH(){ return new Direction(0, -1);}
+    static public Direction SOUTH() { return new Direction(0, 1); }
+    static public Direction EAST() { return new Direction(1, 0); }
+    static public Direction WEST() {return new Direction(-1, 0);}
 
-    private final double dx;
-    private final double dy;
+    private double dx;
+    private double dy;
 
     Direction(double dx, double dy) {
         this.dx = dx;
@@ -21,5 +21,10 @@ public enum Direction {
 
     public double getDy() {
         return dy;
+    }
+
+    public void setDirection(double dx, double dy) {
+        this.dx = dx;
+        this.dy = dy;
     }
 }
