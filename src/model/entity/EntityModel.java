@@ -31,6 +31,11 @@ public abstract class EntityModel {
         this.currentState = currentState;
     }
 
+    // Constructor for position ONLY
+    public EntityModel(EntityCoordinate position) {
+        this.position = position;
+    }
+
     // Unlike blocks, I think everything here should be able to be modified if required
 
     public EntityCoordinate getPosition() {

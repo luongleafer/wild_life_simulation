@@ -161,11 +161,4 @@ public abstract class BlockModel {
         return false;
     }
 
-    // Factory-style method used to create another block
-    // of the same concrete type.
-    public abstract BlockModel newBlock(
-            int x,
-            int y,
-            int initialState
-    );
 }

@@ -15,8 +15,4 @@ public class SandBlock extends BlockModel {
         return true;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new SandBlock(x, y, initialState);
-    }
 }

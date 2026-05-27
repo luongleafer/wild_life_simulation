@@ -6,9 +6,10 @@ public abstract class AnimalModel extends EntityModel {
 
     // since we are following the Minecraft model here...
     // the values will be floats
-    private float hunger;
-    private float thirst;
-    private float energy;
+    protected float hunger;
+    protected float thirst;
+    protected float energy;
+
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
@@ -179,5 +180,10 @@ public abstract class AnimalModel extends EntityModel {
         // Normalize direction and clamp speed on construction to keep movement consistent.
         this.speed = Math.max(0.0, speed);
         setDirection(directionX, directionY);
+    }
+
+    // Constructor for position ONLY
+    public AnimalModel(EntityCoordinate position) {
+        super(position);
     }
 }
