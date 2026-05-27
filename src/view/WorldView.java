@@ -118,14 +118,5 @@ public class WorldView {
 
 
 
-    public void registerEntityTextures(){
-       entityTextureMap.registerEntity(new Pig(new EntityCoordinate(0, 0)),
-                                       Paths.get("assets/pig.png"));
-       entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0, 0)),
-                                       Paths.get("assets/wolf.png")
-                                       );
-       entityTextureMap.registerEntity(new Cow(new EntityCoordinate(0, 0)),
-                                       Paths.get("assets/cow.png")
-                                       );
-    }
+
 }

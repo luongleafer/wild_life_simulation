@@ -31,7 +31,7 @@ public class TestWorldRenderer extends Application {
         model.generateTerrain();
         Scene scene = new Scene(new StackPane(terrainGrid, entityPane), 640, 480);
         controller.registerBlockTextures();
-        renderer.registerEntityTextures();
+        controller.registerEntityTextures();
         renderer.renderWorld();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
