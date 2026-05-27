@@ -35,7 +35,9 @@ public class TestWorldRenderer extends Application {
         controller.startUpdateWorldService(20);
         renderer.startRendering();
         model.spawnEntity(new Wolf(new EntityCoordinate(50, 50)));
-        model.spawnEntity(new Pig(new EntityCoordinate(100, 100)));
+        for(int i = 0; i< 10; i++) {
+            model.spawnEntity(new Pig(new EntityCoordinate(100, 100)));
+        }
         stage.setTitle("Wild Life Simulation");
         stage.setScene(scene);
         stage.show();

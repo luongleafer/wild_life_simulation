@@ -2,17 +2,20 @@ package model.entity;
 
 public class Direction {
 
-    public static Direction NORTH = new Direction(0,-1);
-    public static Direction EAST = new Direction(1,0);
-    public static Direction SOUTH = new Direction(0,1);
-    public static Direction WEST = new Direction(-1,0);
+    public static Direction NORTH(){
+        return new Direction(0,-1);
+    }
+    public static Direction EAST() { return new Direction(1,0); }
+    public static Direction SOUTH() { return new Direction(0,1); }
+    public static Direction WEST() { return new Direction(-1,0); }
+    public static Direction STAY() { return new Direction(0,0); }
 
     Direction(double dx, double dy) {
         this.dx = dx;
         this.dy = dy;
     }
 
-    Direction(Direction direction) {
+    public Direction(Direction direction) {
         this.dx = direction.dx;
         this.dy = direction.dy;
     }

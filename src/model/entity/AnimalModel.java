@@ -75,6 +75,6 @@ public abstract class AnimalModel extends EntityModel {
     public AnimalModel(EntityCoordinate position){
         super(position);
         this.survivalStrategy = "survival";
-        this.direction = new Direction(Direction.SOUTH);
+        this.direction = Direction.STAY();
     }
 }

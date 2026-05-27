@@ -16,9 +16,10 @@ public class Wolf extends AnimalModel implements Edible {
         this.hunger = 5;
         this.thirst = 5;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
-        this.direction = Direction.NORTH;
+        this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
         this.age = 15; // total lifespan is 10
+        this.directionChangeChance = 0.1;
     }
     @Override
     public void Interact(BlockModel block) {

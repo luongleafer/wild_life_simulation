@@ -16,7 +16,7 @@ public class Cow extends AnimalModel implements Edible {
         this.hunger = 5;
         this.thirst = 5;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
-        this.direction = Direction.NORTH;
+        this.direction = Direction.NORTH();
         this.currentState = 1; // Adult by default
         this.age = 10; // total lifespan is 10
     }
