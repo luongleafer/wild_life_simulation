@@ -12,6 +12,7 @@ import model.entity.EntityModel;
 import view.entity.GuiEntityView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class WorldModel {
@@ -22,6 +23,7 @@ public class WorldModel {
     private int width;
     private int length;
     private List<EntityModel> entities =  new ArrayList<>();
+    private int entityPadding = 5;
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -85,6 +87,78 @@ public class WorldModel {
             blocksData[x][y] = newBlock;
         }
     }
+
+    public void update(){
+        advanceTickCount();
+        updateTerrain();
+        updateEntities();
+    }
+
+    public List<EntityModel> getDeadEntities(){
+        return entities.stream()
+                .filter(entityModel -> entityModel.getHealth() <= 0).toList();
+    }
+
+    private void removeDeadEntities(){
+        entities.removeAll(getDeadEntities());
+    }
+
+    private void entitiesMovement(){
+        entities.stream()
+                .filter(entity -> entity instanceof AnimalModel)
+                .map(entity -> (AnimalModel) entity)
+                .forEach(AnimalModel::move);
+
+        entities.forEach(entityModel -> {
+            EntityCoordinate position = entityModel.getPosition();
+            if(position.getPosX() > width - entityPadding){
+                position.setPosX(width - entityPadding);
+            }
+            if(position.getPosX() < entityPadding){
+                position.setPosX(entityPadding);
+            }
+            if(position.getPosY() > length - entityPadding){
+                position.setPosY(length - entityPadding);
+            }
+            if(position.getPosY() < entityPadding){
+                position.setPosY(entityPadding);
+            }
+        });
+    }
+
+    /**
+     * List all Entities in a circle area
+     * @param origin The center of the area
+     * @param radius The radius of the area
+     * @return All Entities in the area
+     */
+    List<EntityModel> getEntitiesInAnArea(EntityCoordinate origin, double radius){
+        return entities.stream().filter(
+                entityModel -> entityModel.getPosition().distance(origin) <= radius
+        ).sorted(Comparator.comparing(entityModel -> entityModel.getPosition().distance(origin))).toList();
+    }
+
+    private void entitiesInteraction(){
+        entities.forEach(
+                entityModel -> {
+                    List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 10);
+                    entityModel.Interact(surrounding);
+                }
+        );
+    }
+
+    private void updateEntities(){
+        removeDeadEntities();
+        entities.forEach(EntityModel::ageUp);
+        entitiesInteraction();
+        entitiesMovement();
+    }
+
+    private void updateTerrain(){
+
+    }
+
+
 
 
 

@@ -7,6 +7,15 @@ import java.util.List;
 
 public class Wolf extends AnimalModel implements Edible {
     EntityModel currentTarget = null;
+    private final int attackCooldown = 20; // 1 second cooldown
+    private int lastAttack = 0;
+
+    @Override
+    public void ageUp() {
+        super.ageUp();
+        lastAttack++;
+    }
+
     public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 20, 0, 0);
     }
@@ -60,12 +69,10 @@ public class Wolf extends AnimalModel implements Edible {
 
     @Override
     public void move() {
-        IO.println("Wolf move");
         if(currentTarget == null) {
             roamRandomly(0.111, 0.200, Math.PI / 3);
         }
         else{
-            IO.println("Wolf has target");
             moveToward(currentTarget.getPosition(), 1);
         }
     }
@@ -78,7 +85,10 @@ public class Wolf extends AnimalModel implements Edible {
         if(toFollow != null) {
             currentTarget = toFollow;
             if(getPosition().distance(toFollow.getPosition()) < 5) {
-                toFollow.receiveDamage(1);
+                if(lastAttack >= attackCooldown) {
+                    toFollow.receiveDamage(1);
+                    lastAttack = 0;
+                }
             }
         }
         else{
