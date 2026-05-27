@@ -14,6 +14,9 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Controls everything
+ */
 public class WorldController {
     WorldModel worldModel;
 
@@ -61,6 +64,9 @@ public class WorldController {
         updateWorldService.cancel();
     }
 
+    /**
+     * Remove views for dead entities
+     */
     private void refreshEntities(){
         worldModel.getEntities().stream().filter(entityModel -> entityModel.getHealth() <= 0).forEach(entityModel -> {
             GuiEntityView.getInstance().removeView(entityModel);
@@ -110,6 +116,12 @@ public class WorldController {
         }
     }
 
+    /**
+     * List all Entities in a circle area
+     * @param origin The center of the area
+     * @param radius The radius of the area
+     * @return All Entities in the area
+     */
     List<EntityModel> getEntitiesInAnArea(EntityCoordinate origin, double radius){
         return worldModel.getEntities().stream().filter(
                 entityModel -> entityModel.getPosition().distance(origin) <= radius

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiEntityView {
+    // map an Entity to a View on screen
     private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
 
     private static GuiEntityView instance;
@@ -21,12 +22,14 @@ public class GuiEntityView {
 
     private GuiEntityView() {}
 
+    // Add new view when an entity is spawned
     public void addView(EntityModel model){
         Image texture = EntityTextureMap.getInstance().getEntityTexture(model);
         EntityView renderer = new EntityView(model, texture, '?', 32, 32);
         modelViewMap.put(model, renderer);
     }
 
+    // Remove view when an entity die
     public void removeView(EntityModel model){
         modelViewMap.remove(model);
     }
