@@ -21,7 +21,7 @@ public class Cow extends AnimalModel implements Edible {
         this.direction = Direction.NORTH();
         this.currentState = 1; // Adult by default
         this.age = 10; // total lifespan is 10
-        this.setSpeed(10);
+        this.setSpeed(7.5/20);
         this.setDirection(0, 0);
     }
 
@@ -57,5 +57,10 @@ public class Cow extends AnimalModel implements Edible {
     // You can eat cows.
     public boolean canBeEaten() {
         return true;
+    }
+
+    @Override
+    public void move() {
+        roamRandomly(7.5/20, 11.11/20,Math.PI/3);
     }
 }

@@ -15,6 +15,7 @@ import java.nio.file.Path;
  * trang thai an/hien.</p>
  */
 public class EntityView {
+    public static final int TILE_SIZE = 16;
     // Entity goc trong model. Renderer doc vi tri va state tu doi tuong nay.
     private final EntityModel entity;
 
@@ -58,7 +59,7 @@ public class EntityView {
         this.width = width;
         this.height = height;
         this.visible = true;
-        updateScreenPosition(1, 0, 0);
+        updateScreenPosition(TILE_SIZE, 0, 0);
     }
 
     /**

@@ -39,11 +39,11 @@ public class WorldModel {
         return entities;
     }
 
-    void advanceTickCount(){
+    public void advanceTickCount(){
         tickCount += tickSpeed;
     }
 
-    void setTickSpeed(int tickSpeed) {
+    public void setTickSpeed(int tickSpeed) {
         this.tickSpeed = tickSpeed;
     }
 
@@ -86,22 +86,7 @@ public class WorldModel {
         }
     }
 
-    public <T extends EntityModel> void spawnEntity(T entity) {
-        entities.add(entity);
-        GuiEntityView.getInstance().addView(entity);
-    }
 
-    public void update() {
-        tickCount += tickSpeed;
-        // more code to loop through blocksData and update block states or trigger entity updates
-        // Every entity age up after each tick
-        entities.forEach(EntityModel::ageUp);
-        // Every animal move somewhere
-        entities.stream()
-                .filter(entity -> entity instanceof AnimalModel)
-                .map(entity -> (AnimalModel) entity)
-                .forEach(AnimalModel::move);
-    }
 
     public int getWidth() {
         return width;

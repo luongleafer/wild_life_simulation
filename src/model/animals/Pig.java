@@ -22,7 +22,7 @@ public class Pig extends AnimalModel implements Edible {
         this.currentState = 1; // Adult by default
         this.age = 10; // total lifespan is 10
         this.directionChangeChance = 0.3;
-        this.setSpeed(10);
+        this.setSpeed(5.0/20);
         this.setDirection(1, 1);
     }
 
@@ -57,7 +57,7 @@ public class Pig extends AnimalModel implements Edible {
 
     @Override
     public void move() {
-        roamRandomly(5, 10, Math.PI/3);
+        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
     }
 
     @Override

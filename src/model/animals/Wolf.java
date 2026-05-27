@@ -23,7 +23,7 @@ public class Wolf extends AnimalModel implements Edible {
         this.currentState = 1; // Adult by default
         this.age = 15; // total lifespan is 10
         this.directionChangeChance = 0.1;
-        this.setSpeed(10);
+        this.setSpeed(0.111);
         this.setDirection(0,0);
     }
     @Override
@@ -60,8 +60,9 @@ public class Wolf extends AnimalModel implements Edible {
 
     @Override
     public void move() {
+        IO.println("Wolf move");
         if(currentTarget == null) {
-            roamRandomly(10, 20, Math.PI / 3);
+            roamRandomly(0.111, 0.200, Math.PI / 3);
         }
         else{
             IO.println("Wolf has target");

@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import model.animals.Cow;
 import model.animals.Pig;
 import model.animals.Wolf;
 import model.entity.EntityCoordinate;
@@ -34,9 +35,14 @@ public class TestWorldRenderer extends Application {
         renderer.renderWorld();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
-        model.spawnEntity(new Wolf(new EntityCoordinate(100, 100)));
-        for(int i = 0; i< 5;i++) {
-            model.spawnEntity(new Pig(new EntityCoordinate(200, 200)));
+        for(int i = 0; i<3;i++) {
+            controller.spawnEntity(new Wolf(new EntityCoordinate(10 * i, 10 * i)));
+        }
+        for(int i = 0; i<10;i++){
+            controller.spawnEntity(new Pig(new EntityCoordinate(25,25)));
+        }
+        for(int i = 0; i<10;i++){
+            controller.spawnEntity(new Cow(new EntityCoordinate(30, 30)));
         }
         stage.setTitle("Wild Life Simulation");
         stage.setScene(scene);

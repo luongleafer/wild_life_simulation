@@ -104,7 +104,7 @@ public class WorldView {
         entityPane.getChildren().clear();
         List<EntityView> allEntityRenders =   guiEntityView.getRenderers();
         allEntityRenders.forEach(entityView -> {
-            entityView.updateScreenPosition(1, 0, 0);
+            entityView.updateScreenPosition(16, 0, 0);
             ImageView imageView = new ImageView(entityView.getSprite());
             imageView.setLayoutX(entityView.getScreenX());
             imageView.setLayoutY(entityView.getScreenY());
