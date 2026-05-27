@@ -24,4 +24,10 @@ public class EntityCoordinate {
     public void setPosY(double posY) {
         this.posY = posY;
     }
+
+    public double distance(EntityCoordinate target) {
+        return Math.sqrt(
+                (target.posX - posX) * (target.posX - posX) + (target.posY - posY) * (target.posY - posY)
+        );
+    }
 }

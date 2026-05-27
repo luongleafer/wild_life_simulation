@@ -112,8 +112,10 @@ public abstract class AnimalModel extends EntityModel {
             setDirection(Math.cos(newAngle), Math.sin(newAngle));
         }
         setSpeed(minSpeed + MOVE_RANDOM.nextDouble() * (maxSpeed - minSpeed));
-        move();
+//        move();
+        moveByDistance(speed);
     }
+
 
     public void moveToward(EntityCoordinate target, double speedMultiplier) {
         // Convenience overload: no stop distance.
@@ -190,4 +192,6 @@ public abstract class AnimalModel extends EntityModel {
         this.survivalStrategy = "survival";
         this.direction = Direction.STAY();
     }
+
+
 }

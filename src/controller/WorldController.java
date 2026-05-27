@@ -4,10 +4,14 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
 import model.block.BlockModel;
+import model.entity.EntityCoordinate;
+import model.entity.EntityModel;
 import model.world.WorldModel;
 import view.GuiBlockView;
+import view.entity.GuiEntityView;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 public class WorldController {
@@ -26,7 +30,13 @@ public class WorldController {
                 @Override
                 protected Object call() throws Exception {
                     if(worldModel == null) return null;
+                    refreshEntities();
 //                    worldModel.generateTerrain();
+                    worldModel.getEntities().removeIf(entityModel -> entityModel.getHealth() <= 0);
+                    for (EntityModel entity : worldModel.getEntities()) {
+                        List<EntityModel> surrounding = getEntitiesInAnArea(entity.getPosition(), 70);
+                        entity.Interact(surrounding);
+                    }
                     worldModel.update();
                     return null;
                 }
@@ -49,6 +59,12 @@ public class WorldController {
 
     public void stopUpdateWorldService() {
         updateWorldService.cancel();
+    }
+
+    private void refreshEntities(){
+        worldModel.getEntities().stream().filter(entityModel -> entityModel.getHealth() <= 0).forEach(entityModel -> {
+            GuiEntityView.getInstance().removeView(entityModel);
+        });
     }
 
     public void registerBlockTextures(){
@@ -92,5 +108,11 @@ public class WorldController {
         if(newBlock != null){
             worldModel.placeBlock(newBlock);
         }
+    }
+
+    List<EntityModel> getEntitiesInAnArea(EntityCoordinate origin, double radius){
+        return worldModel.getEntities().stream().filter(
+                entityModel -> entityModel.getPosition().distance(origin) <= radius
+        ).sorted(Comparator.comparing(entityModel -> entityModel.getPosition().distance(origin))).toList();
     }
 }

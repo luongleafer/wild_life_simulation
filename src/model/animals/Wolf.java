@@ -3,9 +3,12 @@ package model.animals;
 import model.block.BlockModel;
 import model.entity.*;
 
+import java.util.List;
+
 public class Wolf extends AnimalModel implements Edible {
-    public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
-        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
+    EntityModel currentTarget = null;
+    public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
+        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 20, 0, 0);
     }
 
     public Wolf(EntityCoordinate position){
@@ -20,6 +23,8 @@ public class Wolf extends AnimalModel implements Edible {
         this.currentState = 1; // Adult by default
         this.age = 15; // total lifespan is 10
         this.directionChangeChance = 0.1;
+        this.setSpeed(10);
+        this.setDirection(0,0);
     }
     @Override
     public void Interact(BlockModel block) {
@@ -51,5 +56,33 @@ public class Wolf extends AnimalModel implements Edible {
     // Not sure if it's acceptable to eat wolves.
     public boolean canBeEaten() {
         return false;
+    }
+
+    @Override
+    public void move() {
+        if(currentTarget == null) {
+            roamRandomly(10, 20, Math.PI / 3);
+        }
+        else{
+            IO.println("Wolf has target");
+            moveToward(currentTarget.getPosition(), 1);
+        }
+    }
+
+    @Override
+    public void Interact(List<EntityModel> entities) {
+//        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
+       // filter out pigs
+        EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
+        if(toFollow != null) {
+            currentTarget = toFollow;
+            if(getPosition().distance(toFollow.getPosition()) < 5) {
+                toFollow.receiveDamage(1);
+            }
+        }
+        else{
+            currentTarget = null;
+        }
+
     }
 }

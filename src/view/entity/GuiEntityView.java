@@ -27,6 +27,10 @@ public class GuiEntityView {
         modelViewMap.put(model, renderer);
     }
 
+    public void removeView(EntityModel model){
+        modelViewMap.remove(model);
+    }
+
     public List<EntityView> getRenderers(){
         return modelViewMap.values().stream().toList();
     }

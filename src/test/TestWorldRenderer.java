@@ -14,7 +14,7 @@ import model.world.WorldModel;
 import view.WorldView;
 
 public class TestWorldRenderer extends Application {
-    WorldModel model = new WorldModel(50, 20);
+    WorldModel model = new WorldModel(80, 80);
 
     public static void main(String[] args) {
         launch(args);
@@ -34,9 +34,9 @@ public class TestWorldRenderer extends Application {
         renderer.renderWorld();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
-        model.spawnEntity(new Wolf(new EntityCoordinate(50, 50)));
-        for(int i = 0; i< 10; i++) {
-            model.spawnEntity(new Pig(new EntityCoordinate(100, 100)));
+        model.spawnEntity(new Wolf(new EntityCoordinate(100, 100)));
+        for(int i = 0; i< 5;i++) {
+            model.spawnEntity(new Pig(new EntityCoordinate(200, 200)));
         }
         stage.setTitle("Wild Life Simulation");
         stage.setScene(scene);

@@ -7,6 +7,7 @@ import model.entity.EntityModel;
 import view.entity.EntityView;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class EntityRendererTest {
     public static void main(String[] args) {
@@ -63,6 +64,11 @@ public class EntityRendererTest {
 
         @Override
         public void Interact(EntityModel entity) {
+        }
+
+        @Override
+        public void Interact(List<EntityModel> entities) {
+
         }
     }
 }
