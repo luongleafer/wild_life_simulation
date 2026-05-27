@@ -2,7 +2,9 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.BlockModels;
 import model.generation.GrassBlock;
+import model.generation.MudBlock;
 import model.generation.WoodBlock;
 
 import java.util.List;
@@ -12,10 +14,14 @@ public class ForestBiomeModel extends BiomeModel {
     private Random random = new Random();
     private int numberOfBlobs = 5;
     private int blobRadius = 3;
+    private double mudChance = 0.1; // 10% chance for mud
 
     public ForestBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
         super(topLeft, bottomRight);
-        blockPalette = List.of(new GrassBlock(0,0,0));
+        blockPalette = List.of(
+                new GrassBlock(0,0,0),
+                new MudBlock(0,0,0)
+        );
     }
 
     @Override
@@ -23,8 +29,20 @@ public class ForestBiomeModel extends BiomeModel {
         int width = getWidth();
         int height = getHeight();
         BlockModel[] generatedBlocks = new BlockModel[width * height];
+        generateBaseLayer().toArray(generatedBlocks);
+        int index = 0;
 
-        generateBaseLayer().toArray(generatedBlocks);// put base layer into generatedBlocks
+        // Generate base layer with grass and mud
+        for (int x = topLeft.x; x < bottomRight.x; x++) {
+            for (int y = topLeft.y; y < bottomRight.y; y++) {
+                if (random.nextDouble() < mudChance) {
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(1),x,y,0); // Mud block
+                } else {
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.getFirst(), x, y, 0) ;// Grass block
+                }
+            }
+        }
+
 
         // generate blobs (WoodBlocks) strictly within bounds
         for (int i = 0; i < numberOfBlobs; i++) {
@@ -46,13 +64,14 @@ public class ForestBiomeModel extends BiomeModel {
                             // find the block in the 1D array and replace it
                             int localX = targetX - topLeft.x;
                             int localY = targetY - topLeft.y;
-                            int arrayIndex = localX * height + localY;
+                            int arrayIndex = localX * height + localY; // replaced y-major formula to x-major
                             generatedBlocks[arrayIndex] = new WoodBlock(targetX, targetY, 0);
                         }
                     }
                 }
             }
         }
+
         return generatedBlocks;
     }
 }

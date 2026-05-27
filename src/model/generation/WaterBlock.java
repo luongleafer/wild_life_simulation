@@ -1,11 +1,12 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.entity.Drinkable;
 
-public class WaterBlock extends BlockModel {
+public class WaterBlock extends BlockModel implements Drinkable {
 
-    public WaterBlock(int x, int y, int initialState, int sinkability) {
-        super(x, y, initialState);
+    public WaterBlock(int x, int y, int initialState) {
+        super(x, y, initialState, 5);
         this.blockType = "water";
         // water might have 3 states (0, 1, 2) to represent
         // different frames of a flowing animation in the GUI
@@ -14,13 +15,26 @@ public class WaterBlock extends BlockModel {
         this.sinkability = 5;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new WaterBlock(x, y, initialState);
-    }
+
 
     // example method to cycle water animation state
     public void animate() {
         this.currentState = (this.currentState + 1) % this.totalStates;
+    }
+
+    // Sample data for thirst and energy value for water
+    @Override
+    public float getThirstValue() {
+        return 5f;
+    }
+
+    @Override
+    public float getEnergyValue() {
+        return 5f;
+    }
+
+    @Override
+    public boolean canBeDrank() {
+        return true;
     }
 }

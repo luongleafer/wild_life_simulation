@@ -2,9 +2,12 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.BlockModels;
+import model.generation.SandBlock;
 import model.generation.WaterBlock;
 
 import java.util.List;
+import java.util.Random;
 
 // fills entire rectangle with one block type
 public class WaterBiomeModel extends BiomeModel {
@@ -12,7 +15,8 @@ public class WaterBiomeModel extends BiomeModel {
         super(topLeft, bottomRight);
         // palette could be populated here
         blockPalette = List.of(
-                new WaterBlock(0,0,0)
+                new WaterBlock(0,0,0),
+                new SandBlock(0,0,0)
         );
     }
 
@@ -21,8 +25,18 @@ public class WaterBiomeModel extends BiomeModel {
         int width = getWidth();
         int height = getHeight();
         BlockModel[] generatedBlocks = new BlockModel[width * height];
+        Random random = new Random();
+        int i = 0;
 
-        generateBaseLayer().toArray(generatedBlocks);
+        for(int x = topLeft.x; x <  bottomRight.x; x++){
+            for(int y =  topLeft.y; y <  bottomRight.y; y++){
+                if (random.nextDouble() < 0.2) { // 20% chance of sand
+                    generatedBlocks[i++] = BlockModels.from(blockPalette.get(1),x,y,0);
+                } else {
+                    generatedBlocks[i++] = BlockModels.from(blockPalette.getFirst(),x,y,0);
+                }
+            }
+        }
         return generatedBlocks;
     }
 }

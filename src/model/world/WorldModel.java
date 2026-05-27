@@ -6,12 +6,17 @@ import model.biome.PlainBiomeModel;
 import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.FoodBlockModel;
+import model.block.ObstacleBlockModel;
 
 public class WorldModel {
     private BiomeModel[] biomes;
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
+    // separate layers for obstacles and food blocks.
+    private ObstacleBlockModel[][] obstacleData;
+    private FoodBlockModel[][] foodData;
     private int width;
     private int length;
 
@@ -19,12 +24,22 @@ public class WorldModel {
         this.width = width;
         this.length = length;
         this.blocksData = new BlockModel[width][length];
+        this.obstacleData = new ObstacleBlockModel[width][length];
+        this.foodData = new FoodBlockModel[width][length];
         this.tickCount = 0;
         this.tickSpeed = 1; // 1 tick per update
     }
 
     public BlockModel[][] getBlocksData() {
         return blocksData;
+    }
+
+    public ObstacleBlockModel[][] getObstacleData() {
+        return obstacleData;
+    }
+
+    public FoodBlockModel[][] getFoodData() {
+        return foodData;
     }
 
     public void generateTerrain() {
@@ -66,8 +81,38 @@ public class WorldModel {
         }
     }
 
+    // Place an obstacle block without modifying the base terrain.
+    public void placeObstacle(ObstacleBlockModel obstacleBlock) {
+        int x = obstacleBlock.getPosition().x;
+        int y = obstacleBlock.getPosition().y;
+
+        // check world boundaries before placing
+        if (x >= 0 && x < width && y >= 0 && y < length) {
+            obstacleData[x][y] = obstacleBlock;
+        }
+    }
+
+    // Place a food block without modifying the base terrain.
+    public void placeFood(FoodBlockModel foodBlock) {
+        int x = foodBlock.getPosition().x;
+        int y = foodBlock.getPosition().y;
+
+        // check world boundaries before placing
+        if (x >= 0 && x < width && y >= 0 && y < length) {
+            foodData[x][y] = foodBlock;
+        }
+    }
+
     public void update() {
         tickCount += tickSpeed;
         // more code to loop through blocksData and update block states or trigger entity updates
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

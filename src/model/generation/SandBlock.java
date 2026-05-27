@@ -4,7 +4,7 @@ import model.block.BlockModel;
 
 public class SandBlock extends BlockModel {
     public SandBlock(int x, int y, int initialState) {
-        super(x, y, initialState);
+        super(x, y, initialState, 4);
         this.blockType = "sand";
         this.sinkability = 4;
         this.totalStates = 1;
@@ -15,8 +15,4 @@ public class SandBlock extends BlockModel {
         return true;
     }
 
-    @Override
-    public BlockModel newBlock(int x, int y, int initialState) {
-        return new SandBlock(x, y, initialState);
-    }
 }

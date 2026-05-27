@@ -3,6 +3,8 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .kotlin
+.idea/
+wild_life_simulation.iml
 
 ### Eclipse ###
 .apt_generated
