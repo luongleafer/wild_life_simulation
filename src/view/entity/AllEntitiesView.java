@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GuiEntityView {
+public class AllEntitiesView {
     // map an Entity to a View on screen
     private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
     EntityTextureMap entityTextureMap;
     Pane allEntitiesPane;
 
-    public GuiEntityView(EntityTextureMap entityTextureMap, Pane allEntitiesPane) {
+    public AllEntitiesView(EntityTextureMap entityTextureMap, Pane allEntitiesPane) {
        this.entityTextureMap = entityTextureMap;
        this.allEntitiesPane = allEntitiesPane;
     }
@@ -31,23 +31,19 @@ public class GuiEntityView {
     public void removeView(EntityModel model){
         modelViewMap.remove(model);
     }
-
-    public List<EntityView> getRenderers(){
-        // update view
-        modelViewMap.forEach((model, entityView) -> {
-            entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
-        });
-        return modelViewMap.values().stream().toList();
-    }
-
     public void setEntityTextureMap(EntityTextureMap entityTextureMap) {
         this.entityTextureMap = entityTextureMap;
     }
 
     public void refresh(){
         allEntitiesPane.getChildren().clear();
-        getRenderers().forEach(entityView -> {
+
+        modelViewMap.forEach((model, entityView) -> {
+            // update view for entities base on current state
+            entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
+            // update screen position for movement
             entityView.updateScreenPosition(16, 0,0);
+            // add the ImageView to pane
             allEntitiesPane.getChildren().add(entityView.getSprite());
         });
     }

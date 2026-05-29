@@ -9,7 +9,7 @@ import model.world.WorldModel;
 import view.block.BlockTextureMap;
 import view.entity.EntityView;
 import view.entity.EntityTextureMap;
-import view.entity.GuiEntityView;
+import view.entity.AllEntitiesView;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class WorldView {
     BlockTextureMap blockTextureMap = BlockTextureMap.getInstance();
     EntityTextureMap entityTextureMap = new EntityTextureMap();
-    GuiEntityView guiEntityView;
+    AllEntitiesView allEntitiesView;
     WorldModel worldModel;
     GridPane worldGridPane;
     AnchorPane entityPane;
@@ -35,7 +35,7 @@ public class WorldView {
         public void handle(long now) {
             renderWorld();
 //            renderEntity();
-            guiEntityView.refresh();
+            allEntitiesView.refresh();
         }
     };
 
@@ -49,7 +49,7 @@ public class WorldView {
         this.worldGridPane = worldGridPane;
         this.entityPane = entityPane;
         imageViews = new ImageView[worldModel.getWidth()][worldModel.getLength()];
-        guiEntityView = new GuiEntityView(entityTextureMap, entityPane);
+        allEntitiesView = new AllEntitiesView(entityTextureMap, entityPane);
         setUpGrid();
     }
 
@@ -97,22 +97,14 @@ public class WorldView {
         }
     }
 
-    public void renderEntity(){
-        entityPane.getChildren().clear();
-        List<EntityView> allEntityRenders =   guiEntityView.getRenderers();
-        allEntityRenders.forEach(entityView -> {
-            entityView.updateScreenPosition(16, 0, 0);
-            ImageView imageView = entityView.getSprite();
-            entityPane.getChildren().add(imageView);
-        });
-    }
+
 
     public GridPane getWorldGridPane() {
         return worldGridPane;
     }
 
-    public GuiEntityView getGuiEntityView() {
-        return guiEntityView;
+    public AllEntitiesView getGuiEntityView() {
+        return allEntitiesView;
     }
 
 }
