@@ -24,7 +24,7 @@ public class GuiEntityView {
 
     // Add new view when an entity is spawned
     public void addView(EntityModel model){
-        Image texture = EntityTextureMap.getInstance().getEntityTexture(model);
+        Image texture = EntityTextureMap.getInstance().getEntityTexture(model, model.getCurrentState());
         EntityView renderer = new EntityView(model, texture, '?', 32, 32);
         modelViewMap.put(model, renderer);
     }
@@ -35,6 +35,10 @@ public class GuiEntityView {
     }
 
     public List<EntityView> getRenderers(){
+        // update view
+        modelViewMap.forEach((model, entityView) -> {
+            entityView.setSprite(EntityTextureMap.getInstance().getEntityTexture(model, model.getCurrentState()));
+        });
         return modelViewMap.values().stream().toList();
     }
 }

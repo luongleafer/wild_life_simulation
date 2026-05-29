@@ -235,4 +235,8 @@ public class EntityView {
     public Image getSprite() {
         return sprite;
     }
+
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
+    }
 }

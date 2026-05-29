@@ -4,6 +4,7 @@ import model.block.BlockModel;
 import model.entity.*;
 
 import java.util.List;
+import java.util.Random;
 
 public class Cow extends AnimalModel implements Edible {
     public Cow(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
@@ -19,8 +20,8 @@ public class Cow extends AnimalModel implements Edible {
         this.thirst = 5;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.NORTH();
-        this.currentState = 1; // Adult by default
-        this.age = 10; // total lifespan is 10
+        this.currentState = 0; // Adult by default
+        this.age = 0; // total lifespan is 10
         this.setSpeed(7.5/20);
         this.setDirection(0, 0);
     }
@@ -62,5 +63,14 @@ public class Cow extends AnimalModel implements Edible {
     @Override
     public void move() {
         roamRandomly(7.5/20, 11.11/20,Math.PI/3);
+    }
+
+    @Override
+    public void ageUp() {
+        super.ageUp();
+        if(currentState == 0 && age >= 100){
+            Random ageRandom = new Random();
+            currentState = 1;
+        }
     }
 }
