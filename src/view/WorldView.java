@@ -20,7 +20,7 @@ import java.util.List;
 public class WorldView {
     BlockTextureMap blockTextureMap = BlockTextureMap.getInstance();
     EntityTextureMap entityTextureMap = new EntityTextureMap();
-    GuiEntityView guiEntityView = new GuiEntityView(entityTextureMap);
+    GuiEntityView guiEntityView;
     WorldModel worldModel;
     GridPane worldGridPane;
     AnchorPane entityPane;
@@ -34,7 +34,8 @@ public class WorldView {
         @Override
         public void handle(long now) {
             renderWorld();
-            renderEntity();
+//            renderEntity();
+            guiEntityView.refresh();
         }
     };
 
@@ -48,6 +49,7 @@ public class WorldView {
         this.worldGridPane = worldGridPane;
         this.entityPane = entityPane;
         imageViews = new ImageView[worldModel.getWidth()][worldModel.getLength()];
+        guiEntityView = new GuiEntityView(entityTextureMap, entityPane);
         setUpGrid();
     }
 
@@ -100,9 +102,7 @@ public class WorldView {
         List<EntityView> allEntityRenders =   guiEntityView.getRenderers();
         allEntityRenders.forEach(entityView -> {
             entityView.updateScreenPosition(16, 0, 0);
-            ImageView imageView = new ImageView(entityView.getSprite());
-            imageView.setLayoutX(entityView.getScreenX());
-            imageView.setLayoutY(entityView.getScreenY());
+            ImageView imageView = entityView.getSprite();
             entityPane.getChildren().add(imageView);
         });
     }

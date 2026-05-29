@@ -1,6 +1,7 @@
 package view.entity;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 
@@ -25,7 +26,7 @@ public class EntityView {
     // Duong dan toi anh/sprite dung khi ve entity bang giao dien do hoa.
     private Path spritePath;
 
-    private Image sprite;
+    private ImageView sprite;
 
     // Ky tu dai dien cho entity khi hien thi o che do console/text.
     private char consoleSymbol;
@@ -55,7 +56,7 @@ public class EntityView {
         this.entityType = entity.getClass().getSimpleName();
 //        this.spritePath = spritePath;
         this.consoleSymbol = consoleSymbol;
-        this.sprite = sprite;
+        this.sprite = new ImageView( sprite );
         this.width = width;
         this.height = height;
         this.visible = true;
@@ -82,6 +83,8 @@ public class EntityView {
         EntityCoordinate position = entity.getPosition();
         this.screenX = (int) (position.posX * tileSize) - cameraX;
         this.screenY = (int) (position.posY * tileSize) - cameraY;
+        sprite.setLayoutX(screenX);
+        sprite.setLayoutY(screenY);
     }
 
     /**
@@ -232,11 +235,11 @@ public class EntityView {
         return entity.getCurrentState();
     }
 
-    public Image getSprite() {
+    public ImageView getSprite() {
         return sprite;
     }
 
     public void setSprite(Image sprite) {
-        this.sprite = sprite;
+        this.sprite.setImage(sprite);
     }
 }

@@ -35,8 +35,8 @@ public class WorldController {
                 @Override
                 protected Object call() throws Exception {
 //                    updateWorld();
-                    worldModel.update();
                     refreshEntityViews();
+                    worldModel.update();
                     return null;
                 }
             };
