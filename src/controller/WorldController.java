@@ -3,23 +3,16 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import model.animals.Cow;
-import model.animals.Pig;
-import model.animals.Wolf;
 import model.block.BlockModel;
 import model.block.BlockModels;
-import model.entity.AnimalModel;
-import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 import model.world.WorldModel;
-import view.GuiBlockView;
+import view.block.BlockTextureMap;
 import view.WorldView;
 import view.entity.EntityTextureMap;
-import view.entity.GuiEntityView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -79,23 +72,23 @@ public class WorldController {
     }
 
     public void registerBlockTextures(){
-        GuiBlockView guiBlockView = GuiBlockView.getInstance();
-        guiBlockView.registerTextures("dirt", List.of(
+        BlockTextureMap blockTextureMap = BlockTextureMap.getInstance();
+        blockTextureMap.registerTextures("dirt", List.of(
                 Path.of("assets/dirt.png")
         ));
-        guiBlockView.registerTextures("grass", List.of(
+        blockTextureMap.registerTextures("grass", List.of(
                 Path.of("assets/grass_block_top.png")
         ));
-        guiBlockView.registerTextures("sand", List.of(
+        blockTextureMap.registerTextures("sand", List.of(
                 Path.of("assets/sand.png")
         ));
-        guiBlockView.registerTextures("water", List.of(
+        blockTextureMap.registerTextures("water", List.of(
                 Path.of("assets/water_still_oneblock.png")
         ));
-        guiBlockView.registerTextures("wood", List.of(
+        blockTextureMap.registerTextures("wood", List.of(
                 Path.of("assets/oak_log.png")
         ));
-        guiBlockView.registerTextures("mud", List.of(
+        blockTextureMap.registerTextures("mud", List.of(
                 Path.of("assets/mud.png")
         ));
     }

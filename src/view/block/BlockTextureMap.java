@@ -1,4 +1,4 @@
-package view;
+package view.block;
 
 import javafx.scene.image.Image;
 import model.block.BlockModel;
@@ -13,21 +13,21 @@ import java.util.Map;
  * Manage graphical representation of a block.
  * For now, it accepts a blockModel and return an Image to render on screen
  */
-public class GuiBlockView {
+public class BlockTextureMap {
     private final Map<String, List<Image>> blockTextureMap = new HashMap<>();
 
     // This class is implemented as a Singleton
     // This mean only one object of this class can be instantiated.
-    // That object can be accessed anywhere in the code by GuiBlockView.getInstance(),
+    // That object can be accessed anywhere in the code by BlockTextureMap.getInstance(),
     // allows each block to register their own textures if needed.
 
-    private static GuiBlockView instance;
+    private static BlockTextureMap instance;
 
-    private GuiBlockView() {}
+    private BlockTextureMap() {}
 
-    public static GuiBlockView getInstance(){
+    public static BlockTextureMap getInstance(){
         if(instance == null){
-            instance = new GuiBlockView();
+            instance = new BlockTextureMap();
         }
         return instance;
     }
@@ -52,7 +52,7 @@ public class GuiBlockView {
                 .toList();
         blockTextureMap.put(blockType, imageList);
 
-        IO.println("[GuiBlockView] Block " + blockType + " has been registered");
+        IO.println("[BlockTextureMap] Block " + blockType + " has been registered");
     }
 
     /**

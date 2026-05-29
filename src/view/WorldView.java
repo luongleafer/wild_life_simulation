@@ -4,18 +4,13 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import model.animals.Cow;
-import model.animals.Pig;
-import model.animals.Wolf;
 import model.block.BlockModel;
-import model.entity.EntityCoordinate;
 import model.world.WorldModel;
+import view.block.BlockTextureMap;
 import view.entity.EntityView;
 import view.entity.EntityTextureMap;
 import view.entity.GuiEntityView;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -23,7 +18,7 @@ import java.util.List;
  * The world terrain is rendered as a grid. Each block occupy one cell of the grid.
  */
 public class WorldView {
-    GuiBlockView guiBlockView = GuiBlockView.getInstance();
+    BlockTextureMap blockTextureMap = BlockTextureMap.getInstance();
     EntityTextureMap entityTextureMap = new EntityTextureMap();
     GuiEntityView guiEntityView = new GuiEntityView(entityTextureMap);
     WorldModel worldModel;
@@ -95,7 +90,7 @@ public class WorldView {
                     IO.println("null blockModel at " + x + "; " +y);
                     continue;
                 }
-                imageViews[x][y].setImage(guiBlockView.getBlockTexture(blocksData[x][y]));
+                imageViews[x][y].setImage(blockTextureMap.getBlockTexture(blocksData[x][y]));
             }
         }
     }
