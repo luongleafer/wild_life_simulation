@@ -32,7 +32,7 @@ public class TestWorldRenderer extends Application {
         Scene scene = new Scene(new StackPane(terrainGrid, entityPane), 640, 480);
         controller.registerBlockTextures();
         controller.registerEntityTextures();
-        renderer.renderWorld();
+//        renderer.renderWorld();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
         for(int i = 0; i<10;i++) {

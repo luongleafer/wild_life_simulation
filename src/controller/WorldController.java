@@ -67,7 +67,7 @@ public class WorldController {
     private void refreshEntityViews(){
         worldModel.getDeadEntities().forEach(
                 entityModel ->
-                        worldView.getGuiEntityView().removeView(entityModel)
+                        worldView.getAllEntitiesView().removeView(entityModel)
         );
     }
 
@@ -108,7 +108,7 @@ public class WorldController {
         entityTextureMap.registerEntity("cow",
                                         Paths.get("assets/cow.png"),1
         );
-        worldView.getGuiEntityView().setEntityTextureMap(entityTextureMap);
+        worldView.getAllEntitiesView().setEntityTextureMap(entityTextureMap);
     }
 
     /**
@@ -138,11 +138,7 @@ public class WorldController {
      */
     public void spawnEntity(EntityModel entity) {
         worldModel.getEntities().add(entity);
-        worldView.getGuiEntityView().addView(entity);
+        worldView.getAllEntitiesView().addView(entity);
     }
-
-
-
-
 
 }
