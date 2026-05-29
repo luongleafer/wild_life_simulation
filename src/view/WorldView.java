@@ -1,10 +1,9 @@
 package view;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import model.block.BlockModel;
+import javafx.scene.layout.Pane;
 import model.world.WorldModel;
 import view.block.BlockTextureMap;
 import view.block.TerrainView;
@@ -21,7 +20,7 @@ public class WorldView {
     AllEntitiesView allEntitiesView;
     TerrainView terrainView;
     WorldModel worldModel;
-    private ImageView[][] imageViews;
+    Pane rootPane;
 
 
     // AnimationTimer is an abstract class that represent animation in JavaFX application
@@ -38,11 +37,16 @@ public class WorldView {
     /**
      * Manage the rendering of a worldModel in a GridPane element.
      * @param worldModel The model to render
-     * @param worldGridPane The target element
+     * @param root The Pane to render to
      */
-    public WorldView(WorldModel worldModel, GridPane worldGridPane, AnchorPane entityPane) {
+    public WorldView(WorldModel worldModel, Pane root) {
+        root.getChildren().clear();
+        this.rootPane = root;
         this.worldModel = worldModel;
-        imageViews = new ImageView[worldModel.getWidth()][worldModel.getLength()];
+        AnchorPane entityPane = new AnchorPane();
+        GridPane worldGridPane = new GridPane();
+        root.getChildren().add(worldGridPane);
+        root.getChildren().add(entityPane);
         allEntitiesView = new AllEntitiesView(entityTextureMap, entityPane);
         terrainView = new TerrainView(worldModel.getWidth(), worldModel.getLength(), worldGridPane, blockTextureMap);
     }
