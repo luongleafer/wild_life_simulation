@@ -14,23 +14,22 @@ import java.util.Map;
  * Model as Singleton for program-wide access
  */
 public class EntityTextureMap {
-    Map<Class<? extends EntityModel>, List<Image>> entityTextureMap = new HashMap<>();
+    Map<String, List<Image>> entityTextureMap = new HashMap<>();
     public EntityTextureMap() {
 
     }
 
     // Register an image with an Entity
-    public void registerEntity(EntityModel model, List<Path> files) {
+    public void registerEntity(String entityType, List<Path> files) {
         for(int i = 0; i < files.size(); ++i) {
-            registerEntity(model, files.get(i),i);
+            registerEntity(entityType, files.get(i),i);
         }
     }
 
-    public void registerEntity(EntityModel model, Path file, int index) throws IndexOutOfBoundsException{
-        Class<? extends EntityModel> entityClass = model.getClass();
+    public void registerEntity(String entityType, Path file, int index) throws IndexOutOfBoundsException{
         Image image = new Image(file.toUri().toString());
-        if(entityTextureMap.containsKey(entityClass)) {
-            List<Image> entityTextures =  entityTextureMap.get(entityClass);
+        if(entityTextureMap.containsKey(entityType)) {
+            List<Image> entityTextures =  entityTextureMap.get(entityType);
             if(index < 0 || index > entityTextures.size()) {
                 throw new IndexOutOfBoundsException();
             }
@@ -47,12 +46,12 @@ public class EntityTextureMap {
                 imageList.add(null);
             }
             imageList.add(image);
-            entityTextureMap.put(entityClass, imageList);
+            entityTextureMap.put(entityType, imageList);
         }
     }
 
     // Get the texture associate with the entity
     public Image getEntityTexture(EntityModel model, int index) {
-        return entityTextureMap.get(model.getClass()).get(index);
+        return entityTextureMap.get(model.getEntityType()).get(index);
     }
 }

@@ -102,17 +102,17 @@ public class WorldController {
 
     public void registerEntityTextures(){
         EntityTextureMap entityTextureMap = new EntityTextureMap();
-        entityTextureMap.registerEntity(new Pig(new EntityCoordinate(0, 0)),
+        entityTextureMap.registerEntity("pig",
                                         Paths.get("assets/pig.png"), 1);
-        entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0, 0)),
+        entityTextureMap.registerEntity("wolf",
                                         Paths.get("assets/wolf.png"),1
         );
 
-        entityTextureMap.registerEntity(new Cow(new EntityCoordinate(0, 0)),
+        entityTextureMap.registerEntity("cow",
                                         Paths.get("assets/calf.png"),0
         );
 
-        entityTextureMap.registerEntity(new Cow(new EntityCoordinate(0, 0)),
+        entityTextureMap.registerEntity("cow",
                                         Paths.get("assets/cow.png"),1
         );
         worldView.getGuiEntityView().setEntityTextureMap(entityTextureMap);

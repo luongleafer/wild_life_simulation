@@ -21,6 +21,7 @@ public abstract class EntityModel {
     // its current state as 0, 1, 2 (baby -> adult -> old)
     protected int currentState;
     // I think we also should have a variable that time it takes to switch to a new state
+    protected String entityType;
 
 
     public EntityModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState) {
@@ -109,6 +110,10 @@ public abstract class EntityModel {
         // Either the statement that switches the stage as soon as adult_age or old_age is reached
         // can be implemented elsewhere, or here
         this.currentState += 1;
+    }
+
+    public String getEntityType() {
+        return entityType;
     }
 
     // UPDATE: still unsure about this one

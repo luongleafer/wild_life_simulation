@@ -34,6 +34,7 @@ public class Wolf extends AnimalModel implements Edible {
         this.directionChangeChance = 0.1;
         this.setSpeed(0.111);
         this.setDirection(0,0);
+        this.entityType = "wolf";
     }
     @Override
     public void Interact(BlockModel block) {

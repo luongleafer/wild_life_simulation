@@ -24,6 +24,7 @@ public class Cow extends AnimalModel implements Edible {
         this.age = 0; // total lifespan is 10
         this.setSpeed(7.5/20);
         this.setDirection(0, 0);
+        this.entityType = "cow";
     }
 
     @Override
