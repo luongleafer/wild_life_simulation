@@ -3,9 +3,11 @@ package model.animals;
 import model.block.BlockModel;
 import model.entity.*;
 
+import java.util.List;
+
 public class Pig extends AnimalModel implements Edible {
-    public Pig(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, Direction direction) {
-        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, direction);
+    public Pig(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
+        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 10, 0, 0);
     }
 
     public Pig(EntityCoordinate position){
@@ -16,9 +18,12 @@ public class Pig extends AnimalModel implements Edible {
         this.hunger = 5;
         this.thirst = 5;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
-        this.direction = Direction.NORTH;
+        this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
         this.age = 10; // total lifespan is 10
+        this.directionChangeChance = 0.3;
+        this.setSpeed(5.0/20);
+        this.setDirection(1, 1);
     }
 
     @Override
@@ -50,4 +55,13 @@ public class Pig extends AnimalModel implements Edible {
         return true;
     }
 
+    @Override
+    public void move() {
+        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+    }
+
+    @Override
+    public void Interact(List<EntityModel> entities) {
+
+    }
 }

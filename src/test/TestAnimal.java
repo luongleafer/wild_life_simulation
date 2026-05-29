@@ -5,6 +5,8 @@ import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 
+import java.util.List;
+
 public class TestAnimal extends AnimalModel {
     private final String name;
 
@@ -25,6 +27,11 @@ public class TestAnimal extends AnimalModel {
     @Override
     public void Interact(EntityModel entity) {
         // No-op for CLI demo.
+    }
+
+    @Override
+    public void Interact(List<EntityModel> entities) {
+
     }
 }
 

@@ -1,15 +1,21 @@
 package test;
 
+import controller.WorldController;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import model.animals.Cow;
+import model.animals.Pig;
+import model.animals.Wolf;
+import model.entity.EntityCoordinate;
 import model.world.WorldModel;
-import view.WorldRenderer;
+import view.WorldView;
 
 public class TestWorldRenderer extends Application {
-    WorldModel model = new WorldModel(50, 20);
+    WorldModel model = new WorldModel(80, 80);
 
     public static void main(String[] args) {
         launch(args);
@@ -17,14 +23,28 @@ public class TestWorldRenderer extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        GridPane grid = new GridPane();
-        WorldRenderer renderer = new WorldRenderer(model,grid);
+
+        GridPane terrainGrid = new GridPane();
+        AnchorPane entityPane = new AnchorPane();
+        WorldView renderer = new WorldView(model, terrainGrid, entityPane);
+        WorldController controller = new WorldController(model);
         model.generateTerrain();
-        Scene scene = new Scene(new VBox(grid), 640, 480);
-        renderer.registerBlockTextures();
+        Scene scene = new Scene(new StackPane(terrainGrid, entityPane), 640, 480);
+        controller.registerBlockTextures();
+        controller.registerEntityTextures();
         renderer.renderWorld();
-        renderer.startUpdateWorldService(1);
+        controller.startUpdateWorldService(20);
         renderer.startRendering();
+        for(int i = 0; i<10;i++) {
+            controller.spawnEntity(new Wolf(new EntityCoordinate(5 * i, 5 * i)));
+        }
+        for(int i = 0; i<100;i++){
+            // let's just spawn 100 pigs cuz why not
+            controller.spawnEntity(new Pig(new EntityCoordinate(25,25)));
+        }
+        for(int i = 0; i<10;i++){
+            controller.spawnEntity(new Cow(new EntityCoordinate(30, 30)));
+        }
         stage.setTitle("Wild Life Simulation");
         stage.setScene(scene);
         stage.show();

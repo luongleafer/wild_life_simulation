@@ -2,6 +2,8 @@ package model.entity;
 
 import model.block.*;
 
+import java.util.List;
+
 public abstract class EntityModel {
     // work in progress, shoddy implementation
 
@@ -98,6 +100,10 @@ public abstract class EntityModel {
         this.age += 1;
     }
 
+    public void receiveDamage(int damage) {
+        this.health -= damage;
+    }
+
     public void advanceLifeStage() {
         // currently I see no factor that allows something to grow so
         // Either the statement that switches the stage as soon as adult_age or old_age is reached
@@ -108,4 +114,5 @@ public abstract class EntityModel {
     // UPDATE: still unsure about this one
     public abstract void Interact(BlockModel block);
     public abstract void Interact(EntityModel entity);
+    public abstract void Interact(List<EntityModel> entities);
 }

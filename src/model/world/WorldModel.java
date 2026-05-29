@@ -6,26 +6,29 @@ import model.biome.PlainBiomeModel;
 import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
-import model.block.FoodBlockModel;
-import model.block.ObstacleBlockModel;
+import model.entity.AnimalModel;
+import model.entity.EntityCoordinate;
+import model.entity.EntityModel;
+import view.entity.GuiEntityView;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class WorldModel {
     private BiomeModel[] biomes;
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
-    // separate layers for obstacles and food blocks.
-    private ObstacleBlockModel[][] obstacleData;
-    private FoodBlockModel[][] foodData;
     private int width;
     private int length;
+    private List<EntityModel> entities =  new ArrayList<>();
+    private int entityPadding = 5;
 
     public WorldModel(int width, int length) {
         this.width = width;
         this.length = length;
         this.blocksData = new BlockModel[width][length];
-        this.obstacleData = new ObstacleBlockModel[width][length];
-        this.foodData = new FoodBlockModel[width][length];
         this.tickCount = 0;
         this.tickSpeed = 1; // 1 tick per update
     }
@@ -34,12 +37,16 @@ public class WorldModel {
         return blocksData;
     }
 
-    public ObstacleBlockModel[][] getObstacleData() {
-        return obstacleData;
+    public List<EntityModel> getEntities() {
+        return entities;
     }
 
-    public FoodBlockModel[][] getFoodData() {
-        return foodData;
+    public void advanceTickCount(){
+        tickCount += tickSpeed;
+    }
+
+    public void setTickSpeed(int tickSpeed) {
+        this.tickSpeed = tickSpeed;
     }
 
     public void generateTerrain() {
@@ -81,32 +88,79 @@ public class WorldModel {
         }
     }
 
-    // Place an obstacle block without modifying the base terrain.
-    public void placeObstacle(ObstacleBlockModel obstacleBlock) {
-        int x = obstacleBlock.getPosition().x;
-        int y = obstacleBlock.getPosition().y;
-
-        // check world boundaries before placing
-        if (x >= 0 && x < width && y >= 0 && y < length) {
-            obstacleData[x][y] = obstacleBlock;
-        }
+    public void update(){
+        advanceTickCount();
+        updateTerrain();
+        updateEntities();
     }
 
-    // Place a food block without modifying the base terrain.
-    public void placeFood(FoodBlockModel foodBlock) {
-        int x = foodBlock.getPosition().x;
-        int y = foodBlock.getPosition().y;
-
-        // check world boundaries before placing
-        if (x >= 0 && x < width && y >= 0 && y < length) {
-            foodData[x][y] = foodBlock;
-        }
+    public List<EntityModel> getDeadEntities(){
+        return entities.stream()
+                .filter(entityModel -> entityModel.getHealth() <= 0).toList();
     }
 
-    public void update() {
-        tickCount += tickSpeed;
-        // more code to loop through blocksData and update block states or trigger entity updates
+    private void removeDeadEntities(){
+        entities.removeAll(getDeadEntities());
     }
+
+    private void entitiesMovement(){
+        entities.stream()
+                .filter(entity -> entity instanceof AnimalModel)
+                .map(entity -> (AnimalModel) entity)
+                .forEach(AnimalModel::move);
+
+        entities.forEach(entityModel -> {
+            EntityCoordinate position = entityModel.getPosition();
+            if(position.getPosX() > width - entityPadding){
+                position.setPosX(width - entityPadding);
+            }
+            if(position.getPosX() < entityPadding){
+                position.setPosX(entityPadding);
+            }
+            if(position.getPosY() > length - entityPadding){
+                position.setPosY(length - entityPadding);
+            }
+            if(position.getPosY() < entityPadding){
+                position.setPosY(entityPadding);
+            }
+        });
+    }
+
+    /**
+     * List all Entities in a circle area
+     * @param origin The center of the area
+     * @param radius The radius of the area
+     * @return All Entities in the area
+     */
+    List<EntityModel> getEntitiesInAnArea(EntityCoordinate origin, double radius){
+        return entities.stream().filter(
+                entityModel -> entityModel.getPosition().distance(origin) <= radius
+        ).sorted(Comparator.comparing(entityModel -> entityModel.getPosition().distance(origin))).toList();
+    }
+
+    private void entitiesInteraction(){
+        entities.forEach(
+                entityModel -> {
+                    List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 10);
+                    entityModel.Interact(surrounding);
+                }
+        );
+    }
+
+    private void updateEntities(){
+        removeDeadEntities();
+        entities.forEach(EntityModel::ageUp);
+        entitiesInteraction();
+        entitiesMovement();
+    }
+
+    private void updateTerrain(){
+
+    }
+
+
+
+
 
     public int getWidth() {
         return width;

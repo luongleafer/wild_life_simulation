@@ -9,12 +9,14 @@ public abstract class AnimalModel extends EntityModel {
     protected float hunger;
     protected float thirst;
     protected float energy;
-
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
     // but that is for later, when those behaviors are defined better
-    private final String survivalStrategy;
+    protected String survivalStrategy;
+    // direction may mean that this animal is chasing/fleeing from other entities.
+    // new method: use enums for direction
+    protected double directionChangeChance = 0;
 
     // Movement is defined by a speed (blocks per tick) and a unit direction vector.
     // The direction vector is normalized so speed alone controls distance per tick.
@@ -22,6 +24,7 @@ public abstract class AnimalModel extends EntityModel {
     private double directionX;
     private double directionY;
 
+    protected Direction direction;
     // Shared RNG for wandering/turning behaviors.
     private static final Random MOVE_RANDOM = new Random();
 
@@ -109,8 +112,10 @@ public abstract class AnimalModel extends EntityModel {
             setDirection(Math.cos(newAngle), Math.sin(newAngle));
         }
         setSpeed(minSpeed + MOVE_RANDOM.nextDouble() * (maxSpeed - minSpeed));
-        move();
+//        move();
+        moveByDistance(speed);
     }
+
 
     public void moveToward(EntityCoordinate target, double speedMultiplier) {
         // Convenience overload: no stop distance.
@@ -182,8 +187,11 @@ public abstract class AnimalModel extends EntityModel {
         setDirection(directionX, directionY);
     }
 
-    // Constructor for position ONLY
-    public AnimalModel(EntityCoordinate position) {
+    public AnimalModel(EntityCoordinate position){
         super(position);
+        this.survivalStrategy = "survival";
+        this.direction = Direction.STAY();
     }
+
+
 }

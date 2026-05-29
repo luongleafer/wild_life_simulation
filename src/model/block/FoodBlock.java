@@ -7,7 +7,6 @@ public class FoodBlock extends FoodBlockModel {
         this.totalStates = 1;
     }
 
-    @Override
     public BlockModel newBlock(int x, int y, int initialState) {
         return new FoodBlock(x, y, blockType, getNutrition());
     }
