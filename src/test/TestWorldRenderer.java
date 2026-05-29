@@ -27,7 +27,7 @@ public class TestWorldRenderer extends Application {
         GridPane terrainGrid = new GridPane();
         AnchorPane entityPane = new AnchorPane();
         WorldView renderer = new WorldView(model, terrainGrid, entityPane);
-        WorldController controller = new WorldController(model);
+        WorldController controller = new WorldController(model, renderer);
         model.generateTerrain();
         Scene scene = new Scene(new StackPane(terrainGrid, entityPane), 640, 480);
         controller.registerBlockTextures();

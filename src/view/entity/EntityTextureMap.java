@@ -15,16 +15,8 @@ import java.util.Map;
  */
 public class EntityTextureMap {
     Map<Class<? extends EntityModel>, List<Image>> entityTextureMap = new HashMap<>();
-    private EntityTextureMap() {
+    public EntityTextureMap() {
 
-    }
-
-    private static EntityTextureMap instance;
-    public static EntityTextureMap getInstance() {
-        if (instance == null) {
-            instance = new EntityTextureMap();
-        }
-        return instance;
     }
 
     // Register an image with an Entity

@@ -10,21 +10,15 @@ import java.util.Map;
 public class GuiEntityView {
     // map an Entity to a View on screen
     private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
+    EntityTextureMap entityTextureMap;
 
-    private static GuiEntityView instance;
-
-    public static GuiEntityView getInstance() {
-        if (instance == null) {
-            instance = new GuiEntityView();
-        }
-        return instance;
+    public GuiEntityView(EntityTextureMap entityTextureMap) {
+       this.entityTextureMap = entityTextureMap;
     }
-
-    private GuiEntityView() {}
 
     // Add new view when an entity is spawned
     public void addView(EntityModel model){
-        Image texture = EntityTextureMap.getInstance().getEntityTexture(model, model.getCurrentState());
+        Image texture = entityTextureMap.getEntityTexture(model, model.getCurrentState());
         EntityView renderer = new EntityView(model, texture, '?', 32, 32);
         modelViewMap.put(model, renderer);
     }
@@ -37,8 +31,12 @@ public class GuiEntityView {
     public List<EntityView> getRenderers(){
         // update view
         modelViewMap.forEach((model, entityView) -> {
-            entityView.setSprite(EntityTextureMap.getInstance().getEntityTexture(model, model.getCurrentState()));
+            entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
         });
         return modelViewMap.values().stream().toList();
+    }
+
+    public void setEntityTextureMap(EntityTextureMap entityTextureMap) {
+        this.entityTextureMap = entityTextureMap;
     }
 }

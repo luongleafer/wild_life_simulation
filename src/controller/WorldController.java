@@ -13,6 +13,7 @@ import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 import model.world.WorldModel;
 import view.GuiBlockView;
+import view.WorldView;
 import view.entity.EntityTextureMap;
 import view.entity.GuiEntityView;
 
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class WorldController {
     WorldModel worldModel;
-    EntityTextureMap entityTextureMap = EntityTextureMap.getInstance();
+    WorldView worldView;
 
     // Update world in a separate thread.
     // ScheduledService is used to define a task that is run periodically
@@ -49,8 +50,9 @@ public class WorldController {
         }
     };
 
-    public WorldController(WorldModel model) {
+    public WorldController(WorldModel model, WorldView worldView) {
         this.worldModel = model;
+        this.worldView = worldView;
     }
 
     /**
@@ -72,7 +74,7 @@ public class WorldController {
     private void refreshEntityViews(){
         worldModel.getDeadEntities().forEach(
                 entityModel ->
-                        GuiEntityView.getInstance().removeView(entityModel)
+                        worldView.getGuiEntityView().removeView(entityModel)
         );
     }
 
@@ -99,6 +101,7 @@ public class WorldController {
     }
 
     public void registerEntityTextures(){
+        EntityTextureMap entityTextureMap = new EntityTextureMap();
         entityTextureMap.registerEntity(new Pig(new EntityCoordinate(0, 0)),
                                         Paths.get("assets/pig.png"), 1);
         entityTextureMap.registerEntity(new Wolf(new EntityCoordinate(0, 0)),
@@ -112,6 +115,7 @@ public class WorldController {
         entityTextureMap.registerEntity(new Cow(new EntityCoordinate(0, 0)),
                                         Paths.get("assets/cow.png"),1
         );
+        worldView.getGuiEntityView().setEntityTextureMap(entityTextureMap);
     }
 
     /**
@@ -141,7 +145,7 @@ public class WorldController {
      */
     public void spawnEntity(EntityModel entity) {
         worldModel.getEntities().add(entity);
-        GuiEntityView.getInstance().addView(entity);
+        worldView.getGuiEntityView().addView(entity);
     }
 
 
