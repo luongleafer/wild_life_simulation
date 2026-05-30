@@ -1,5 +1,6 @@
 package view.entity;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import model.entity.EntityModel;
@@ -47,7 +48,7 @@ public class AllEntitiesView {
             // update view for entities base on current state
             entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
             // update screen position for movement
-            entityView.updateScreenPosition(16, 0,0);
+            entityView.updateScreenPosition(WorldController.WORLD_TILE_SIZE, 0, 0);
             // add the ImageView to pane
             allEntitiesPane.getChildren().add(entityView.getSprite());
         });

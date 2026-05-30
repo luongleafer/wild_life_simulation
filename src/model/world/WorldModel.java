@@ -157,6 +157,10 @@ public class WorldModel {
 
     }
 
+    public long getTickCount() {
+        return tickCount;
+    }
+
 
 
 

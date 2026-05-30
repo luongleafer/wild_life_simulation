@@ -1,5 +1,6 @@
 package view.entity;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
 import model.entity.EntityModel;
 
@@ -27,7 +28,16 @@ public class EntityTextureMap {
     }
 
     public void registerEntity(String entityType, Path file, int index) throws IndexOutOfBoundsException{
-        Image image = new Image(file.toUri().toString());
+        registerEntity(entityType, file, index, 1, 1);
+    }
+
+    public void registerEntity(String entityType, Path file, int index, double widthScale, double heightScale) throws IndexOutOfBoundsException{
+        Image image = new Image(file.toUri().toString(),
+                                WorldController.WORLD_TILE_SIZE * widthScale,
+                                WorldController.WORLD_TILE_SIZE * heightScale,
+                                false,
+                                true
+                                );
         if(entityTextureMap.containsKey(entityType)) {
             List<Image> entityTextures =  entityTextureMap.get(entityType);
             if(index < 0 || index > entityTextures.size()) {
@@ -48,6 +58,7 @@ public class EntityTextureMap {
             imageList.add(image);
             entityTextureMap.put(entityType, imageList);
         }
+        IO.println("[EntityTextureMap] Entity of type " + entityType + " at state " + index + " has been registered");
     }
 
     // Get the texture associate with the entity

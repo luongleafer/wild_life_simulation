@@ -1,5 +1,6 @@
 package view.block;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
 import model.block.BlockModel;
 
@@ -41,10 +42,17 @@ public class BlockTextureMap {
         if(!texturesPath.stream().allMatch(Files::exists)) return; // temporary, should throw exception
 
         // map from path to JavaFX's Image objects to display on the screen.
+        // texture is auto-scaled by the world's tile size
         List<Image> imageList = texturesPath.stream()
-                .map(path -> new Image(path.toUri().toString()))
+                .map(path -> new Image(path.toUri().toString(),
+                                       WorldController.WORLD_TILE_SIZE,
+                                       WorldController.WORLD_TILE_SIZE,
+                                       true,
+                                       true
+                                       ))
                 .toList();
         blockTextureMap.put(blockType, imageList);
+
 
         IO.println("[BlockTextureMap] Block " + blockType + " has been registered");
     }
