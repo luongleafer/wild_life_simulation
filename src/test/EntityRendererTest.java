@@ -20,7 +20,7 @@ public class EntityRendererTest {
         assertEquals("initial screen x", 4, renderer.getScreenX());
         assertEquals("initial screen y", 3, renderer.getScreenY());
         assertEquals("width", 32, renderer.getWidth());
-        assertEquals("height", 32, renderer.getHeight());
+        assertEquals("height", 32, renderer.getLength());
         assertEquals("visible", true, renderer.isVisible());
         assertEquals("current state", 0, renderer.getCurrentState());
 
@@ -36,13 +36,13 @@ public class EntityRendererTest {
         renderer.setSpritePath(Path.of("assets/rabbit_adult.png"));
         renderer.setConsoleSymbol('A');
         renderer.setWidth(48);
-        renderer.setHeight(48);
+        renderer.setLength(48);
 
         assertEquals("updated visible", false, renderer.isVisible());
         assertEquals("updated sprite path", "assets/rabbit_adult.png", renderer.getSpritePath());
         assertEquals("updated console symbol", 'A', renderer.getConsoleSymbol());
         assertEquals("updated width", 48, renderer.getWidth());
-        assertEquals("updated height", 48, renderer.getHeight());
+        assertEquals("updated height", 48, renderer.getLength());
 
         System.out.println("EntityRendererTest passed.");
     }
