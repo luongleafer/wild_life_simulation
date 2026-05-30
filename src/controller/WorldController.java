@@ -72,7 +72,7 @@ public class WorldController {
     }
 
     public void registerBlockTextures(){
-        BlockTextureMap blockTextureMap = BlockTextureMap.getInstance();
+        BlockTextureMap blockTextureMap = new BlockTextureMap();
         blockTextureMap.registerTextures("dirt", List.of(
                 Path.of("assets/dirt.png")
         ));
@@ -91,6 +91,7 @@ public class WorldController {
         blockTextureMap.registerTextures("mud", List.of(
                 Path.of("assets/mud.png")
         ));
+        worldView.getTerrainView().setTextureMap(blockTextureMap);
     }
 
     public void registerEntityTextures(){

@@ -21,15 +21,9 @@ public class BlockTextureMap {
     // That object can be accessed anywhere in the code by BlockTextureMap.getInstance(),
     // allows each block to register their own textures if needed.
 
-    private static BlockTextureMap instance;
 
-    private BlockTextureMap() {}
+    public BlockTextureMap() {
 
-    public static BlockTextureMap getInstance(){
-        if(instance == null){
-            instance = new BlockTextureMap();
-        }
-        return instance;
     }
 
 

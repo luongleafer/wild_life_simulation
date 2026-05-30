@@ -38,6 +38,11 @@ public class AllEntitiesView {
     public void refresh(){
         allEntitiesPane.getChildren().clear();
 
+        if(entityTextureMap == null){
+            IO.println("[EntityRenderer] Texture map not found");
+            return;
+        }
+
         modelViewMap.forEach((model, entityView) -> {
             // update view for entities base on current state
             entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));

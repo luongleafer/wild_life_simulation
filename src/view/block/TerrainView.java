@@ -48,4 +48,8 @@ public class TerrainView {
             }
         }
     }
+
+    public void setTextureMap(BlockTextureMap textureMap){
+        this.textureMap = textureMap;
+    }
 }

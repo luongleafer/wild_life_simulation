@@ -15,8 +15,6 @@ import view.entity.AllEntitiesView;
  * The world terrain is rendered as a grid. Each block occupy one cell of the grid.
  */
 public class WorldView {
-    BlockTextureMap blockTextureMap = BlockTextureMap.getInstance();
-    EntityTextureMap entityTextureMap = new EntityTextureMap();
     AllEntitiesView allEntitiesView;
     TerrainView terrainView;
     WorldModel worldModel;
@@ -47,8 +45,8 @@ public class WorldView {
         GridPane worldGridPane = new GridPane();
         root.getChildren().add(worldGridPane);
         root.getChildren().add(entityPane);
-        allEntitiesView = new AllEntitiesView(entityTextureMap, entityPane);
-        terrainView = new TerrainView(worldModel.getWidth(), worldModel.getLength(), worldGridPane, blockTextureMap);
+        allEntitiesView = new AllEntitiesView(null, entityPane);
+        terrainView = new TerrainView(worldModel.getWidth(), worldModel.getLength(), worldGridPane, null);
     }
 
     /**
@@ -60,6 +58,10 @@ public class WorldView {
 
     public AllEntitiesView getAllEntitiesView() {
         return allEntitiesView;
+    }
+
+    public TerrainView getTerrainView() {
+        return terrainView;
     }
 
 }
