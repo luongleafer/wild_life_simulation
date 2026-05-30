@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class WorldView {
     GuiBlockView guiBlockView = GuiBlockView.getInstance();
-    EntityTextureMap entityTextureMap = EntityTextureMap.getInstance();
-    GuiEntityView guiEntityView = GuiEntityView.getInstance();
+    EntityTextureMap entityTextureMap = new EntityTextureMap();
+    GuiEntityView guiEntityView = new GuiEntityView(entityTextureMap);
     WorldModel worldModel;
     GridPane worldGridPane;
     AnchorPane entityPane;
@@ -116,7 +116,8 @@ public class WorldView {
         return worldGridPane;
     }
 
-
-
+    public GuiEntityView getGuiEntityView() {
+        return guiEntityView;
+    }
 
 }

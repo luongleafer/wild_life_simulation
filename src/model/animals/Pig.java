@@ -24,6 +24,7 @@ public class Pig extends AnimalModel implements Edible {
         this.directionChangeChance = 0.3;
         this.setSpeed(5.0/20);
         this.setDirection(1, 1);
+        this.entityType = "pig";
     }
 
     @Override
