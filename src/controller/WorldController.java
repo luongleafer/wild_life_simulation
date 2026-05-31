@@ -3,6 +3,7 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import model.animals.Wolf;
 import model.block.BlockModel;
 import model.block.BlockModels;
 import model.entity.EntityModel;
@@ -20,6 +21,23 @@ import java.util.List;
  */
 public class WorldController {
     public static int WORLD_TILE_SIZE = 16;
+    public static WorldController controller;
+
+    public static WorldController getController() {
+        if(controller == null) {
+            controller = new WorldController();
+        }
+        return controller;
+    }
+
+    public void setWorldModel(WorldModel worldModel) {
+        this.worldModel = worldModel;
+    }
+
+    public void setWorldView(WorldView worldView) {
+        this.worldView = worldView;
+    }
+
     WorldModel worldModel;
     WorldView worldView;
 
@@ -44,9 +62,8 @@ public class WorldController {
         }
     };
 
-    public WorldController(WorldModel model, WorldView worldView) {
-        this.worldModel = model;
-        this.worldView = worldView;
+    private WorldController(){
+
     }
 
     /**

@@ -3,6 +3,9 @@ package model.generation;
 import model.block.BlockModel;
 import model.entity.Edible;
 
+import java.util.List;
+import java.util.Random;
+
 public class GrassBlock extends BlockModel implements Edible {
     public GrassBlock(int x, int y, int initialState) {
         super(x, y, initialState, 3);
@@ -29,5 +32,10 @@ public class GrassBlock extends BlockModel implements Edible {
     @Override
     public boolean canBeEaten() {
         return true;
+    }
+
+    @Override
+    public BlockModel interact(List<BlockModel> surroundingBlocks) {
+        return this;
     }
 }

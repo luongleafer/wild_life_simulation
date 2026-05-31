@@ -9,10 +9,12 @@ import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
+import model.generation.GrassBlock;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class WorldModel {
     private BiomeModel[] biomes;
@@ -23,6 +25,7 @@ public class WorldModel {
     private int length;
     private List<EntityModel> entities =  new ArrayList<>();
     private int entityPadding = 5;
+    Random rand = new Random();
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -167,8 +170,23 @@ public class WorldModel {
         entitiesInteraction();
     }
 
-    private void updateTerrain(){
+    private List<BlockModel> getSurroundingBlocks(BlockCoordinate origin){
+        List<BlockModel> surroundingBlocks = new ArrayList<>();
+        int x = origin.x;
+        int y = origin.y;
+        if(x > 0) surroundingBlocks.add(blocksData[x-1][y]);
+        if(y > 0) surroundingBlocks.add(blocksData[x][y-1]);
+        if(x < width - 1) surroundingBlocks.add(blocksData[x+1][y]);
+        if(y < length - 1) surroundingBlocks.add(blocksData[x][y+1]);
+        return surroundingBlocks;
+    }
 
+    private void updateTerrain(){
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < length; y++){
+                blocksData[x][y] = blocksData[x][y].interact(getSurroundingBlocks(blocksData[x][y].getPosition()));
+            }
+        }
     }
 
     public long getTickCount() {

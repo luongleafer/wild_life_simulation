@@ -1,13 +1,16 @@
 package model.animals;
 
+import controller.WorldController;
 import model.block.BlockModel;
 import model.entity.*;
+import model.generation.DirtBlock;
 
 import java.util.List;
 import java.util.Random;
 
 public class Cow extends AnimalModel implements Edible {
     private int maxThirst = 10;
+    private int maxHunger = 10;
     public Cow(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
         super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 10, 0, 0);
     }
@@ -47,6 +50,13 @@ public class Cow extends AnimalModel implements Edible {
                 headAwayFrom(block.getPosition());
             }
         }
+        if(block.getBlockType().equals("grass")){
+            if(hunger <= maxHunger / 2.0) {
+                setDirection(0, 0);
+                hunger += 2;
+                WorldController.getController().placeBlock(new DirtBlock(0,0,0), block.getPosition().x, block.getPosition().y);
+            }
+        }
         // Temporarily blank
     }
 
@@ -75,6 +85,7 @@ public class Cow extends AnimalModel implements Edible {
     public void move() {
         roamRandomly(7.5/20, 11.11/20,Math.PI/3);
         thirst -= 0.1f;
+        hunger -= 0.5f;
     }
 
     @Override

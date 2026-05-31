@@ -1,5 +1,7 @@
 package model.block;
 
+import java.util.List;
+
 public abstract class BlockModel {
 
     // Represents how many stages this block can go through
@@ -160,5 +162,12 @@ public abstract class BlockModel {
     public boolean isAffectedByGravity() {
         return false;
     }
+
+    /**
+     * Interaction with surrounding blocks
+     * @param surroundingBlocks Blocks surrounding this block
+     * @return This block or new block
+     */
+    public abstract BlockModel interact(List<BlockModel> surroundingBlocks);
 
 }

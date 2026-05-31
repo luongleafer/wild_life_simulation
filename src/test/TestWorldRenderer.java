@@ -25,7 +25,9 @@ public class TestWorldRenderer extends Application {
     public void start(Stage stage) throws Exception {
         StackPane worldPane = new StackPane();
         WorldView renderer = new WorldView(model, worldPane);
-        WorldController controller = new WorldController(model, renderer);
+        WorldController controller = WorldController.getController();
+        controller.setWorldModel(model);
+        controller.setWorldView(renderer);
         model.generateTerrain();
         Scene scene = new Scene(worldPane, 640, 480);
         controller.registerBlockTextures();
