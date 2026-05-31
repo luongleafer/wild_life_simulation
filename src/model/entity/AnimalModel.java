@@ -1,5 +1,7 @@
 package model.entity;
 
+import model.block.BlockCoordinate;
+
 import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
@@ -174,6 +176,18 @@ public abstract class AnimalModel extends EntityModel {
         double newX = getPosition().getPosX() + directionX * distance;
         double newY = getPosition().getPosY() + directionY * distance;
         move(newX, newY);
+    }
+
+    protected void headTowards(BlockCoordinate targetBlock){
+        double newDirectionX = targetBlock.x -  getPosition().getPosX();
+        double newDirectionY = targetBlock.y -  getPosition().getPosY();
+        setDirection(newDirectionX, newDirectionY);
+    }
+
+    protected void headAwayFrom(BlockCoordinate targetBlock){
+        double newDirectionX = getPosition().getPosX() - targetBlock.x;
+        double newDirectionY = getPosition().getPosY() - targetBlock.y;
+        setDirection(newDirectionX, newDirectionY);
     }
 
     public AnimalModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, double speed, double directionX, double directionY) {

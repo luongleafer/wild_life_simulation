@@ -137,11 +137,25 @@ public class WorldModel {
         ).sorted(Comparator.comparing(entityModel -> entityModel.getPosition().distance(origin))).toList();
     }
 
+    List<BlockModel> getBlocksInAnArea(EntityCoordinate origin, int reachRadius){
+        List<BlockModel> blocks = new ArrayList<>();
+        for(int x = 0 ; x < width ; x++){
+            for(int y = 0 ; y < length ; y++){
+                if(origin.distance(new EntityCoordinate(x, y)) <= reachRadius){
+                    blocks.add(blocksData[x][y]);
+                }
+            }
+        }
+        return blocks;
+    }
+
     private void entitiesInteraction(){
         entities.forEach(
                 entityModel -> {
                     List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 10);
                     entityModel.Interact(surrounding);
+                    List<BlockModel> surroundingBlocks = getBlocksInAnArea(entityModel.getPosition(), 2);
+                    surroundingBlocks.forEach(entityModel::Interact);
                 }
         );
     }
@@ -149,8 +163,8 @@ public class WorldModel {
     private void updateEntities(){
         removeDeadEntities();
         entities.forEach(EntityModel::ageUp);
-        entitiesInteraction();
         entitiesMovement();
+        entitiesInteraction();
     }
 
     private void updateTerrain(){
