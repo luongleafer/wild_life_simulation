@@ -1,35 +1,24 @@
 package view;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import model.animals.Cow;
-import model.animals.Pig;
-import model.animals.Wolf;
-import model.block.BlockModel;
-import model.entity.EntityCoordinate;
+import javafx.scene.layout.Pane;
 import model.world.WorldModel;
-import view.entity.EntityView;
+import view.block.BlockTextureMap;
+import view.block.TerrainView;
 import view.entity.EntityTextureMap;
-import view.entity.GuiEntityView;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import view.entity.AllEntitiesView;
 
 /**
  * Render the world.
  * The world terrain is rendered as a grid. Each block occupy one cell of the grid.
  */
 public class WorldView {
-    GuiBlockView guiBlockView = GuiBlockView.getInstance();
-    EntityTextureMap entityTextureMap = new EntityTextureMap();
-    GuiEntityView guiEntityView = new GuiEntityView(entityTextureMap);
+    AllEntitiesView allEntitiesView;
+    TerrainView terrainView;
     WorldModel worldModel;
-    GridPane worldGridPane;
-    AnchorPane entityPane;
-    private ImageView[][] imageViews;
+    Pane rootPane;
 
 
     // AnimationTimer is an abstract class that represent animation in JavaFX application
@@ -38,22 +27,26 @@ public class WorldView {
     private final AnimationTimer rerenderingTimer = new AnimationTimer() {
         @Override
         public void handle(long now) {
-            renderWorld();
-            renderEntity();
+            terrainView.refresh(worldModel.getBlocksData());
+            allEntitiesView.refresh();
         }
     };
 
     /**
      * Manage the rendering of a worldModel in a GridPane element.
      * @param worldModel The model to render
-     * @param worldGridPane The target element
+     * @param root The Pane to render to
      */
-    public WorldView(WorldModel worldModel, GridPane worldGridPane, AnchorPane entityPane) {
+    public WorldView(WorldModel worldModel, Pane root) {
+        root.getChildren().clear();
+        this.rootPane = root;
         this.worldModel = worldModel;
-        this.worldGridPane = worldGridPane;
-        this.entityPane = entityPane;
-        imageViews = new ImageView[worldModel.getWidth()][worldModel.getLength()];
-        setUpGrid();
+        AnchorPane entityPane = new AnchorPane();
+        GridPane worldGridPane = new GridPane();
+        root.getChildren().add(worldGridPane);
+        root.getChildren().add(entityPane);
+        allEntitiesView = new AllEntitiesView(null, entityPane);
+        terrainView = new TerrainView(worldModel.getWidth(), worldModel.getLength(), worldGridPane, null);
     }
 
     /**
@@ -63,61 +56,12 @@ public class WorldView {
         rerenderingTimer.start();
     }
 
-    /**
-     * Set up the world's grid. Each cell is an ImageView that can render an Image to the screen.
-     */
-    public void setUpGrid(){
-       if(worldGridPane == null) return;
-       worldGridPane.getChildren().clear();
-       int width = worldModel.getWidth();
-       int length = worldModel.getLength();
-       for(int x = 0; x < width; x++){
-           for(int y = 0; y < length; y++){
-               imageViews[x][y] = new ImageView();
-               worldGridPane.add(imageViews[x][y], x, y);
-           }
-       }
+    public AllEntitiesView getAllEntitiesView() {
+        return allEntitiesView;
     }
 
-    /**
-     * Render the world to the gridPane.
-     * Each time, only the image of each ImageView in the cell is changed,
-     * instead of re-render the whole grid, which saves performance
-     * significantly.
-     * Entities will be rendered on top of the grid. (unimplemented)
-     */
-    public void renderWorld(){
-        if(worldGridPane == null) return;
-        BlockModel[][] blocksData = worldModel.getBlocksData();
-        for(int x = 0; x < worldModel.getWidth();x++){
-            for(int y = 0; y < worldModel.getLength();y++){
-                if(blocksData[x][y] == null) {
-                    IO.println("null blockModel at " + x + "; " +y);
-                    continue;
-                }
-                imageViews[x][y].setImage(guiBlockView.getBlockTexture(blocksData[x][y]));
-            }
-        }
-    }
-
-    public void renderEntity(){
-        entityPane.getChildren().clear();
-        List<EntityView> allEntityRenders =   guiEntityView.getRenderers();
-        allEntityRenders.forEach(entityView -> {
-            entityView.updateScreenPosition(16, 0, 0);
-            ImageView imageView = new ImageView(entityView.getSprite());
-            imageView.setLayoutX(entityView.getScreenX());
-            imageView.setLayoutY(entityView.getScreenY());
-            entityPane.getChildren().add(imageView);
-        });
-    }
-
-    public GridPane getWorldGridPane() {
-        return worldGridPane;
-    }
-
-    public GuiEntityView getGuiEntityView() {
-        return guiEntityView;
+    public TerrainView getTerrainView() {
+        return terrainView;
     }
 
 }

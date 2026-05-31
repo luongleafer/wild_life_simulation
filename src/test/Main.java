@@ -1,12 +1,7 @@
 package test;
 
-import model.block.BlockModel;
-import model.block.FoodBlock;
-import model.block.FoodBlockModel;
-import model.block.ObstacleBlock;
-import model.block.ObstacleBlockModel;
 import model.world.WorldModel;
-import view.BlockView;
+import view.block.BlockView;
 
 public class Main {
     private static BlockView blockView = new BlockView();

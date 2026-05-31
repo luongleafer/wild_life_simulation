@@ -1,5 +1,6 @@
 package view.entity;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
 import model.entity.EntityModel;
 
@@ -26,8 +27,30 @@ public class EntityTextureMap {
         }
     }
 
+    /**
+     * Register texture for an Entity specific state with size = 1x1 square of the world.
+     * Calls {@link #registerEntity(String, Path, int, double, double)} with widthScale and heightScale = 1
+     */
     public void registerEntity(String entityType, Path file, int index) throws IndexOutOfBoundsException{
-        Image image = new Image(file.toUri().toString());
+        registerEntity(entityType, file, index, 1, 1);
+    }
+
+    /**
+     * Register texture for an Entity specific state with different scaling in each axis
+     * @param entityType Type of Entity
+     * @param file Path to texture, in form of "assets/..."
+     * @param index State of Entity
+     * @param widthScale Width scale of entity
+     * @param lengthScale Length scale of entity
+     * @throws IndexOutOfBoundsException When index is larger than the current entity's total number of state registered
+     */
+    public void registerEntity(String entityType, Path file, int index, double widthScale, double lengthScale) throws IndexOutOfBoundsException{
+        Image image = new Image(file.toUri().toString(),
+                                WorldController.WORLD_TILE_SIZE * widthScale,
+                                WorldController.WORLD_TILE_SIZE * lengthScale,
+                                false,
+                                true
+                                );
         if(entityTextureMap.containsKey(entityType)) {
             List<Image> entityTextures =  entityTextureMap.get(entityType);
             if(index < 0 || index > entityTextures.size()) {
@@ -48,6 +71,7 @@ public class EntityTextureMap {
             imageList.add(image);
             entityTextureMap.put(entityType, imageList);
         }
+        IO.println("[EntityTextureMap] Entity of type " + entityType + " at state " + index + " has been registered");
     }
 
     // Get the texture associate with the entity

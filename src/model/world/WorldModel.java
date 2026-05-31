@@ -9,7 +9,6 @@ import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
-import view.entity.GuiEntityView;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -156,6 +155,10 @@ public class WorldModel {
 
     private void updateTerrain(){
 
+    }
+
+    public long getTickCount() {
+        return tickCount;
     }
 
 

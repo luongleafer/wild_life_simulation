@@ -1,5 +1,6 @@
-package view;
+package view.block;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
 import model.block.BlockModel;
 
@@ -13,23 +14,17 @@ import java.util.Map;
  * Manage graphical representation of a block.
  * For now, it accepts a blockModel and return an Image to render on screen
  */
-public class GuiBlockView {
+public class BlockTextureMap {
     private final Map<String, List<Image>> blockTextureMap = new HashMap<>();
 
     // This class is implemented as a Singleton
     // This mean only one object of this class can be instantiated.
-    // That object can be accessed anywhere in the code by GuiBlockView.getInstance(),
+    // That object can be accessed anywhere in the code by BlockTextureMap.getInstance(),
     // allows each block to register their own textures if needed.
 
-    private static GuiBlockView instance;
 
-    private GuiBlockView() {}
+    public BlockTextureMap() {
 
-    public static GuiBlockView getInstance(){
-        if(instance == null){
-            instance = new GuiBlockView();
-        }
-        return instance;
     }
 
 
@@ -47,12 +42,19 @@ public class GuiBlockView {
         if(!texturesPath.stream().allMatch(Files::exists)) return; // temporary, should throw exception
 
         // map from path to JavaFX's Image objects to display on the screen.
+        // texture is auto-scaled by the world's tile size
         List<Image> imageList = texturesPath.stream()
-                .map(path -> new Image(path.toUri().toString()))
+                .map(path -> new Image(path.toUri().toString(),
+                                       WorldController.WORLD_TILE_SIZE,
+                                       WorldController.WORLD_TILE_SIZE,
+                                       true,
+                                       true
+                                       ))
                 .toList();
         blockTextureMap.put(blockType, imageList);
 
-        IO.println("[GuiBlockView] Block " + blockType + " has been registered");
+
+        IO.println("[BlockTextureMap] Block " + blockType + " has been registered");
     }
 
     /**

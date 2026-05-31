@@ -1,19 +1,23 @@
 package view.entity;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import model.entity.EntityModel;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GuiEntityView {
+public class AllEntitiesView {
     // map an Entity to a View on screen
     private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
     EntityTextureMap entityTextureMap;
+    Pane allEntitiesPane;
 
-    public GuiEntityView(EntityTextureMap entityTextureMap) {
+    public AllEntitiesView(EntityTextureMap entityTextureMap, Pane allEntitiesPane) {
        this.entityTextureMap = entityTextureMap;
+       this.allEntitiesPane = allEntitiesPane;
     }
 
     // Add new view when an entity is spawned
@@ -21,22 +25,32 @@ public class GuiEntityView {
         Image texture = entityTextureMap.getEntityTexture(model, model.getCurrentState());
         EntityView renderer = new EntityView(model, texture, '?', 32, 32);
         modelViewMap.put(model, renderer);
+        allEntitiesPane.getChildren().add(renderer.getSprite());
     }
 
     // Remove view when an entity die
     public void removeView(EntityModel model){
         modelViewMap.remove(model);
     }
-
-    public List<EntityView> getRenderers(){
-        // update view
-        modelViewMap.forEach((model, entityView) -> {
-            entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
-        });
-        return modelViewMap.values().stream().toList();
-    }
-
     public void setEntityTextureMap(EntityTextureMap entityTextureMap) {
         this.entityTextureMap = entityTextureMap;
+    }
+
+    public void refresh(){
+        allEntitiesPane.getChildren().clear();
+
+        if(entityTextureMap == null){
+            IO.println("[EntityRenderer] Texture map not found");
+            return;
+        }
+
+        modelViewMap.forEach((model, entityView) -> {
+            // update view for entities base on current state
+            entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
+            // update screen position for movement
+            entityView.updateScreenPosition(WorldController.WORLD_TILE_SIZE, 0, 0);
+            // add the ImageView to pane
+            allEntitiesPane.getChildren().add(entityView.getSprite());
+        });
     }
 }

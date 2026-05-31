@@ -1,6 +1,8 @@
 package view.entity;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 
@@ -15,7 +17,6 @@ import java.nio.file.Path;
  * trang thai an/hien.</p>
  */
 public class EntityView {
-    public static final int TILE_SIZE = 16;
     // Entity goc trong model. Renderer doc vi tri va state tu doi tuong nay.
     private final EntityModel entity;
 
@@ -25,7 +26,7 @@ public class EntityView {
     // Duong dan toi anh/sprite dung khi ve entity bang giao dien do hoa.
     private Path spritePath;
 
-    private Image sprite;
+    private ImageView sprite;
 
     // Ky tu dai dien cho entity khi hien thi o che do console/text.
     private char consoleSymbol;
@@ -36,7 +37,7 @@ public class EntityView {
 
     // Kich thuoc ve entity tren man hinh, tinh theo pixel.
     private int width;
-    private int height;
+    private int length;
 
     // Cho biet renderer co nen ve entity hay bo qua entity nay.
     private boolean visible;
@@ -48,18 +49,18 @@ public class EntityView {
      * @param sprite duong dan sprite mac dinh cua entity
      * @param consoleSymbol ky tu dai dien khi hien thi bang console
      * @param width chieu rong khi render, tinh theo pixel
-     * @param height chieu cao khi render, tinh theo pixel
+     * @param length chieu cao khi render, tinh theo pixel
      */
-    public EntityView(EntityModel entity, Image sprite, char consoleSymbol, int width, int height) {
+    public EntityView(EntityModel entity, Image sprite, char consoleSymbol, int width, int length) {
         this.entity = entity;
         this.entityType = entity.getClass().getSimpleName();
 //        this.spritePath = spritePath;
         this.consoleSymbol = consoleSymbol;
-        this.sprite = sprite;
+        this.sprite = new ImageView( sprite );
         this.width = width;
-        this.height = height;
+        this.length = length;
         this.visible = true;
-        updateScreenPosition(TILE_SIZE, 0, 0);
+        updateScreenPosition(WorldController.WORLD_TILE_SIZE, 0, 0);
     }
 
     /**
@@ -82,6 +83,8 @@ public class EntityView {
         EntityCoordinate position = entity.getPosition();
         this.screenX = (int) (position.posX * tileSize) - cameraX;
         this.screenY = (int) (position.posY * tileSize) - cameraY;
+        sprite.setLayoutX(screenX);
+        sprite.setLayoutY(screenY);
     }
 
     /**
@@ -188,17 +191,17 @@ public class EntityView {
      *
      * @return chieu cao tinh theo pixel
      */
-    public int getHeight() {
-        return height;
+    public int getLength() {
+        return length;
     }
 
     /**
      * Doi chieu cao render cua entity.
      *
-     * @param height chieu cao moi tinh theo pixel
+     * @param length chieu cao moi tinh theo pixel
      */
-    public void setHeight(int height) {
-        this.height = height;
+    public void setLength(int length) {
+        this.length = length;
     }
 
     /**
@@ -232,11 +235,11 @@ public class EntityView {
         return entity.getCurrentState();
     }
 
-    public Image getSprite() {
+    public ImageView getSprite() {
         return sprite;
     }
 
     public void setSprite(Image sprite) {
-        this.sprite = sprite;
+        this.sprite.setImage(sprite);
     }
 }
