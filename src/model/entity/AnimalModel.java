@@ -11,6 +11,8 @@ public abstract class AnimalModel extends EntityModel {
     protected float hunger;
     protected float thirst;
     protected float energy;
+    protected int maxThirst;
+    protected int maxHunger;
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
@@ -207,5 +209,17 @@ public abstract class AnimalModel extends EntityModel {
         this.direction = Direction.STAY();
     }
 
-
+    @Override
+    public void ageUp() {
+        super.ageUp();
+        // animals slowly dying of hunger and thirst
+        if(hunger <= 0){
+            hunger = 0;
+            health -= 1;
+        }
+        if(thirst <= 0){
+            thirst = 0;
+            health -= 1;
+        }
+    }
 }
