@@ -39,7 +39,7 @@ public class MudBlock extends BlockModel {
 
         long waterBlockCount = surroundingBlocks.stream().filter(blockModel -> blockModel.getBlockType().equals("water")).count();
         if(new Random().nextDouble() < (4 - waterBlockCount) * 0.005){
-            return new DirtBlock(position.x, position.y, 0);
+            return dryOut();
         }
         else if(new Random().nextDouble() < waterBlockCount * 0.005){
             return new WaterBlock(position.x, position.y, 0);

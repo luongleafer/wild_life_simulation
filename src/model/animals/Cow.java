@@ -4,6 +4,7 @@ import controller.WorldController;
 import model.block.BlockModel;
 import model.entity.*;
 import model.generation.DirtBlock;
+import model.generation.GrassBlock;
 
 import java.util.List;
 import java.util.Random;
@@ -52,8 +53,10 @@ public class Cow extends AnimalModel implements Edible {
         }
         if(block.getBlockType().equals("grass")){
             if(hunger <= maxHunger / 2.0) {
+                GrassBlock grassBlock = (GrassBlock)block;
                 setDirection(0, 0);
-                hunger += 2;
+                hunger += grassBlock.getHungerValue();
+                energy += grassBlock.getEnergyValue();
                 WorldController.getController().placeBlock(new DirtBlock(0,0,0), block.getPosition().x, block.getPosition().y);
             }
         }
