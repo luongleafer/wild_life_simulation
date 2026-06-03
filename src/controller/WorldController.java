@@ -109,6 +109,9 @@ public class WorldController {
         blockTextureMap.registerTextures("mud", List.of(
                 Path.of("assets/minecraft_based/mud.png")
         ));
+        blockTextureMap.registerTextures("cobble_stone", List.of(
+                Path.of("assets/minecraft_based/cobblestone.png")
+        ));
         worldView.getTerrainView().setTextureMap(blockTextureMap);
     }
 

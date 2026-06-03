@@ -9,6 +9,7 @@ import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
+import model.generation.CobbleStoneBlock;
 import model.generation.GrassBlock;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class WorldModel {
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
+    private BlockModel[][] overlayBlocks;
     private int width;
     private int length;
     private List<EntityModel> entities =  new ArrayList<>();
@@ -31,12 +33,17 @@ public class WorldModel {
         this.width = width;
         this.length = length;
         this.blocksData = new BlockModel[width][length];
+        this.overlayBlocks = new BlockModel[width][length];
         this.tickCount = 0;
         this.tickSpeed = 1; // 1 tick per update
     }
 
     public BlockModel[][] getBlocksData() {
         return blocksData;
+    }
+
+    public BlockModel[][] getOverlayBlocks() {
+        return overlayBlocks;
     }
 
     public List<EntityModel> getEntities() {
@@ -78,6 +85,8 @@ public class WorldModel {
                 }
             }
         }
+        overlayBlocks[5][5] = new CobbleStoneBlock(5,5,0,0);
+
     }
 
     public void placeBlock(BlockModel newBlock) {
@@ -192,10 +201,6 @@ public class WorldModel {
     public long getTickCount() {
         return tickCount;
     }
-
-
-
-
 
     public int getWidth() {
         return width;

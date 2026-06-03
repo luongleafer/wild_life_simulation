@@ -15,7 +15,7 @@ import model.world.WorldModel;
 import view.WorldView;
 
 public class TestWorldRenderer extends Application {
-    WorldModel model = new WorldModel(80, 80);
+    WorldModel model = new WorldModel(80, 60);
 
     public static void main(String[] args) {
         launch(args);
@@ -24,6 +24,8 @@ public class TestWorldRenderer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         StackPane worldPane = new StackPane();
+        worldPane.setLayoutX(10);
+        worldPane.setLayoutY(10);
         WorldView renderer = new WorldView(model, worldPane);
         WorldController controller = WorldController.getController();
         controller.setWorldModel(model);
