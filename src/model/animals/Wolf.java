@@ -33,6 +33,8 @@ public class Wolf extends LandAnimal implements Edible {
         this.setSpeed(0.111);
         this.setDirection(0,0);
         this.entityType = "wolf";
+        this.hitBoxWidth = 1.5;
+        this.hitBoxLength = 0.8;
     }
     @Override
     public void Interact(BlockModel block) {

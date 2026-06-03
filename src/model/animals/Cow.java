@@ -28,6 +28,8 @@ public class Cow extends LandAnimal implements Edible {
         this.setSpeed(7.5/20);
         this.setDirection(0, 0);
         this.entityType = "cow";
+        this.hitBoxWidth = 2.4;
+        this.hitBoxLength = 1.5;
     }
 
     @Override

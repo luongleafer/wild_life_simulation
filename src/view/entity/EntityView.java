@@ -81,8 +81,8 @@ public class EntityView {
      */
     public void updateScreenPosition(int tileSize, int cameraX, int cameraY) {
         EntityCoordinate position = entity.getPosition();
-        this.screenX = (int) (position.posX * tileSize) - cameraX;
-        this.screenY = (int) (position.posY * tileSize) - cameraY;
+        this.screenX = (int) ( (position.posX - entity.getHitBoxWidth())  * tileSize) - cameraX;
+        this.screenY = (int) ( (position.posY - entity.getHitBoxLength()) * tileSize) - cameraY;
         sprite.setLayoutX(screenX);
         sprite.setLayoutY(screenY);
     }

@@ -23,6 +23,9 @@ public abstract class EntityModel {
     // I think we also should have a variable that time it takes to switch to a new state
     protected String entityType;
 
+    protected double hitBoxWidth; // along x-axis
+    protected double hitBoxLength; // along y-axis
+
 
     public EntityModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState) {
         this.position = position;
@@ -120,4 +123,12 @@ public abstract class EntityModel {
     public abstract void Interact(BlockModel block);
     public abstract void Interact(EntityModel entity);
     public abstract void Interact(List<EntityModel> entities);
+
+    public double getHitBoxWidth() {
+        return hitBoxWidth;
+    }
+
+    public double getHitBoxLength() {
+        return hitBoxLength;
+    }
 }
