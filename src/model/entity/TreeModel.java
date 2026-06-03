@@ -55,16 +55,16 @@ public class TreeModel extends EntityModel{
 
     @Override
     public void Interact(BlockModel block) {
-        // Trees don't interact with blocks for now
+        // Trees are not sentient
     }
 
     @Override
     public void Interact(EntityModel entity) {
-        // Trees don't interact with individual entities for now
+        // Trees are not sentient
     }
 
     @Override
     public void Interact(List<EntityModel> entities) {
-        // Trees don't interact with nearby entities for now
+        // Trees are not sentient
     }
 }
