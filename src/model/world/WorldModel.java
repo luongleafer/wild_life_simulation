@@ -10,7 +10,9 @@ import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 import model.generation.CobbleStoneBlock;
+import model.generation.DirtBlock;
 import model.generation.GrassBlock;
+import model.generation.WaterBlock;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -85,8 +87,21 @@ public class WorldModel {
                 }
             }
         }
-        overlayBlocks[5][5] = new CobbleStoneBlock(5,5,0,0);
+        placeObstacle();
 
+    }
+
+    public void placeObstacle(){
+        Random rand = new Random();
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < length; y++){
+                if(blocksData[x][y] instanceof DirtBlock
+                        && rand.nextDouble() < 0.05
+                ){
+                    overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0,0);
+                }
+            }
+        }
     }
 
     public void placeBlock(BlockModel newBlock) {
@@ -155,6 +170,9 @@ public class WorldModel {
             for(int y = 0 ; y < length ; y++){
                 if(origin.distance(new EntityCoordinate(x, y)) <= reachRadius){
                     blocks.add(blocksData[x][y]);
+                    if(overlayBlocks[x][y] != null){
+                        blocks.add(overlayBlocks[x][y]);
+                    }
                 }
             }
         }
@@ -175,8 +193,8 @@ public class WorldModel {
     private void updateEntities(){
         removeDeadEntities();
         entities.forEach(EntityModel::ageUp);
-        entitiesMovement();
         entitiesInteraction();
+        entitiesMovement();
     }
 
     private List<BlockModel> getSurroundingBlocks(BlockCoordinate origin){

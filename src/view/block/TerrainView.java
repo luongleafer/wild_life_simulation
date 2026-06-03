@@ -1,5 +1,6 @@
 package view.block;
 
+import controller.WorldController;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -42,7 +43,11 @@ public class TerrainView {
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
                 imageViews[x][y] = new ImageView();
+                imageViews[x][y].setFitWidth(WorldController.WORLD_TILE_SIZE);
+                imageViews[x][y].setFitHeight(WorldController.WORLD_TILE_SIZE);
                 overlayImageViews[x][y] = new ImageView();
+                overlayImageViews[x][y].setFitWidth(WorldController.WORLD_TILE_SIZE);
+                overlayImageViews[x][y].setFitHeight(WorldController.WORLD_TILE_SIZE);
                 baseBlockGridPane.add(imageViews[x][y], x, y);
                 overlayBlockGridPane.add(overlayImageViews[x][y], x, y);
             }

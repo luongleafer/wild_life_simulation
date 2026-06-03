@@ -13,6 +13,7 @@ public abstract class LandAnimal extends AnimalModel{
 
     @Override
     public void Interact(BlockModel block) {
+        super.Interact(block);
         if(block instanceof WaterBlock waterBlock){avoidWater(waterBlock);}
     }
 

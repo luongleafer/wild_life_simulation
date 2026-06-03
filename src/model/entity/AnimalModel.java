@@ -1,6 +1,8 @@
 package model.entity;
 
 import model.block.BlockCoordinate;
+import model.block.BlockModel;
+import model.block.ObstacleBlockModel;
 
 import java.util.Random;
 
@@ -220,6 +222,14 @@ public abstract class AnimalModel extends EntityModel {
         if(thirst <= 0){
             thirst = 0;
             health -= 1;
+        }
+    }
+
+    @Override
+    public void Interact(BlockModel block) {
+        if(block instanceof ObstacleBlockModel obstacle){
+            BlockCoordinate obstaclePos = obstacle.getPosition();
+            headAwayFrom(obstaclePos);
         }
     }
 }
