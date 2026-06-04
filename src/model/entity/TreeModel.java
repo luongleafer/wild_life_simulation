@@ -7,6 +7,11 @@ import java.util.List;
 public class TreeModel extends EntityModel{
     // seed -> sprout -> tree, so that's 3 stages, so I can go like 0, 1, 2?
     private int growthStage; // 0: seed, 1: sprout, 2: tree
+    // what is the purpose of height here?
+    // tress have a height of course, but here, we are just using regular premade 2D textures
+    // maybe this is for the fact that in the CLI, trees should take more than 1 tile based on height?
+    // sorry, but I need understanding on this
+    // so, placeholder system for now
     private double height;
 
     public TreeModel(EntityCoordinate position) {
