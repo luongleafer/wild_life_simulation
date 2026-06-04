@@ -1,100 +1,102 @@
 package model.animals;
 
+import model.animals.entity.PredatorAnimalModel;
+import model.animals.species.Species;
 import model.block.BlockModel;
-import model.entity.*;
+import model.entity.EntityCoordinate;
+import model.entity.EntityModel;
+import model.entity.Edible;
 
 import java.util.List;
 
-public class Wolf extends AnimalModel implements Edible {
-    EntityModel currentTarget = null;
-    private final int attackCooldown = 20; // 1 second cooldown
-    private int lastAttack = 0;
+/**
+ * Chó sói — kẻ săn mồi chính, săn được tất cả các loài prey.
+ *
+ * <p>Wolf có tầm nhìn xa nhất trong các predator, tốc độ sprint cao và
+ * hunt speed multiplier mạnh. Không loài prey nào miễn nhiễm với Wolf —
+ * kể cả Cow và Turtle đều có thể bị Wolf hạ nếu đủ thời gian.
+ * Fox không thể bị Wolf ăn (canBeEaten = false giữa predator).</p>
+ *
+ * <p>Wolf không thể bị ăn bởi bất kỳ loài nào trong simulation hiện tại.</p>
+ *
+ * <p>Asset: {@code assets/minecraft_based/wolf.png}</p>
+ */
+public class Wolf extends PredatorAnimalModel implements Edible {
 
-    @Override
-    public void ageUp() {
-        super.ageUp();
-        lastAttack++;
-    }
+    /**
+     * Cấu hình loài chó sói — tầm nhìn xa, sprint nhanh, FOV rộng.
+     */
+    public static final Species SPECIES = new Species(
+            "wolf",
+            0.20,               // minSpeed — tốc độ lang thang
+            0.45,               // maxSpeed — tốc độ chạy bình thường
+            14.0,               // viewDistance — tầm nhìn xa nhất trong predator
+            Math.toRadians(150), // fovRadians — góc nhìn rộng
+            Math.toRadians(12),  // turnRate — xoay chậm, đường thẳng khi săn
+            1.8,                // huntSpeedMultiplier — sprint 80% nhanh hơn max
+            1.0,                // fleeSpeedMultiplier — wolf không cần flee
+            0.0                 // followDistance — không dùng cho predator
+    );
 
-    public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
-        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 20, 0, 0);
-    }
-
-    public Wolf(EntityCoordinate position){
+    /**
+     * Spawn chó sói tại vị trí chỉ định với trạng thái adult mặc định.
+     *
+     * @param position vị trí xuất hiện trong thế giới
+     */
+    public Wolf(EntityCoordinate position) {
         super(position);
-        // Default values for wolves, can be changed later if needed
-        this.health = 8;
-        this.energy = 10;
-        this.hunger = 5;
-        this.thirst = 5;
-        this.survivalStrategy = "passive"; // Passive behavior, will never attack
-        this.direction = Direction.SOUTH();
-        this.currentState = 1; // Adult by default
-        this.age = 15; // total lifespan is 10
-        this.directionChangeChance = 0.1;
-        this.setSpeed(0.111);
-        this.setDirection(0,0);
-        this.entityType = "wolf";
-    }
-    @Override
-    public void Interact(BlockModel block) {
-        // Wolves usually do nothing with blocks
+        this.entityType   = "wolf";
+        this.health       = 20;  // khỏe nhất trong simulation
+        this.energy       = 15;
+        this.hunger       = 5;
+        this.thirst       = 5;
+        this.age          = 0;
+        this.adultAge     = 100;
+        this.oldAge       = 500;
+        this.totalLifespan = 750;
+        this.currentState = 1;
+        this.setSpecies(SPECIES);
+        this.setSpeed(SPECIES.getMinSpeed());
+        this.randomizeDirection();
     }
 
-    @Override
-    public void Interact(EntityModel entity) {
-        // They eat small animals, like cows and pigs I guess?
-        boolean isPrey = entity instanceof Pig || entity instanceof Cow;
-        if (isPrey) {
-            this.eat((Edible) entity);
-        }
-    }
+    // =====================================================================
+    // Edible — wolf không thể bị ăn
+    // =====================================================================
 
     @Override
-    // Can't eat wolves.
     public float getHungerValue() {
-        return 0;
+        // Wolf không được ăn bởi loài nào
+        return 0f;
     }
 
     @Override
-    // Can't gain energy from wolves.
     public float getEnergyValue() {
-        return 0;
+        return 0f;
     }
 
     @Override
-    // Not sure if it's acceptable to eat wolves.
     public boolean canBeEaten() {
         return false;
     }
 
+    // =====================================================================
+    // Interact
+    // =====================================================================
+
     @Override
-    public void move() {
-        if(currentTarget == null) {
-            roamRandomly(0.111, 0.200, Math.PI / 3);
-        }
-        else{
-            moveToward(currentTarget.getPosition(), 1);
-        }
+    public void Interact(BlockModel block) {
+        // Wolf không tương tác với block
+    }
+
+    @Override
+    public void Interact(EntityModel entity) {
+        // Tương tác đơn lẻ — xử lý qua List để dùng PredatorAnimalModel logic
     }
 
     @Override
     public void Interact(List<EntityModel> entities) {
-//        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
-       // filter out pigs
-        EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
-        if(toFollow != null) {
-            currentTarget = toFollow;
-            if(getPosition().distance(toFollow.getPosition()) < 5) {
-                if(lastAttack >= attackCooldown) {
-                    toFollow.receiveDamage(1);
-                    lastAttack = 0;
-                }
-            }
-        }
-        else{
-            currentTarget = null;
-        }
-
+        // Giao cho PredatorAnimalModel chọn Hunt / Roam
+        super.Interact(entities);
     }
 }

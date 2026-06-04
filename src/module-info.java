@@ -4,4 +4,5 @@ module wild.life.simulation{
     requires java.logging;
 
     opens test to javafx.graphics, javafx.fxml;
+    // Thêm nếu có lỗi reflection khi chạy JavaFX:
 }
