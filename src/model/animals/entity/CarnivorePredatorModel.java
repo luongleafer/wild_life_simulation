@@ -165,7 +165,7 @@ public abstract class CarnivorePredatorModel extends PredatorAnimalModel {
         this.hunger = Math.min(hunger, 100f);
         this.energy = Math.max(energy, 0f);
 
-        // Nếu đói quá nhiều → giảm health
+        // Nếu đói quá nhiều thì giảm health
         if (hunger > 85f) {
             this.health -= 2; // carnivore chết nhanh nếu đói
         }
