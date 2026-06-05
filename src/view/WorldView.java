@@ -4,11 +4,16 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import model.world.WorldModel;
 import view.block.BlockTextureMap;
 import view.block.TerrainView;
 import view.entity.EntityTextureMap;
 import view.entity.AllEntitiesView;
+
+import java.nio.file.Paths;
 
 /**
  * Render the world.
@@ -19,6 +24,8 @@ public class WorldView {
     TerrainView terrainView;
     WorldModel worldModel;
     Pane rootPane;
+
+    AudioClip test = new AudioClip(Paths.get("assets/audio/grass1.mp3").toUri().toString());
 
 
     // AnimationTimer is an abstract class that represent animation in JavaFX application

@@ -13,6 +13,7 @@ import model.animals.Wolf;
 import model.entity.EntityCoordinate;
 import model.world.WorldModel;
 import view.WorldView;
+import view.audio.SoundEngine;
 
 public class TestWorldRenderer extends Application {
     WorldModel model = new WorldModel(80, 80);
@@ -26,16 +27,18 @@ public class TestWorldRenderer extends Application {
         StackPane worldPane = new StackPane();
         WorldView renderer = new WorldView(model, worldPane);
         WorldController controller = new WorldController(model, renderer);
+        SoundEngine.initEngine();
         model.generateTerrain();
         Scene scene = new Scene(worldPane, 640, 480);
         controller.registerBlockTextures();
         controller.registerEntityTextures();
+        controller.registerSound();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
         for(int i = 0; i<10;i++) {
             controller.spawnEntity(new Wolf(new EntityCoordinate(5 * i, 5 * i)));
         }
-        for(int i = 0; i<100;i++){
+        for(int i = 0; i<20;i++){
             // let's just spawn 100 pigs cuz why not
             controller.spawnEntity(new Pig(new EntityCoordinate(25,25)));
         }

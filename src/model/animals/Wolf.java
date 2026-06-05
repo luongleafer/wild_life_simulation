@@ -2,6 +2,7 @@ package model.animals;
 
 import model.block.BlockModel;
 import model.entity.*;
+import view.audio.SoundEngine;
 
 import java.util.List;
 
@@ -88,6 +89,7 @@ public class Wolf extends AnimalModel implements Edible {
             if(getPosition().distance(toFollow.getPosition()) < 5) {
                 if(lastAttack >= attackCooldown) {
                     toFollow.receiveDamage(1);
+                    SoundEngine.getEngine().playSound("wolf_eat");
                     lastAttack = 0;
                 }
             }
@@ -96,5 +98,9 @@ public class Wolf extends AnimalModel implements Edible {
             currentTarget = null;
         }
 
+    }
+
+    public boolean hasJustAttacked(){
+        return lastAttack == 0;
     }
 }
