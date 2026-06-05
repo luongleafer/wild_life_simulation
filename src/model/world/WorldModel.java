@@ -9,10 +9,15 @@ import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
+import model.generation.DirtBlock;
+import model.generation.GrassBlock;
+import model.generation.MudBlock;
+import model.generation.WaterBlock;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class WorldModel {
     private BiomeModel[] biomes;
@@ -23,6 +28,7 @@ public class WorldModel {
     private int length;
     private List<EntityModel> entities =  new ArrayList<>();
     private int entityPadding = 5;
+    private Random random = new Random();
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -89,7 +95,13 @@ public class WorldModel {
 
     public void update(){
         advanceTickCount();
-        updateTerrain();
+
+        // Slow down block updates so it's visible to the human eye.
+        // Terrain updates once every 50 ticks (approx. 1 second if tick is 20ms)
+        if (tickCount % 50 == 0) {
+            updateTerrain();
+        }
+
         updateEntities();
     }
 
@@ -154,16 +166,67 @@ public class WorldModel {
     }
 
     private void updateTerrain(){
+        BlockModel[][] nextBlocksData = new BlockModel[width][length];
 
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < length; y++) {
+                BlockModel currentBlock = blocksData[x][y];
+                if (currentBlock == null) {
+                    continue;
+                }
+
+                if (currentBlock instanceof DirtBlock) {
+                    int grassNeighbors = countNeighborsOfType(x, y, GrassBlock.class);
+                    if (grassNeighbors > 0) {
+                        double chance = grassNeighbors * 0.10;
+                        if (random.nextDouble() < chance) {
+                            // GrassBlock constructor expects (x, y, initialState)
+                            nextBlocksData[x][y] = new GrassBlock(x, y, 0);
+                        } else {
+                            nextBlocksData[x][y] = currentBlock;
+                        }
+                    } else {
+                        nextBlocksData[x][y] = currentBlock;
+                    }
+                } else if (currentBlock instanceof MudBlock) {
+                    int waterNeighbors = countNeighborsOfType(x, y, WaterBlock.class);
+                    if (waterNeighbors == 0) {
+                        if (random.nextDouble() < 0.05) {
+                            // DirtBlock constructor expects (x, y, initialState)
+                            nextBlocksData[x][y] = new DirtBlock(x, y, 0);
+                        } else {
+                            nextBlocksData[x][y] = currentBlock;
+                        }
+                    } else {
+                        nextBlocksData[x][y] = currentBlock;
+                    }
+                } else {
+                    nextBlocksData[x][y] = currentBlock;
+                }
+            }
+        }
+
+        this.blocksData = nextBlocksData;
+    }
+
+    private int countNeighborsOfType(int x, int y, Class<? extends BlockModel> type) {
+        int count = 0;
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // 4-way neighbors (N, S, E, W)
+        for (int[] dir : directions) {
+            int nx = x + dir[0];
+            int ny = y + dir[1];
+            if (nx >= 0 && nx < width && ny >= 0 && ny < length) {
+                if (blocksData[nx][ny] != null && type.isInstance(blocksData[nx][ny])) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     public long getTickCount() {
         return tickCount;
     }
-
-
-
-
 
     public int getWidth() {
         return width;
