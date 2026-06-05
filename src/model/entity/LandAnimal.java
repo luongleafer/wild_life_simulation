@@ -23,7 +23,7 @@ public abstract class LandAnimal extends AnimalModel{
             thirst += 1;
         }
         else{
-            headAwayFrom(water.getPosition()); // avoid water
+            headAwayFrom(water.getPosition(),1); // avoid water
         }
 
     }

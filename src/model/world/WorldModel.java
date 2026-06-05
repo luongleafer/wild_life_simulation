@@ -28,7 +28,7 @@ public class WorldModel {
     private int width;
     private int length;
     private List<EntityModel> entities =  new ArrayList<>();
-    private int entityPadding = 5;
+    private int entityPadding = 1;
     Random rand = new Random();
 
     public WorldModel(int width, int length) {
@@ -96,7 +96,7 @@ public class WorldModel {
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
                 if(blocksData[x][y] instanceof DirtBlock
-                        && rand.nextDouble() < 0.05
+                        && rand.nextDouble() < 0.02
                 ){
                     overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0,0);
                 }
@@ -138,16 +138,28 @@ public class WorldModel {
         entities.forEach(entityModel -> {
             EntityCoordinate position = entityModel.getPosition();
             if(position.getPosX() > width - entityPadding){
-                position.setPosX(width - entityPadding);
+                position.setPosX(width - entityPadding - 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(-1, 0);
+                }
             }
             if(position.getPosX() < entityPadding){
-                position.setPosX(entityPadding);
+                position.setPosX(entityPadding + 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(1, 0);
+                }
             }
             if(position.getPosY() > length - entityPadding){
-                position.setPosY(length - entityPadding);
+                position.setPosY(length - entityPadding - 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(0, -1);
+                }
             }
             if(position.getPosY() < entityPadding){
-                position.setPosY(entityPadding);
+                position.setPosY(entityPadding + 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(0, 1);
+                }
             }
         });
     }
@@ -164,11 +176,11 @@ public class WorldModel {
         ).sorted(Comparator.comparing(entityModel -> entityModel.getPosition().distance(origin))).toList();
     }
 
-    List<BlockModel> getBlocksInAnArea(EntityCoordinate origin, int reachRadius){
+    List<BlockModel> getBlocksInAnArea(EntityCoordinate origin, double reachRadius){
         List<BlockModel> blocks = new ArrayList<>();
         for(int x = 0 ; x < width ; x++){
             for(int y = 0 ; y < length ; y++){
-                if(origin.distance(new EntityCoordinate(x, y)) <= reachRadius){
+                if(origin.distance(new EntityCoordinate(x + 0.5, y + 0.5)) <= reachRadius){
                     blocks.add(blocksData[x][y]);
                     if(overlayBlocks[x][y] != null){
                         blocks.add(overlayBlocks[x][y]);
@@ -182,7 +194,7 @@ public class WorldModel {
     private void entitiesInteraction(){
         entities.forEach(
                 entityModel -> {
-                    List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 10);
+                    List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 5);
                     entityModel.Interact(surrounding);
                     List<BlockModel> surroundingBlocks = getBlocksInAnArea(entityModel.getPosition(), 2);
                     surroundingBlocks.forEach(entityModel::Interact);
@@ -193,8 +205,8 @@ public class WorldModel {
     private void updateEntities(){
         removeDeadEntities();
         entities.forEach(EntityModel::ageUp);
-        entitiesInteraction();
         entitiesMovement();
+        entitiesInteraction();
     }
 
     private List<BlockModel> getSurroundingBlocks(BlockCoordinate origin){

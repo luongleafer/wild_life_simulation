@@ -14,6 +14,8 @@ import model.entity.EntityCoordinate;
 import model.world.WorldModel;
 import view.WorldView;
 
+import java.util.Random;
+
 public class TestWorldRenderer extends Application {
     WorldModel model = new WorldModel(80, 60);
 
@@ -36,12 +38,13 @@ public class TestWorldRenderer extends Application {
         controller.registerEntityTextures();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
+        Random random = new Random();
         for(int i = 0; i<10;i++) {
             controller.spawnEntity(new Wolf(new EntityCoordinate(5 * i, 5 * i)));
         }
         for(int i = 0; i<100;i++){
             // let's just spawn 100 pigs cuz why not
-            controller.spawnEntity(new Pig(new EntityCoordinate(25,25)));
+            controller.spawnEntity(new Pig(new EntityCoordinate(random.nextDouble() * 80, random.nextDouble() * 60)));
         }
         for(int i = 0; i<10;i++){
             controller.spawnEntity(new Cow(new EntityCoordinate(30, 30)));

@@ -1,5 +1,6 @@
 package model.animals;
 
+import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.*;
 
@@ -32,6 +33,10 @@ public class Pig extends LandAnimal implements Edible {
         // Will they interact with other pigs? Probably
         // Just make it walk randomly for now
         // Which means this class is uh, blank
+        if(entity instanceof Wolf wolf){
+            setSpeed(10.0/20);
+            headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
+        }
     }
 
     @Override
@@ -58,11 +63,14 @@ public class Pig extends LandAnimal implements Edible {
 
     @Override
     public void move() {
-        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+//        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+        headRandomly();
+        moveByDistance(getSpeed());
     }
 
     @Override
     public void Interact(List<EntityModel> entities) {
+        entities.forEach(this::Interact);
 
     }
 }

@@ -172,7 +172,7 @@ public abstract class AnimalModel extends EntityModel {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    private void moveByDistance(double distance) {
+    protected void moveByDistance(double distance) {
         // Internal move helper that uses the current direction vector.
         if (distance == 0.0 || (directionX == 0.0 && directionY == 0.0)) {
             return;
@@ -185,13 +185,21 @@ public abstract class AnimalModel extends EntityModel {
     protected void headTowards(BlockCoordinate targetBlock){
         double newDirectionX = targetBlock.x -  getPosition().getPosX();
         double newDirectionY = targetBlock.y -  getPosition().getPosY();
-        setDirection(newDirectionX, newDirectionY);
+//        setDirection(newDirectionX, newDirectionY);
+        alterDirection(newDirectionX, newDirectionY, 1.0);
     }
 
-    protected void headAwayFrom(BlockCoordinate targetBlock){
+    protected void headAwayFrom(BlockCoordinate targetBlock, double priority){
         double newDirectionX = getPosition().getPosX() - targetBlock.x;
         double newDirectionY = getPosition().getPosY() - targetBlock.y;
-        setDirection(newDirectionX, newDirectionY);
+//        setDirection(newDirectionX, newDirectionY);
+        alterDirection(newDirectionX, newDirectionY, priority);
+    }
+
+    protected void headRandomly(){
+        double alterX = new Random().nextDouble() * 2 - 1;
+        double alterY = new Random().nextDouble() * 2 - 1;
+        alterDirection(alterX, alterY, 1);
     }
 
     public AnimalModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, double speed, double directionX, double directionY) {
@@ -229,7 +237,11 @@ public abstract class AnimalModel extends EntityModel {
     public void Interact(BlockModel block) {
         if(block instanceof ObstacleBlockModel obstacle){
             BlockCoordinate obstaclePos = obstacle.getPosition();
-            headAwayFrom(obstaclePos);
+            headAwayFrom(obstaclePos, 1.0);
         }
+    }
+
+    protected void alterDirection(double deltaX, double deltaY, double priority){
+        setDirection(directionX + deltaX * priority, directionY + deltaY * priority);
     }
 }

@@ -71,9 +71,10 @@ public class Wolf extends LandAnimal implements Edible {
     public void move() {
         if(currentTarget == null) {
             roamRandomly(0.111, 0.200, Math.PI / 3);
+            setSpeed(0.111);
         }
         else{
-            moveToward(currentTarget.getPosition(), 1);
+            moveToward(currentTarget.getPosition(), 2);
         }
         hunger -= 0.01f;
     }
