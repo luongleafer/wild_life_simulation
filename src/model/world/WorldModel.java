@@ -1,10 +1,6 @@
 package model.world;
 
 import model.biome.BiomeModel;
-import model.biome.ForestBiomeModel;
-import model.biome.PlainBiomeModel;
-import model.biome.WaterBiomeModel;
-import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
@@ -13,6 +9,9 @@ import model.generation.DirtBlock;
 import model.generation.GrassBlock;
 import model.generation.MudBlock;
 import model.generation.WaterBlock;
+import model.generation.WoodBlock;
+import model.generation.NoiseGeneration;
+import model.generation.SandBlock;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,30 +54,50 @@ public class WorldModel {
     }
 
     public void generateTerrain() {
-        // world partitioning
-        // split 100x100 matrix into 4 quadrants as an example
-        int midX = width / 2;
-        int midY = length / 2;
+        NoiseGeneration noise = new NoiseGeneration();
+        noise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
+        // Using a random seed for variation
+        noise.SetSeed(random.nextInt());
 
-        biomes = new BiomeModel[4];
+        NoiseGeneration moistureNoise = new NoiseGeneration();
+        moistureNoise.SetNoiseType(NoiseGeneration.NoiseType.Cellular);
+        moistureNoise.SetSeed(random.nextInt());
 
-        // top-left quadrant: Forest
-        biomes[0] = new ForestBiomeModel(new BlockCoordinate(0, 0), new BlockCoordinate(midX, midY));
-        // top-right quadrant: Water
-        biomes[1] = new WaterBiomeModel(new BlockCoordinate(midX, 0), new BlockCoordinate(width, midY));
-        // bottom-left quadrant: Plains
-        biomes[2] = new PlainBiomeModel(new BlockCoordinate(0, midY), new BlockCoordinate(midX, length));
-        // Bottom-Right quadrant: Plains
-        biomes[3] = new PlainBiomeModel(new BlockCoordinate(midX, midY), new BlockCoordinate(width, length));
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < length; y++) {
+                // Get noise values between -1.0 and 1.0 (approx)
+                float elevation = noise.GetNoise(x * 5.0f, y * 5.0f); // multiplying by a frequency scale
 
-        // generate blocks for each biome and place them in World's 2D array
-        for (BiomeModel biome : biomes) {
-            BlockModel[] biomeBlocks = biome.generate();
+                BlockModel blockToPlace;
 
-            for (BlockModel block : biomeBlocks) {
-                if (block != null) {
-                    placeBlock(block);
+                if (elevation < -0.25f) {
+                    // Deep water / Beach
+                    if (elevation > -0.3f && random.nextDouble() < 0.5) {
+                        blockToPlace = new SandBlock(x, y, 0);
+                    } else {
+                        blockToPlace = new WaterBlock(x, y, 0);
+                    }
+                } else if (elevation < 0.4f) {
+                    // Plains
+                    float moisture = moistureNoise.GetNoise(x * 5.0f, y * 5.0f);
+                    if (moisture > 0.5f) {
+                        blockToPlace = new MudBlock(x, y, 0);
+                    } else if (random.nextDouble() < 0.3) {
+                        blockToPlace = new GrassBlock(x, y, 0);
+                    } else {
+                        blockToPlace = new DirtBlock(x, y, 0);
+                    }
+                } else {
+                    // Forest / High elevation
+                    float moisture = moistureNoise.GetNoise(x * 10.0f, y * 10.0f);
+                    if (moisture > 0.6f) {
+                        blockToPlace = new WoodBlock(x, y, 0);
+                    } else {
+                        blockToPlace = new GrassBlock(x, y, 0);
+                    }
                 }
+
+                placeBlock(blockToPlace);
             }
         }
     }

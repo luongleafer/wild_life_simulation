@@ -15,7 +15,7 @@ import model.world.WorldModel;
 import view.WorldView;
 
 public class TestWorldRenderer extends Application {
-    WorldModel model = new WorldModel(80, 80);
+    WorldModel model = new WorldModel(256, 256);
 
     public static void main(String[] args) {
         launch(args);
