@@ -19,9 +19,9 @@ public class PlainBiomeModel extends BiomeModel {
     public PlainBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
         super(topLeft, bottomRight);
         blockPalette = List.of(
-                new DirtBlock(0,0,0),
-                new GrassBlock(0, 0, 0),
-                new WaterBlock(0,0,0)
+                new DirtBlock(0,0),
+                new GrassBlock(0, 0),
+                new WaterBlock(0,0)
         );
     }
 
@@ -37,11 +37,11 @@ public class PlainBiomeModel extends BiomeModel {
             for (int y = topLeft.y; y < bottomRight.y; y++) {
                 double roll = random.nextDouble();
                 if (roll < waterChance) {
-                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(2),x,y,0); // Water block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(2),x,y); // Water block
                 } else if (roll < waterChance + grassChance) {
-                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(1),x,y,0); // Grass block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.get(1),x,y); // Grass block
                 } else {
-                    generatedBlocks[index++] = BlockModels.from(blockPalette.getFirst(),x,y,0);  // Dirt block
+                    generatedBlocks[index++] = BlockModels.from(blockPalette.getFirst(),x,y);  // Dirt block
                 }
             }
         }

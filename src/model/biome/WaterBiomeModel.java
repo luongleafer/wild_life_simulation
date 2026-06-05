@@ -15,8 +15,8 @@ public class WaterBiomeModel extends BiomeModel {
         super(topLeft, bottomRight);
         // palette could be populated here
         blockPalette = List.of(
-                new WaterBlock(0,0,0),
-                new SandBlock(0,0,0)
+                new WaterBlock(0,0),
+                new SandBlock(0,0)
         );
     }
 
@@ -31,9 +31,9 @@ public class WaterBiomeModel extends BiomeModel {
         for(int x = topLeft.x; x <  bottomRight.x; x++){
             for(int y =  topLeft.y; y <  bottomRight.y; y++){
                 if (random.nextDouble() < 0.2) { // 20% chance of sand
-                    generatedBlocks[i++] = BlockModels.from(blockPalette.get(1),x,y,0);
+                    generatedBlocks[i++] = BlockModels.from(blockPalette.get(1),x,y);
                 } else {
-                    generatedBlocks[i++] = BlockModels.from(blockPalette.getFirst(),x,y,0);
+                    generatedBlocks[i++] = BlockModels.from(blockPalette.getFirst(),x,y);
                 }
             }
         }

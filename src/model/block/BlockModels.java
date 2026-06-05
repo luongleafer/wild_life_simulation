@@ -11,7 +11,7 @@ public class BlockModels {
      * @param <T> Type of block, which derives from BlockModel
      */
     public static <T extends BlockModel> BlockModel from(BlockModel block) {
-        return from(block, 0, 0, 0);
+        return from(block, 0, 0);
     }
 
     /**
@@ -20,16 +20,15 @@ public class BlockModels {
      * @param block The block to create
      * @param x The x position in world
      * @param y The y position in world
-     * @param initialState The initial state
      * @return A new block of the same type as `block`
      * @param <T> The type of block, which derives from BlockModel
      */
-    public static <T extends BlockModel> BlockModel from(BlockModel block, int x, int y, int initialState) {
+    public static <T extends BlockModel> BlockModel from(BlockModel block, int x, int y) {
         BlockModel newModel = null;
         try {
             newModel = block.getClass()
-                    .getConstructor(Integer.TYPE, Integer.TYPE, Integer.TYPE)
-                    .newInstance(x, y, initialState);
+                    .getConstructor(Integer.TYPE, Integer.TYPE)
+                    .newInstance(x, y);
         } catch (Exception e){
             IO.println("Exception when create new block of type " + block.getClass().getName() + " : " + e.getMessage());
         }

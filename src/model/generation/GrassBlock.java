@@ -4,10 +4,9 @@ import model.block.BlockModel;
 import model.entity.Edible;
 
 public class GrassBlock extends BlockModel implements Edible {
-    public GrassBlock(int x, int y, int initialState) {
-        super(x, y, initialState, 3);
+    public GrassBlock(int x, int y) {
+        super(x, y, 3);
         this.blockType = "grass";
-        this.totalStates = 1;
         this.sinkability = 3;
     }
 
