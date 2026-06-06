@@ -28,8 +28,8 @@ public class Cow extends LandAnimal implements Edible {
         this.setSpeed(7.5/20);
         this.setDirection(0, 0);
         this.entityType = "cow";
-        this.hitBoxWidth = 5;
-        this.hitBoxLength = 5;
+        this.hitBoxWidth = 2.4;
+        this.hitBoxLength = 1.5;
     }
 
     @Override
@@ -81,8 +81,8 @@ public class Cow extends LandAnimal implements Edible {
     @Override
     public void move() {
         roamRandomly(7.5/20, 11.11/20,Math.PI/3);
-//        thirst -= 0.1f;
-//        hunger -= 0.5f;
+        thirst -= 0.1f;
+        hunger -= 0.5f;
     }
 
     @Override
