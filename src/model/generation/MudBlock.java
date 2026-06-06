@@ -2,6 +2,9 @@ package model.generation;
 
 import model.block.BlockModel;
 
+import java.util.List;
+import java.util.Random;
+
 public class MudBlock extends BlockModel {
 
     private boolean isWet;
@@ -31,4 +34,16 @@ public class MudBlock extends BlockModel {
     }
 
 
+    @Override
+    public BlockModel interact(List<BlockModel> surroundingBlocks) {
+
+        long waterBlockCount = surroundingBlocks.stream().filter(blockModel -> blockModel.getBlockType().equals("water")).count();
+        if(new Random().nextDouble() < (4 - waterBlockCount) * 0.0125){
+            return dryOut();
+        }
+        else if(new Random().nextDouble() < waterBlockCount * 0.005){
+            return new WaterBlock(position.x, position.y, 0);
+        }
+        return this;
+    }
 }

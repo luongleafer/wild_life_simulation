@@ -15,8 +15,10 @@ import model.world.WorldModel;
 import view.WorldView;
 import view.audio.SoundEngine;
 
+import java.util.Random;
+
 public class TestWorldRenderer extends Application {
-    WorldModel model = new WorldModel(80, 80);
+    WorldModel model = new WorldModel(80, 60);
 
     public static void main(String[] args) {
         launch(args);
@@ -25,8 +27,12 @@ public class TestWorldRenderer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         StackPane worldPane = new StackPane();
+        worldPane.setLayoutX(10);
+        worldPane.setLayoutY(10);
         WorldView renderer = new WorldView(model, worldPane);
-        WorldController controller = new WorldController(model, renderer);
+        WorldController controller = WorldController.getController();
+        controller.setWorldModel(model);
+        controller.setWorldView(renderer);
         SoundEngine.initEngine();
         model.generateTerrain();
         Scene scene = new Scene(worldPane, 640, 480);
@@ -35,12 +41,13 @@ public class TestWorldRenderer extends Application {
         controller.registerSound();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
+        Random random = new Random();
         for(int i = 0; i<10;i++) {
             controller.spawnEntity(new Wolf(new EntityCoordinate(5 * i, 5 * i)));
         }
-        for(int i = 0; i<20;i++){
+        for(int i = 0; i<100;i++){
             // let's just spawn 100 pigs cuz why not
-            controller.spawnEntity(new Pig(new EntityCoordinate(25,25)));
+            controller.spawnEntity(new Pig(new EntityCoordinate(random.nextDouble() * 80, random.nextDouble() * 60)));
         }
         for(int i = 0; i<10;i++){
             controller.spawnEntity(new Cow(new EntityCoordinate(30, 30)));

@@ -1,5 +1,9 @@
 package model.entity;
 
+import model.block.BlockCoordinate;
+import model.block.BlockModel;
+import model.block.ObstacleBlockModel;
+
 import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
@@ -9,6 +13,8 @@ public abstract class AnimalModel extends EntityModel {
     protected float hunger;
     protected float thirst;
     protected float energy;
+    protected int maxThirst;
+    protected int maxHunger;
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
@@ -166,7 +172,7 @@ public abstract class AnimalModel extends EntityModel {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    private void moveByDistance(double distance) {
+    protected void moveByDistance(double distance) {
         // Internal move helper that uses the current direction vector.
         if (distance == 0.0 || (directionX == 0.0 && directionY == 0.0)) {
             return;
@@ -174,6 +180,26 @@ public abstract class AnimalModel extends EntityModel {
         double newX = getPosition().getPosX() + directionX * distance;
         double newY = getPosition().getPosY() + directionY * distance;
         move(newX, newY);
+    }
+
+    protected void headTowards(BlockCoordinate targetBlock){
+        double newDirectionX = targetBlock.x -  getPosition().getPosX();
+        double newDirectionY = targetBlock.y -  getPosition().getPosY();
+//        setDirection(newDirectionX, newDirectionY);
+        alterDirection(newDirectionX, newDirectionY, 1.0);
+    }
+
+    protected void headAwayFrom(BlockCoordinate targetBlock, double priority){
+        double newDirectionX = getPosition().getPosX() - targetBlock.x;
+        double newDirectionY = getPosition().getPosY() - targetBlock.y;
+//        setDirection(newDirectionX, newDirectionY);
+        alterDirection(newDirectionX, newDirectionY, priority);
+    }
+
+    protected void headRandomly(){
+        double alterX = new Random().nextDouble() * 2 - 1;
+        double alterY = new Random().nextDouble() * 2 - 1;
+        alterDirection(alterX, alterY, 1);
     }
 
     public AnimalModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy, double speed, double directionX, double directionY) {
@@ -193,5 +219,29 @@ public abstract class AnimalModel extends EntityModel {
         this.direction = Direction.STAY();
     }
 
+    @Override
+    public void ageUp() {
+        super.ageUp();
+        // animals slowly dying of hunger and thirst
+        if(hunger <= 0){
+            hunger = 0;
+            health -= 1;
+        }
+        if(thirst <= 0){
+            thirst = 0;
+            health -= 1;
+        }
+    }
 
+    @Override
+    public void Interact(BlockModel block) {
+        if(block instanceof ObstacleBlockModel obstacle){
+            BlockCoordinate obstaclePos = obstacle.getPosition();
+            headAwayFrom(obstaclePos, 1.0);
+        }
+    }
+
+    protected void alterDirection(double deltaX, double deltaY, double priority){
+        setDirection(directionX + deltaX * priority, directionY + deltaY * priority);
+    }
 }

@@ -6,7 +6,7 @@ import view.audio.SoundEngine;
 
 import java.util.List;
 
-public class Wolf extends AnimalModel implements Edible {
+public class Wolf extends LandAnimal implements Edible {
     EntityModel currentTarget = null;
     private final int attackCooldown = 20; // 1 second cooldown
     private int lastAttack = 0;
@@ -17,10 +17,6 @@ public class Wolf extends AnimalModel implements Edible {
         lastAttack++;
     }
 
-    public Wolf(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
-        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 20, 0, 0);
-    }
-
     public Wolf(EntityCoordinate position){
         super(position);
         // Default values for wolves, can be changed later if needed
@@ -28,6 +24,8 @@ public class Wolf extends AnimalModel implements Edible {
         this.energy = 10;
         this.hunger = 5;
         this.thirst = 5;
+        this.maxThirst = 20;
+        this.maxHunger = 30;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
@@ -40,6 +38,7 @@ public class Wolf extends AnimalModel implements Edible {
     @Override
     public void Interact(BlockModel block) {
         // Wolves usually do nothing with blocks
+        super.Interact(block);
     }
 
     @Override
@@ -73,10 +72,12 @@ public class Wolf extends AnimalModel implements Edible {
     public void move() {
         if(currentTarget == null) {
             roamRandomly(0.111, 0.200, Math.PI / 3);
+            setSpeed(0.111);
         }
         else{
-            moveToward(currentTarget.getPosition(), 1);
+            moveToward(currentTarget.getPosition(), 2);
         }
+        hunger -= 0.01f;
     }
 
     @Override
@@ -85,10 +86,14 @@ public class Wolf extends AnimalModel implements Edible {
        // filter out pigs
         EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
         if(toFollow != null) {
+            if(hunger >= maxHunger) return;
             currentTarget = toFollow;
             if(getPosition().distance(toFollow.getPosition()) < 5) {
                 if(lastAttack >= attackCooldown) {
                     toFollow.receiveDamage(1);
+                    if(toFollow.getHealth() <= 0) {
+                        hunger += 5;
+                    }
                     SoundEngine.getEngine().playSound("wolf_eat");
                     lastAttack = 0;
                 }

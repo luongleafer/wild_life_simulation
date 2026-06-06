@@ -24,6 +24,23 @@ import java.util.Random;
  */
 public class WorldController {
     public static int WORLD_TILE_SIZE = 16;
+    public static WorldController controller;
+
+    public static WorldController getController() {
+        if(controller == null) {
+            controller = new WorldController();
+        }
+        return controller;
+    }
+
+    public void setWorldModel(WorldModel worldModel) {
+        this.worldModel = worldModel;
+    }
+
+    public void setWorldView(WorldView worldView) {
+        this.worldView = worldView;
+    }
+
     WorldModel worldModel;
     WorldView worldView;
     Random random = new Random();
@@ -50,9 +67,8 @@ public class WorldController {
         }
     };
 
-    public WorldController(WorldModel model, WorldView worldView) {
-        this.worldModel = model;
-        this.worldView = worldView;
+    private WorldController(){
+
     }
 
     /**
@@ -114,6 +130,9 @@ public class WorldController {
         ));
         blockTextureMap.registerTextures("mud", List.of(
                 Path.of("assets/minecraft_based/mud.png")
+        ));
+        blockTextureMap.registerTextures("cobble_stone", List.of(
+                Path.of("assets/minecraft_based/cobblestone.png")
         ));
         worldView.getTerrainView().setTextureMap(blockTextureMap);
     }

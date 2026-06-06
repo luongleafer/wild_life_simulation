@@ -3,6 +3,9 @@ package model.generation;
 import model.block.BlockModel;
 import model.entity.Drinkable;
 
+import java.util.List;
+import java.util.Random;
+
 public class WaterBlock extends BlockModel implements Drinkable {
 
     public WaterBlock(int x, int y, int initialState) {
@@ -36,5 +39,10 @@ public class WaterBlock extends BlockModel implements Drinkable {
     @Override
     public boolean canBeDrank() {
         return true;
+    }
+
+    @Override
+    public BlockModel interact(List<BlockModel> surroundingBlocks) {
+        return this;
     }
 }

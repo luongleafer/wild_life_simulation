@@ -1,15 +1,16 @@
 package model.animals;
 
+import controller.WorldController;
 import model.block.BlockModel;
 import model.entity.*;
+import model.generation.DirtBlock;
+import model.generation.GrassBlock;
 
 import java.util.List;
 import java.util.Random;
 
-public class Cow extends AnimalModel implements Edible {
-    public Cow(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
-        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 10, 0, 0);
-    }
+public class Cow extends LandAnimal implements Edible {
+
 
     public Cow(EntityCoordinate position){
         super(position);
@@ -17,7 +18,9 @@ public class Cow extends AnimalModel implements Edible {
         this.health = 10;
         this.energy = 10;
         this.hunger = 5;
-        this.thirst = 5;
+        this.thirst = 2;
+        this.maxHunger = 10;
+        this.maxThirst = 10;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.NORTH();
         this.currentState = 0; // Adult by default
@@ -37,6 +40,16 @@ public class Cow extends AnimalModel implements Edible {
 
     @Override
     public void Interact(BlockModel block) {
+        super.Interact(block);
+        if(block.getBlockType().equals("grass")){
+            if(hunger <= maxHunger / 2.0) {
+                GrassBlock grassBlock = (GrassBlock)block;
+                setDirection(0, 0);
+                hunger += grassBlock.getHungerValue();
+                energy += grassBlock.getEnergyValue();
+                WorldController.getController().placeBlock(new DirtBlock(0,0,0), block.getPosition().x, block.getPosition().y);
+            }
+        }
         // Temporarily blank
     }
 
@@ -64,6 +77,8 @@ public class Cow extends AnimalModel implements Edible {
     @Override
     public void move() {
         roamRandomly(7.5/20, 11.11/20,Math.PI/3);
+        thirst -= 0.1f;
+        hunger -= 0.5f;
     }
 
     @Override

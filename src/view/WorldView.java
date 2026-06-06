@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.layout.StackPane;
 import model.world.WorldModel;
 import view.block.BlockTextureMap;
 import view.block.TerrainView;
@@ -34,7 +35,7 @@ public class WorldView {
     private final AnimationTimer rerenderingTimer = new AnimationTimer() {
         @Override
         public void handle(long now) {
-            terrainView.refresh(worldModel.getBlocksData());
+            terrainView.refresh(worldModel.getBlocksData(), worldModel.getOverlayBlocks());
             allEntitiesView.refresh();
         }
     };
@@ -49,7 +50,7 @@ public class WorldView {
         this.rootPane = root;
         this.worldModel = worldModel;
         AnchorPane entityPane = new AnchorPane();
-        GridPane worldGridPane = new GridPane();
+        StackPane worldGridPane = new StackPane();
         root.getChildren().add(worldGridPane);
         root.getChildren().add(entityPane);
         allEntitiesView = new AllEntitiesView(null, entityPane);
