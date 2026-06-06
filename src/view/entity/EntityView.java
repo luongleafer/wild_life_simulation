@@ -85,6 +85,8 @@ public class EntityView {
         this.screenY = (int) ( (position.posY - entity.getHitBoxLength()) * tileSize) - cameraY;
         sprite.setLayoutX(screenX);
         sprite.setLayoutY(screenY);
+        sprite.setScaleX(entity.getHitBoxWidth());
+        sprite.setScaleY(entity.getHitBoxLength());
     }
 
     /**
