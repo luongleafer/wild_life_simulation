@@ -1,39 +1,56 @@
 package model.world;
 
 import model.biome.BiomeModel;
-import model.biome.ForestBiomeModel;
-import model.biome.PlainBiomeModel;
-import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
+import model.generation.DirtBlock;
+import model.generation.GrassBlock;
+import model.generation.MudBlock;
+import model.generation.WaterBlock;
+import model.generation.WoodBlock;
+import model.generation.NoiseGeneration;
+import model.generation.SandBlock;
+import model.generation.CobbleStoneBlock;
+import model.generation.DirtBlock;
+import model.generation.GrassBlock;
+import model.generation.WaterBlock;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class WorldModel {
     private BiomeModel[] biomes;
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
+    private BlockModel[][] overlayBlocks;
     private int width;
     private int length;
     private List<EntityModel> entities =  new ArrayList<>();
-    private int entityPadding = 5;
+    private int entityPadding = 1;
+    Random random = new Random();
+    Random rand = new Random();
 
     public WorldModel(int width, int length) {
         this.width = width;
         this.length = length;
         this.blocksData = new BlockModel[width][length];
+        this.overlayBlocks = new BlockModel[width][length];
         this.tickCount = 0;
         this.tickSpeed = 1; // 1 tick per update
     }
 
     public BlockModel[][] getBlocksData() {
         return blocksData;
+    }
+
+    public BlockModel[][] getOverlayBlocks() {
+        return overlayBlocks;
     }
 
     public List<EntityModel> getEntities() {
@@ -49,29 +66,64 @@ public class WorldModel {
     }
 
     public void generateTerrain() {
-        // world partitioning
-        // split 100x100 matrix into 4 quadrants as an example
-        int midX = width / 2;
-        int midY = length / 2;
+        NoiseGeneration noise = new NoiseGeneration();
+        noise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
+        // Using a random seed for variation
+        noise.SetSeed(random.nextInt());
 
-        biomes = new BiomeModel[4];
+        NoiseGeneration moistureNoise = new NoiseGeneration();
+        moistureNoise.SetNoiseType(NoiseGeneration.NoiseType.Cellular);
+        moistureNoise.SetSeed(random.nextInt());
 
-        // top-left quadrant: Forest
-        biomes[0] = new ForestBiomeModel(new BlockCoordinate(0, 0), new BlockCoordinate(midX, midY));
-        // top-right quadrant: Water
-        biomes[1] = new WaterBiomeModel(new BlockCoordinate(midX, 0), new BlockCoordinate(width, midY));
-        // bottom-left quadrant: Plains
-        biomes[2] = new PlainBiomeModel(new BlockCoordinate(0, midY), new BlockCoordinate(midX, length));
-        // Bottom-Right quadrant: Plains
-        biomes[3] = new PlainBiomeModel(new BlockCoordinate(midX, midY), new BlockCoordinate(width, length));
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < length; y++) {
+                // Get noise values between -1.0 and 1.0 (approx)
+                float elevation = noise.GetNoise(x * 5.0f, y * 5.0f); // multiplying by a frequency scale
 
-        // generate blocks for each biome and place them in World's 2D array
-        for (BiomeModel biome : biomes) {
-            BlockModel[] biomeBlocks = biome.generate();
+                BlockModel blockToPlace;
 
-            for (BlockModel block : biomeBlocks) {
-                if (block != null) {
-                    placeBlock(block);
+                if (elevation < -0.25f) {
+                    // Deep water / Beach
+                    if (elevation > -0.3f && random.nextDouble() < 0.5) {
+                        blockToPlace = new SandBlock(x, y, 0);
+                    } else {
+                        blockToPlace = new WaterBlock(x, y, 0);
+                    }
+                } else if (elevation < 0.4f) {
+                    // Plains
+                    float moisture = moistureNoise.GetNoise(x * 5.0f, y * 5.0f);
+                    if (moisture > 0.5f) {
+                        blockToPlace = new MudBlock(x, y, 0);
+                    } else if (random.nextDouble() < 0.3) {
+                        blockToPlace = new GrassBlock(x, y, 0);
+                    } else {
+                        blockToPlace = new DirtBlock(x, y, 0);
+                    }
+                } else {
+                    // Forest / High elevation
+                    float moisture = moistureNoise.GetNoise(x * 10.0f, y * 10.0f);
+                    if (moisture > 0.6f) {
+                        blockToPlace = new WoodBlock(x, y, 0);
+                    } else {
+                        blockToPlace = new GrassBlock(x, y, 0);
+                    }
+                }
+
+                placeBlock(blockToPlace);
+            }
+        }
+        placeObstacle();
+
+    }
+
+    public void placeObstacle(){
+        Random rand = new Random();
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < length; y++){
+                if(blocksData[x][y] instanceof DirtBlock
+                        && rand.nextDouble() < 0.02
+                ){
+                    overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0,0);
                 }
             }
         }
@@ -89,7 +141,13 @@ public class WorldModel {
 
     public void update(){
         advanceTickCount();
-        updateTerrain();
+
+        // Slow down block updates so it's visible to the human eye.
+        // Terrain updates once every 50 ticks (approx. 1 second if tick is 20ms)
+        if (tickCount % 50 == 0) {
+            updateTerrain();
+        }
+
         updateEntities();
     }
 
@@ -111,16 +169,28 @@ public class WorldModel {
         entities.forEach(entityModel -> {
             EntityCoordinate position = entityModel.getPosition();
             if(position.getPosX() > width - entityPadding){
-                position.setPosX(width - entityPadding);
+                position.setPosX(width - entityPadding - 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(-1, 0);
+                }
             }
             if(position.getPosX() < entityPadding){
-                position.setPosX(entityPadding);
+                position.setPosX(entityPadding + 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(1, 0);
+                }
             }
             if(position.getPosY() > length - entityPadding){
-                position.setPosY(length - entityPadding);
+                position.setPosY(length - entityPadding - 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(0, -1);
+                }
             }
             if(position.getPosY() < entityPadding){
-                position.setPosY(entityPadding);
+                position.setPosY(entityPadding + 1);
+                if(entityModel instanceof AnimalModel animalModel){
+                    animalModel.setDirection(0, 1);
+                }
             }
         });
     }
@@ -137,11 +207,28 @@ public class WorldModel {
         ).sorted(Comparator.comparing(entityModel -> entityModel.getPosition().distance(origin))).toList();
     }
 
+    List<BlockModel> getBlocksInAnArea(EntityCoordinate origin, double reachRadius){
+        List<BlockModel> blocks = new ArrayList<>();
+        for(int x = 0 ; x < width ; x++){
+            for(int y = 0 ; y < length ; y++){
+                if(origin.distance(new EntityCoordinate(x + 0.5, y + 0.5)) <= reachRadius){
+                    blocks.add(blocksData[x][y]);
+                    if(overlayBlocks[x][y] != null){
+                        blocks.add(overlayBlocks[x][y]);
+                    }
+                }
+            }
+        }
+        return blocks;
+    }
+
     private void entitiesInteraction(){
         entities.forEach(
                 entityModel -> {
-                    List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 10);
+                    List<EntityModel> surrounding = getEntitiesInAnArea(entityModel.getPosition(), 5);
                     entityModel.Interact(surrounding);
+                    List<BlockModel> surroundingBlocks = getBlocksInAnArea(entityModel.getPosition(), 2);
+                    surroundingBlocks.forEach(entityModel::Interact);
                 }
         );
     }
@@ -149,21 +236,32 @@ public class WorldModel {
     private void updateEntities(){
         removeDeadEntities();
         entities.forEach(EntityModel::ageUp);
-        entitiesInteraction();
         entitiesMovement();
+        entitiesInteraction();
+    }
+
+    private List<BlockModel> getSurroundingBlocks(BlockCoordinate origin){
+        List<BlockModel> surroundingBlocks = new ArrayList<>();
+        int x = origin.x;
+        int y = origin.y;
+        if(x > 0) surroundingBlocks.add(blocksData[x-1][y]);
+        if(y > 0) surroundingBlocks.add(blocksData[x][y-1]);
+        if(x < width - 1) surroundingBlocks.add(blocksData[x+1][y]);
+        if(y < length - 1) surroundingBlocks.add(blocksData[x][y+1]);
+        return surroundingBlocks;
     }
 
     private void updateTerrain(){
-
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < length; y++){
+                blocksData[x][y] = blocksData[x][y].interact(getSurroundingBlocks(blocksData[x][y].getPosition()));
+            }
+        }
     }
 
     public long getTickCount() {
         return tickCount;
     }
-
-
-
-
 
     public int getWidth() {
         return width;

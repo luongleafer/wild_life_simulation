@@ -1,14 +1,12 @@
 package model.animals;
 
+import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.*;
 
 import java.util.List;
 
-public class Pig extends AnimalModel implements Edible {
-    public Pig(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState, float hunger, float thirst, float energy, String survivalStrategy) {
-        super(position, health, age, adultAge, oldAge, totalLifespan, currentState, hunger, thirst, energy, survivalStrategy, 10, 0, 0);
-    }
+public class Pig extends LandAnimal implements Edible {
 
     public Pig(EntityCoordinate position){
         super(position);
@@ -17,6 +15,8 @@ public class Pig extends AnimalModel implements Edible {
         this.energy = 5;
         this.hunger = 5;
         this.thirst = 5;
+        this.maxThirst = 15;
+        this.maxHunger = 20;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
@@ -33,10 +33,15 @@ public class Pig extends AnimalModel implements Edible {
         // Will they interact with other pigs? Probably
         // Just make it walk randomly for now
         // Which means this class is uh, blank
+        if(entity instanceof Wolf wolf){
+            setSpeed(10.0/20);
+            headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
+        }
     }
 
     @Override
     public void Interact(BlockModel block) {
+        super.Interact(block);
         // Temporarily blank
     }
 
@@ -58,11 +63,14 @@ public class Pig extends AnimalModel implements Edible {
 
     @Override
     public void move() {
-        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+//        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+        headRandomly();
+        moveByDistance(getSpeed());
     }
 
     @Override
     public void Interact(List<EntityModel> entities) {
+        entities.forEach(this::Interact);
 
     }
 }
