@@ -38,7 +38,7 @@ public class MudBlock extends BlockModel {
     public BlockModel interact(List<BlockModel> surroundingBlocks) {
 
         long waterBlockCount = surroundingBlocks.stream().filter(blockModel -> blockModel.getBlockType().equals("water")).count();
-        if(new Random().nextDouble() < (4 - waterBlockCount) * 0.005){
+        if(new Random().nextDouble() < (4 - waterBlockCount) * 0.0125){
             return dryOut();
         }
         else if(new Random().nextDouble() < waterBlockCount * 0.005){

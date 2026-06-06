@@ -1,6 +1,7 @@
 package model.world;
 
 import model.biome.BiomeModel;
+import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;

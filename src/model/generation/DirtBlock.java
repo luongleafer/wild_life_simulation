@@ -22,7 +22,7 @@ public class DirtBlock extends BlockModel {
             return new MudBlock(position.x, position.y, 0);
         }
         long grassBlocks = surroundingBlocks.stream().filter(blockModel -> blockModel.getBlockType().equals("grass")).count();
-        if(new Random().nextDouble() < grassBlocks * 0.005){
+        if(new Random().nextDouble() < grassBlocks * 0.01){
             return new GrassBlock(position.x,position.y,0);
         }
         return this;
