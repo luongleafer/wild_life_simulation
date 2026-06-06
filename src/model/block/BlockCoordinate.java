@@ -1,18 +1,22 @@
 package model.block;
 
-public class BlockCoordinate {
-    public int x;
-    public int y;
+import model.Vector2;
 
-    public BlockCoordinate(int x, int y) {
-        this.x = x;
-        this.y = y;
+public class BlockCoordinate extends Vector2 {
+
+    public BlockCoordinate(double x, double y) {
+        super(x, y);
+        setX(x);
+        setY(y);
     }
 
-    public int getX() {
-        return x;
+    @Override
+    public void setX(double x) {
+        super.setX(Math.floor(x));
     }
-    public int getY() {
-        return y;
+
+    @Override
+    public void setY(double y) {
+        super.setY(Math.floor(y));
     }
 }
