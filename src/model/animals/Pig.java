@@ -34,6 +34,7 @@ public class Pig extends LandAnimal implements Edible {
         // Will they interact with other pigs? Probably
         // Just make it walk randomly for now
         // Which means this class is uh, blank
+        super.Interact(entity);
     }
 
     @Override
@@ -65,6 +66,7 @@ public class Pig extends LandAnimal implements Edible {
 
     @Override
     public void Interact(List<EntityModel> entities) {
+        entities.forEach(this::Interact);
 
     }
 }

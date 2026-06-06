@@ -39,7 +39,7 @@ public class TestWorldRenderer extends Application {
         for(int i = 0; i<10;i++) {
             controller.spawnEntity(new Wolf(new EntityCoordinate(5 * i, 5 * i)));
         }
-        for(int i = 0; i<100;i++){
+        for(int i = 0; i<20;i++){
             // let's just spawn 100 pigs cuz why not
             controller.spawnEntity(new Pig(new EntityCoordinate(25,25)));
         }

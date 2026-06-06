@@ -73,9 +73,9 @@ public class WorldModel {
         // top-right quadrant: Water
         biomes[1] = new WaterBiomeModel(new BlockCoordinate(midX, 0), new BlockCoordinate(width, midY));
         // bottom-left quadrant: Plains
-        biomes[2] = new PlainBiomeModel(new BlockCoordinate(0, midY), new BlockCoordinate(midX, length));
+        biomes[2] = new ForestBiomeModel(new BlockCoordinate(0, midY), new BlockCoordinate(midX, length));
         // Bottom-Right quadrant: Plains
-        biomes[3] = new PlainBiomeModel(new BlockCoordinate(midX, midY), new BlockCoordinate(width, length));
+        biomes[3] = new ForestBiomeModel(new BlockCoordinate(midX, midY), new BlockCoordinate(width, length));
 
         // generate blocks for each biome and place them in World's 2D array
         for (BiomeModel biome : biomes) {

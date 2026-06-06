@@ -232,4 +232,17 @@ public abstract class AnimalModel extends EntityModel {
             headAwayFrom(obstaclePos);
         }
     }
+
+    @Override
+    public void Interact(EntityModel entity) {
+        if(collideWithEntity(entity)){
+            headAwayFrom(new BlockCoordinate((int) entity.position.posX, (int) entity.position.posY));
+            if(entity instanceof AnimalModel animal){
+                animal.headAwayFrom(new BlockCoordinate( (int) position.posX, (int) position.posY));
+                animal.moveByDistance(animal.speed);
+            }
+            moveByDistance(speed);
+            IO.println("Collided");
+        }
+    }
 }
