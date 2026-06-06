@@ -17,7 +17,7 @@ import view.WorldView;
 import java.util.Random;
 
 public class TestWorldRenderer extends Application {
-    WorldModel model = new WorldModel(80, 60);
+    WorldModel model = new WorldModel(256, 256);
 
     public static void main(String[] args) {
         launch(args);
