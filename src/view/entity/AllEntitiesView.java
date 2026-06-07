@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import model.entity.EntityModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class AllEntitiesView {
     private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
     EntityTextureMap entityTextureMap;
     Pane allEntitiesPane;
+    List<EntityModel> waitToRender = new ArrayList<>();
 
     public AllEntitiesView(EntityTextureMap entityTextureMap, Pane allEntitiesPane) {
        this.entityTextureMap = entityTextureMap;
@@ -26,6 +28,10 @@ public class AllEntitiesView {
         EntityView renderer = new EntityView(model, texture, '?', 32, 32);
         modelViewMap.put(model, renderer);
         allEntitiesPane.getChildren().add(renderer.getSprite());
+    }
+
+    public void requestRender(EntityModel model){
+        waitToRender.add(model);
     }
 
     // Remove view when an entity die
@@ -52,5 +58,10 @@ public class AllEntitiesView {
             // add the ImageView to pane
             allEntitiesPane.getChildren().add(entityView.getSprite());
         });
+
+        if(!waitToRender.isEmpty()){
+            waitToRender.forEach(this::addView);
+            waitToRender.clear();
+        }
     }
 }

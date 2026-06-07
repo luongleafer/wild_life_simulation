@@ -7,6 +7,7 @@ import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
 import model.block.BlockModels;
+import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 import model.world.WorldModel;
 import view.audio.SoundEngine;
@@ -16,6 +17,7 @@ import view.entity.EntityTextureMap;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,6 +25,7 @@ import java.util.Random;
  * Controls everything
  */
 public class WorldController {
+    private final List<EntityModel> waitToSpawn;
     public static int WORLD_TILE_SIZE = 16;
     public static WorldController controller;
 
@@ -61,6 +64,14 @@ public class WorldController {
                     refreshEntityViews();
                     worldModel.update();
                     playSoundEvents();
+                    if(!waitToSpawn.isEmpty()) {
+                        IO.println(waitToSpawn.size() + "at ticks " + worldModel.getTickCount());
+                        waitToSpawn.forEach(WorldController.this::spawnEntity);
+                        waitToSpawn.clear();
+                    }
+                    long pigCount = worldModel.getEntities().stream().filter(entity -> entity instanceof Pig).count();
+                    long pigReadyToMate = worldModel.getEntities().stream().filter(entityModel -> entityModel instanceof Pig pig && pig.readyToMate()).count();
+                    IO.println("Tick " + worldModel.getTickCount() + " " + pigReadyToMate + " out of " + pigCount + " pigs ready to mate");
                     return null;
                 }
             };
@@ -68,6 +79,7 @@ public class WorldController {
     };
 
     private WorldController(){
+        waitToSpawn = new ArrayList<>();
 
     }
 
@@ -195,7 +207,12 @@ public class WorldController {
      */
     public void spawnEntity(EntityModel entity) {
         worldModel.getEntities().add(entity);
-        worldView.getAllEntitiesView().addView(entity);
+//        worldView.getAllEntitiesView().addView(entity);
+        worldView.getAllEntitiesView().requestRender(entity);
+    }
+
+    public void requestSpawnEntity(EntityModel entity) {
+        waitToSpawn.add(entity);
     }
 
 }
