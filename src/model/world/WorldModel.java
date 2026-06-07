@@ -6,17 +6,7 @@ import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
-import model.generation.DirtBlock;
-import model.generation.GrassBlock;
-import model.generation.MudBlock;
-import model.generation.WaterBlock;
-import model.generation.WoodBlock;
-import model.generation.NoiseGeneration;
-import model.generation.SandBlock;
-import model.generation.CobbleStoneBlock;
-import model.generation.DirtBlock;
-import model.generation.GrassBlock;
-import model.generation.WaterBlock;
+import model.generation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -120,10 +110,11 @@ public class WorldModel {
         Random rand = new Random();
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
-                if(blocksData[x][y] instanceof DirtBlock
-                        && rand.nextDouble() < 0.02
-                ){
+                if(blocksData[x][y] instanceof DirtBlock && rand.nextDouble() < 0.02) {
                     overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0,0);
+                }
+                if ((blocksData[x][y] instanceof GrassBlock || blocksData[x][y] instanceof DirtBlock) && rand.nextDouble() < 0.03) {
+                    overlayBlocks[x][y] = new SeedBlock(x, y, 0);
                 }
             }
         }
@@ -255,6 +246,9 @@ public class WorldModel {
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
                 blocksData[x][y] = blocksData[x][y].interact(getSurroundingBlocks(blocksData[x][y].getPosition()));
+                if (overlayBlocks[x][y] != null) {
+                    overlayBlocks[x][y] = overlayBlocks[x][y].interact(getSurroundingBlocks(overlayBlocks[x][y].getPosition()));
+                }
             }
         }
     }

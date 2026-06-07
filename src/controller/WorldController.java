@@ -112,6 +112,15 @@ public class WorldController {
         blockTextureMap.registerTextures("cobble_stone", List.of(
                 Path.of("assets/minecraft_based/cobblestone.png")
         ));
+        blockTextureMap.registerTextures("seed", List.of(
+                Path.of("assets/minecraft_based/seed.png")
+        ));
+        blockTextureMap.registerTextures("sapling", List.of(
+                Path.of("assets/minecraft_based/acacia_sapling.png")
+        ));
+        blockTextureMap.registerTextures("tree", List.of(
+                Path.of("assets/minecraft_based/tree.png")
+        ));
         worldView.getTerrainView().setTextureMap(blockTextureMap);
     }
 
