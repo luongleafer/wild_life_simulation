@@ -11,12 +11,11 @@ public class Pig extends LandAnimal implements Edible {
     public Pig(EntityCoordinate position){
         super(position);
         // Default values for pigs, can be changed later if needed
-        this.health = 10;
-        this.energy = 5;
-        this.hunger = 5;
-        this.thirst = 5;
+        this.maxHealth = 10;
+        this.maxEnergy = 5;
         this.maxThirst = 15;
         this.maxHunger = 20;
+        this.hungerDepletionMultiplier = 0.2;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
@@ -25,6 +24,7 @@ public class Pig extends LandAnimal implements Edible {
         this.setSpeed(5.0/20);
         this.setDirection(1, 1);
         this.entityType = "pig";
+        setupStats();
     }
 
     @Override

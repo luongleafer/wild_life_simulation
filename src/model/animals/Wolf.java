@@ -19,10 +19,8 @@ public class Wolf extends LandAnimal implements Edible {
     public Wolf(EntityCoordinate position){
         super(position);
         // Default values for wolves, can be changed later if needed
-        this.health = 8;
-        this.energy = 10;
-        this.hunger = 5;
-        this.thirst = 5;
+        this.maxHealth = 8;
+        this.maxEnergy = 10;
         this.maxThirst = 20;
         this.maxHunger = 30;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
@@ -33,6 +31,7 @@ public class Wolf extends LandAnimal implements Edible {
         this.setSpeed(0.111);
         this.setDirection(0,0);
         this.entityType = "wolf";
+        setupStats();
     }
     @Override
     public void Interact(BlockModel block) {
@@ -76,7 +75,6 @@ public class Wolf extends LandAnimal implements Edible {
         else{
             moveToward(currentTarget.getPosition(), 2);
         }
-        hunger -= 0.01f;
     }
 
     @Override
@@ -84,14 +82,15 @@ public class Wolf extends LandAnimal implements Edible {
 //        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
        // filter out pigs
         EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
+        Pig pig = (Pig) toFollow;
         if(toFollow != null) {
-            if(hunger >= maxHunger) return;
+            if(!isHungry()) return;
             currentTarget = toFollow;
             if(getPosition().distance(toFollow.getPosition()) < 5) {
                 if(lastAttack >= attackCooldown) {
                     toFollow.receiveDamage(1);
                     if(toFollow.getHealth() <= 0) {
-                        hunger += 5;
+                        eat(pig);
                     }
                     lastAttack = 0;
                 }
