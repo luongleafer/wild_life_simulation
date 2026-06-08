@@ -13,12 +13,8 @@ public class Cow extends LandAnimal implements Edible {
 
 
     public Cow(EntityCoordinate position){
-        super(position);
+        super(position, 10, 10, 10, 10);
         // Default values for cows, can be changed later if needed
-        this.maxHealth = 10;
-        this.maxEnergy = 10;
-        this.maxHunger = 10;
-        this.maxThirst = 10;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.NORTH();
         this.currentState = 0; // Adult by default
@@ -26,7 +22,6 @@ public class Cow extends LandAnimal implements Edible {
         this.setSpeed(7.5/20);
         this.setDirection(0, 0);
         this.entityType = "cow";
-        setupStats();
     }
 
     @Override

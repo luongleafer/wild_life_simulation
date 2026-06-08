@@ -17,12 +17,8 @@ public class Wolf extends LandAnimal implements Edible {
     }
 
     public Wolf(EntityCoordinate position){
-        super(position);
+        super(position, 8, 30, 20, 10);
         // Default values for wolves, can be changed later if needed
-        this.maxHealth = 8;
-        this.maxEnergy = 10;
-        this.maxThirst = 20;
-        this.maxHunger = 30;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
@@ -31,7 +27,6 @@ public class Wolf extends LandAnimal implements Edible {
         this.setSpeed(0.111);
         this.setDirection(0,0);
         this.entityType = "wolf";
-        setupStats();
     }
     @Override
     public void Interact(BlockModel block) {

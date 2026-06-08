@@ -227,8 +227,22 @@ public abstract class AnimalModel extends EntityModel {
         setDirection(directionX, directionY);
     }
 
-    public AnimalModel(EntityCoordinate position){
+    protected AnimalModel(EntityCoordinate position,
+                          double maxHealth,
+                          double maxHunger,
+                          double maxThirst,
+                          double maxEnergy
+                          ){
         super(position);
+        this.maxHealth = maxHealth;
+        this.maxHunger = maxHunger;
+        this.maxThirst = maxThirst;
+        this.maxEnergy = maxEnergy;
+        setupStats();
+    }
+
+    public AnimalModel(EntityCoordinate position){
+        this(position, 10, 10, 10, 10);
         this.survivalStrategy = "survival";
         this.direction = Direction.STAY();
     }

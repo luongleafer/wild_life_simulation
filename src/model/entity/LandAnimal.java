@@ -9,6 +9,16 @@ public abstract class LandAnimal extends AnimalModel{
         super(position);
     }
 
+
+    protected LandAnimal(EntityCoordinate position,
+                          double maxHealth,
+                          double maxHunger,
+                          double maxThirst,
+                          double maxEnergy
+    ){
+        super(position, maxHealth, maxHunger, maxThirst, maxEnergy);
+    }
+
     @Override
     public void Interact(BlockModel block) {
         super.Interact(block);

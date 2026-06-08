@@ -9,12 +9,7 @@ import java.util.List;
 public class Pig extends LandAnimal implements Edible {
 
     public Pig(EntityCoordinate position){
-        super(position);
-        // Default values for pigs, can be changed later if needed
-        this.maxHealth = 10;
-        this.maxEnergy = 5;
-        this.maxThirst = 15;
-        this.maxHunger = 20;
+        super(position, 10, 20, 15, 5);
         this.hungerDepletionMultiplier = 0.2;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.SOUTH();
@@ -24,7 +19,6 @@ public class Pig extends LandAnimal implements Edible {
         this.setSpeed(5.0/20);
         this.setDirection(1, 1);
         this.entityType = "pig";
-        setupStats();
     }
 
     @Override
@@ -34,7 +28,7 @@ public class Pig extends LandAnimal implements Edible {
         // Just make it walk randomly for now
         // Which means this class is uh, blank
         if(entity instanceof Wolf wolf){
-            setSpeed(10.0/20);
+            setSpeed(7.0/20);
             headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
         }
     }
