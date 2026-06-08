@@ -35,6 +35,11 @@ public class WorldModel {
     private int entityPadding = 1;
     Random random = new Random();
     Random rand = new Random();
+    private Season currentSeason = Season.SPRING;
+    private final long seasonLength = 400; // 400 ticks, 20 seconds
+    private final int seasonVariance = 100;
+    private long ticksSinceLastSeason = 0;
+    private long currentSeasonLength = 400;
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -59,6 +64,22 @@ public class WorldModel {
 
     public void advanceTickCount(){
         tickCount += tickSpeed;
+        ticksSinceLastSeason += tickSpeed;
+    }
+
+    public void updateSeason(){
+        if(ticksSinceLastSeason < currentSeasonLength) return;
+        ticksSinceLastSeason = 0;
+        currentSeason = switch (currentSeason) {
+            case SPRING -> Season.SUMMER;
+            case SUMMER -> Season.AUTUMN;
+            case AUTUMN -> Season.WINTER;
+            case WINTER -> Season.SPRING;
+        };
+        currentSeasonLength = seasonLength + random.nextInt(seasonVariance);
+        AnimalModel.hungerDepletionRate = currentSeason.animalHungerDepletionRate;
+        AnimalModel.healthDepletionRate = currentSeason.animalHealthDepletionRate;
+        AnimalModel.thirstDepletionRate = currentSeason.animalThirstDepletionRate;
     }
 
     public void setTickSpeed(int tickSpeed) {
@@ -141,6 +162,7 @@ public class WorldModel {
 
     public void update(){
         advanceTickCount();
+        updateSeason();
 
         // Slow down block updates so it's visible to the human eye.
         // Terrain updates once every 50 ticks (approx. 1 second if tick is 20ms)
@@ -269,5 +291,9 @@ public class WorldModel {
 
     public int getLength() {
         return length;
+    }
+
+    public String getCurrentSeason(){
+        return currentSeason.getName();
     }
 }

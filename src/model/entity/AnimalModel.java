@@ -8,10 +8,10 @@ import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
     // health reduce when hungry/thirsty, can be affected by, for example, season
-    static protected double healthDepletionRate = 1;
+    static public double healthDepletionRate = 1;
     // hunger reduce when moving, per distance in moveByDistance()
-    static protected double hungerDepletionRate = 0.1;
-    static protected double thirstDepletionRate = 0.1;
+    static public double hungerDepletionRate = 0.1;
+    static public double thirstDepletionRate = 0.1;
 
     // since we are following the Minecraft model here...
     // the values will be floats

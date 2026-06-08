@@ -56,6 +56,7 @@ public class WorldController {
 //                    updateWorld();
                     refreshEntityViews();
                     worldModel.update();
+                    IO.println(worldModel.getCurrentSeason());
                     return null;
                 }
             };
