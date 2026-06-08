@@ -43,11 +43,12 @@ public class Wolf extends LandAnimal implements Edible {
 
     @Override
     public void Interact(EntityModel entity) {
+        super.Interact(entity);
         // They eat small animals, like cows and pigs I guess?
-        boolean isPrey = entity instanceof Pig || entity instanceof Cow;
-        if (isPrey) {
-            this.eat((Edible) entity);
-        }
+//        boolean isPrey = entity instanceof Pig || entity instanceof Cow;
+//        if (isPrey) {
+//            this.eat((Edible) entity);
+//        }
     }
 
     @Override
@@ -83,6 +84,7 @@ public class Wolf extends LandAnimal implements Edible {
     @Override
     public void Interact(List<EntityModel> entities) {
 //        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
+        entities.forEach(this::Interact);
        // filter out pigs
         EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
         if(toFollow != null) {

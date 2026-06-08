@@ -65,13 +65,9 @@ public class WorldController {
                     worldModel.update();
                     playSoundEvents();
                     if(!waitToSpawn.isEmpty()) {
-                        IO.println(waitToSpawn.size() + "at ticks " + worldModel.getTickCount());
                         waitToSpawn.forEach(WorldController.this::spawnEntity);
                         waitToSpawn.clear();
                     }
-                    long pigCount = worldModel.getEntities().stream().filter(entity -> entity instanceof Pig).count();
-                    long pigReadyToMate = worldModel.getEntities().stream().filter(entityModel -> entityModel instanceof Pig pig && pig.readyToMate()).count();
-                    IO.println("Tick " + worldModel.getTickCount() + " " + pigReadyToMate + " out of " + pigCount + " pigs ready to mate");
                     return null;
                 }
             };
@@ -209,6 +205,7 @@ public class WorldController {
         worldModel.getEntities().add(entity);
 //        worldView.getAllEntitiesView().addView(entity);
         worldView.getAllEntitiesView().requestRender(entity);
+        IO.println("Spawned new " + entity.getEntityType() + ".");
     }
 
     public void requestSpawnEntity(EntityModel entity) {

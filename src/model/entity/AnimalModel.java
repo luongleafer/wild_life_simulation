@@ -1,5 +1,6 @@
 package model.entity;
 
+import controller.WorldController;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
@@ -7,6 +8,9 @@ import model.block.ObstacleBlockModel;
 import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
+    public static double mateChance = 0.01;
+    public static final double mateDistance = 1;
+    public static final long maxTicksBetweenBirth = 400; // animals can only mate each 20 seconds
 
     // since we are following the Minecraft model here...
     // the values will be floats
@@ -33,6 +37,8 @@ public abstract class AnimalModel extends EntityModel {
     protected Direction direction;
     // Shared RNG for wandering/turning behaviors.
     private static final Random MOVE_RANDOM = new Random();
+
+    protected long birthCooldown = 0;
 
     // Main methods
     // eat(food) food can be other Entity or Block, depend on the specific implementation of the animal
@@ -231,6 +237,7 @@ public abstract class AnimalModel extends EntityModel {
             thirst = 0;
             health -= 1;
         }
+        birthCooldown++;
     }
 
     @Override
@@ -241,7 +248,46 @@ public abstract class AnimalModel extends EntityModel {
         }
     }
 
+    @Override
+    public void Interact(EntityModel entity) {
+        if(entity.getEntityType().equals(entityType)){
+            Interact((AnimalModel) entity);
+        }
+    }
+
+    private void Interact(AnimalModel other){
+        if(readyToMate() && other.readyToMate()
+                && position.distance(other.position) <= mateDistance
+                && new Random().nextDouble() < mateChance
+        ){
+            birthCooldown = 0;
+            other.birthCooldown = 0;
+            WorldController.getController().requestSpawnEntity(newAnimalFrom(this));
+        }
+    }
+
+    private static AnimalModel newAnimalFrom(AnimalModel animal) {
+        AnimalModel newAnimal = null;
+        try {
+            newAnimal = animal.getClass()
+                    .getConstructor(EntityCoordinate.class)
+                    .newInstance(new EntityCoordinate(animal.getPosition().getPosX(), animal.getPosition().getPosY()));
+        }
+        catch (NoSuchMethodException e) {
+            IO.println("Entity of type " + animal.getEntityType() + " cannot be instantiated from position.");
+        }
+        catch (Exception e) {
+            IO.println("Error when creating entity of type " + animal.getEntityType() + "." );
+        }
+        return newAnimal;
+    }
+
     protected void alterDirection(double deltaX, double deltaY, double priority){
         setDirection(directionX + deltaX * priority, directionY + deltaY * priority);
+    }
+
+    public boolean readyToMate(){
+        int maxTicksBetweenBirth = 400;
+        return birthCooldown >= maxTicksBetweenBirth;
     }
 }

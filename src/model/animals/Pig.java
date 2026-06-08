@@ -35,7 +35,6 @@ public class Pig extends LandAnimal implements Edible {
     @Override
     public void ageUp() {
         super.ageUp();
-        birthCooldown++;
     }
 
     @Override
@@ -44,18 +43,10 @@ public class Pig extends LandAnimal implements Edible {
         // Will they interact with other pigs? Probably
         // Just make it walk randomly for now
         // Which means this class is uh, blank
+        super.Interact(entity);
         if(entity instanceof Wolf wolf){
             setSpeed(10.0/20);
             headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
-        }
-        if(entity instanceof Pig pig && pig.readyToMate() && readyToMate()){
-            if(distanceTo(pig.getPosition()) <= 1){
-                if(new Random().nextDouble() <= 0.001){
-                    WorldController.getController().requestSpawnEntity(new Pig(new EntityCoordinate(position.posX + 1, position.posY + 1)));
-                    mate();
-                    pig.mate();
-                }
-            }
         }
     }
 
@@ -94,13 +85,9 @@ public class Pig extends LandAnimal implements Edible {
 
     }
 
-    public boolean readyToMate(){
-        int maxTicksBetweenBirth = 400;
-        return birthCooldown >= maxTicksBetweenBirth;
-    }
+
 
     public void mate(){
-        IO.println("mated");
         birthCooldown = 0;
     }
 }

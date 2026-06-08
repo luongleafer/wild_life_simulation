@@ -32,6 +32,7 @@ public class Cow extends LandAnimal implements Edible {
 
     @Override
     public void Interact(EntityModel entity) {
+        super.Interact(entity);
         // Cows are herbivores: they eat grass
         // Will they interact with other cows? Probably
         // Just make it walk randomly for now
