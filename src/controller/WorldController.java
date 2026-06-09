@@ -202,6 +202,10 @@ public class WorldController {
      * @param entity Entity to spawn
      */
     public void spawnEntity(EntityModel entity) {
+        if(entity == null) {
+            IO.println("Attempt to spawn null entity!");
+            return;
+        }
         worldModel.getEntities().add(entity);
 //        worldView.getAllEntitiesView().addView(entity);
         worldView.getAllEntitiesView().requestRender(entity);

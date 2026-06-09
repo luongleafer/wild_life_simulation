@@ -10,6 +10,10 @@ import java.util.Random;
 
 public class Pig extends LandAnimal implements Edible {
 
+    static {
+        EntityFactory.register("pig", Pig::new);
+    }
+
     private int birthCooldown = 0;
 
     public Pig(EntityCoordinate position){

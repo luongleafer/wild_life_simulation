@@ -11,6 +11,10 @@ public class Wolf extends LandAnimal implements Edible {
     private final int attackCooldown = 20; // 1 second cooldown
     private int lastAttack = 0;
 
+    static {
+        EntityFactory.register("wolf", Wolf::new);
+    }
+
     @Override
     public void ageUp() {
         super.ageUp();

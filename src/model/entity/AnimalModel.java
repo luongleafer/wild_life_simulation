@@ -1,6 +1,7 @@
 package model.entity;
 
 import controller.WorldController;
+import model.animals.Wolf;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
@@ -262,24 +263,8 @@ public abstract class AnimalModel extends EntityModel {
         ){
             birthCooldown = 0;
             other.birthCooldown = 0;
-            WorldController.getController().requestSpawnEntity(newAnimalFrom(this));
+            WorldController.getController().requestSpawnEntity(EntityFactory.createFrom(this));
         }
-    }
-
-    private static AnimalModel newAnimalFrom(AnimalModel animal) {
-        AnimalModel newAnimal = null;
-        try {
-            newAnimal = animal.getClass()
-                    .getConstructor(EntityCoordinate.class)
-                    .newInstance(new EntityCoordinate(animal.getPosition().getPosX(), animal.getPosition().getPosY()));
-        }
-        catch (NoSuchMethodException e) {
-            IO.println("Entity of type " + animal.getEntityType() + " cannot be instantiated from position.");
-        }
-        catch (Exception e) {
-            IO.println("Error when creating entity of type " + animal.getEntityType() + "." );
-        }
-        return newAnimal;
     }
 
     protected void alterDirection(double deltaX, double deltaY, double priority){
