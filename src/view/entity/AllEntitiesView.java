@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AllEntitiesView {
     // map an Entity to a View on screen
-    private final Map<EntityModel, EntityView> modelViewMap = new HashMap<>();
+    private final Map<EntityModel, EntityView> modelViewMap = new ConcurrentHashMap<>();
     EntityTextureMap entityTextureMap;
     Pane allEntitiesPane;
     List<EntityModel> waitToRender = new ArrayList<>();

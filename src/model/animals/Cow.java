@@ -52,11 +52,6 @@ public class Cow extends LandAnimal implements Edible {
     }
 
     @Override
-    public void Interact(List<EntityModel> entities) {
-
-    }
-
-    @Override
     public float getHungerValue() {
         return 5f;
     }

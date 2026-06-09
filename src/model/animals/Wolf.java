@@ -78,6 +78,20 @@ public class Wolf extends LandAnimal implements Edible {
         }
     }
 
+    private void attack(){
+        if(currentTarget == null) return;
+        if(getPosition().distance(currentTarget.getPosition()) < 5) {
+            if(lastAttack >= attackCooldown) {
+                currentTarget.receiveDamage(1);
+                if(currentTarget.getHealth() <= 0) {
+                    eat((Edible) currentTarget);
+                }
+                SoundEngine.getEngine().playSound("wolf_eat");
+                lastAttack = 0;
+            }
+        }
+    }
+
     @Override
     public void Interact(List<EntityModel> entities) {
 //        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
@@ -88,16 +102,7 @@ public class Wolf extends LandAnimal implements Edible {
         if(toFollow != null) {
             if(!isHungry()) return;
             currentTarget = toFollow;
-            if(getPosition().distance(toFollow.getPosition()) < 5) {
-                if(lastAttack >= attackCooldown) {
-                    toFollow.receiveDamage(1);
-                    if(toFollow.getHealth() <= 0) {
-                        eat(pig);
-                    }
-                    SoundEngine.getEngine().playSound("wolf_eat");
-                    lastAttack = 0;
-                }
-            }
+            attack();
         }
         else{
             currentTarget = null;

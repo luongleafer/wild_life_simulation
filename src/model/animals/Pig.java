@@ -76,15 +76,6 @@ public class Pig extends LandAnimal implements Edible {
         headRandomly();
         moveByDistance(getSpeed());
     }
-
-    @Override
-    public void Interact(List<EntityModel> entities) {
-        entities.forEach(this::Interact);
-
-    }
-
-
-
     public void mate(){
         birthCooldown = 0;
     }
