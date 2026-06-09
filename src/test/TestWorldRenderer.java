@@ -3,8 +3,6 @@ package test;
 import controller.WorldController;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.animals.Cow;
@@ -13,6 +11,7 @@ import model.animals.Wolf;
 import model.entity.EntityCoordinate;
 import model.world.WorldModel;
 import view.WorldView;
+import view.audio.SoundEngine;
 
 import java.util.Random;
 
@@ -32,10 +31,12 @@ public class TestWorldRenderer extends Application {
         WorldController controller = WorldController.getController();
         controller.setWorldModel(model);
         controller.setWorldView(renderer);
+        SoundEngine.initEngine();
         model.generateTerrain();
         Scene scene = new Scene(worldPane, 640, 480);
         controller.registerBlockTextures();
         controller.registerEntityTextures();
+        controller.registerSound();
         controller.startUpdateWorldService(20);
         renderer.startRendering();
         Random random = new Random();

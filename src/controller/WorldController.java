@@ -3,11 +3,13 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
 import model.block.BlockModels;
 import model.entity.EntityModel;
 import model.world.WorldModel;
+import view.audio.SoundEngine;
 import view.block.BlockTextureMap;
 import view.WorldView;
 import view.entity.EntityTextureMap;
@@ -15,6 +17,7 @@ import view.entity.EntityTextureMap;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Controls everything
@@ -40,6 +43,7 @@ public class WorldController {
 
     WorldModel worldModel;
     WorldView worldView;
+    Random random = new Random();
 
     // Update world in a separate thread.
     // ScheduledService is used to define a task that is run periodically
@@ -56,7 +60,7 @@ public class WorldController {
 //                    updateWorld();
                     refreshEntityViews();
                     worldModel.update();
-                    IO.println(worldModel.getCurrentSeason());
+                    playSoundEvents();
                     return null;
                 }
             };
@@ -85,8 +89,25 @@ public class WorldController {
      */
     private void refreshEntityViews(){
         worldModel.getDeadEntities().forEach(
-                entityModel ->
-                        worldView.getAllEntitiesView().removeView(entityModel)
+                entityModel -> {
+                    worldView.getAllEntitiesView().removeView(entityModel);
+                    SoundEngine.getEngine().playSound(entityModel.getEntityType() + "_death");
+                }
+        );
+    }
+
+    private void playSoundEvents(){
+        if(worldModel.getEntities().stream()
+                .anyMatch(entityModel ->
+                                  entityModel instanceof Wolf wolf && wolf.hasJustAttacked())){
+            SoundEngine.getEngine().playSound("wolf_eat");
+        }
+        worldModel.getEntities().forEach(
+                entityModel -> {
+                    if(random.nextDouble() < 0.001) {
+                        SoundEngine.getEngine().playSound(entityModel.getEntityType()+"_idle");
+                    }
+                }
         );
     }
 
@@ -113,6 +134,15 @@ public class WorldController {
         blockTextureMap.registerTextures("cobble_stone", List.of(
                 Path.of("assets/minecraft_based/cobblestone.png")
         ));
+        blockTextureMap.registerTextures("seed", List.of(
+                Path.of("assets/minecraft_based/seed.png")
+        ));
+        blockTextureMap.registerTextures("sapling", List.of(
+                Path.of("assets/minecraft_based/acacia_sapling.png")
+        ));
+        blockTextureMap.registerTextures("tree", List.of(
+                Path.of("assets/minecraft_based/tree.png")
+        ));
         worldView.getTerrainView().setTextureMap(blockTextureMap);
     }
 
@@ -133,6 +163,18 @@ public class WorldController {
                                         Paths.get("assets/minecraft_based/cow.png"),1, 2.4, 1.5
         );
         worldView.getAllEntitiesView().setEntityTextureMap(entityTextureMap);
+    }
+
+    public void registerSound(){
+        SoundEngine soundEngine = SoundEngine.getEngine();
+        soundEngine.registerSound("grass_step", Paths.get("assets/audio/grass1.mp3"));
+        soundEngine.registerSound("wolf_eat", Paths.get("assets/audio/wolf/growl1.mp3"));
+        soundEngine.registerSound("pig_idle", Paths.get("assets/audio/pig/pig_idle.mp3"));
+        soundEngine.registerSound("cow_idle", Paths.get("assets/audio/cow/idle.mp3"));
+        soundEngine.registerSound("wolf_idle", Paths.get("assets/audio/wolf/bark.mp3"));
+        soundEngine.registerSound("wolf_death", Paths.get("assets/audio/wolf/death.mp3"));
+        soundEngine.registerSound("pig_death", Paths.get("assets/audio/pig/death.mp3"));
+        soundEngine.registerSound("cow_death", Paths.get("assets/audio/cow/death.mp3"));
     }
 
     /**
