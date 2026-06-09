@@ -2,6 +2,7 @@ package model.animals;
 
 import model.block.BlockModel;
 import model.entity.*;
+import view.audio.SoundEngine;
 
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class Wolf extends LandAnimal implements Edible {
                     if(toFollow.getHealth() <= 0) {
                         hunger += 5;
                     }
+                    SoundEngine.getEngine().playSound("wolf_eat");
                     lastAttack = 0;
                 }
             }
@@ -101,5 +103,9 @@ public class Wolf extends LandAnimal implements Edible {
             currentTarget = null;
         }
 
+    }
+
+    public boolean hasJustAttacked(){
+        return lastAttack == 0;
     }
 }
