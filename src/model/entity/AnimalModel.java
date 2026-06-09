@@ -1,7 +1,6 @@
 package model.entity;
 
 import controller.WorldController;
-import model.animals.Wolf;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
