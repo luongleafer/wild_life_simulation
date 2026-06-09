@@ -17,14 +17,8 @@ public class Cow extends LandAnimal implements Edible {
 
 
     public Cow(EntityCoordinate position){
-        super(position);
+        super(position, 10, 10, 10, 10);
         // Default values for cows, can be changed later if needed
-        this.health = 10;
-        this.energy = 10;
-        this.hunger = 5;
-        this.thirst = 2;
-        this.maxHunger = 10;
-        this.maxThirst = 10;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.NORTH();
         this.currentState = 0; // Adult by default
@@ -47,11 +41,10 @@ public class Cow extends LandAnimal implements Edible {
     public void Interact(BlockModel block) {
         super.Interact(block);
         if(block.getBlockType().equals("grass")){
-            if(hunger <= maxHunger / 2.0) {
+            if(isHungry()) {
                 GrassBlock grassBlock = (GrassBlock)block;
                 setDirection(0, 0);
-                hunger += grassBlock.getHungerValue();
-                energy += grassBlock.getEnergyValue();
+                eat(grassBlock);
                 WorldController.getController().placeBlock(new DirtBlock(0,0,0), block.getPosition().x, block.getPosition().y);
             }
         }
@@ -82,8 +75,6 @@ public class Cow extends LandAnimal implements Edible {
     @Override
     public void move() {
         roamRandomly(7.5/20, 11.11/20,Math.PI/3);
-        thirst -= 0.1f;
-        hunger -= 0.5f;
     }
 
     @Override

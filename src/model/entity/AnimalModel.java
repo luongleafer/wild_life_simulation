@@ -12,14 +12,26 @@ public abstract class AnimalModel extends EntityModel {
     public static double mateChance = 0.001;
     public static final double mateDistance = 1;
     public static final long maxTicksBetweenBirth = 400; // animals can only mate each 20 seconds
+    // health reduce when hungry/thirsty, can be affected by, for example, season
+    static public double healthDepletionRate = 1;
+    // hunger reduce when moving, per distance in moveByDistance()
+    static public double hungerDepletionRate = 0.1;
+    static public double thirstDepletionRate = 0.1;
 
     // since we are following the Minecraft model here...
     // the values will be floats
-    protected float hunger;
-    protected float thirst;
-    protected float energy;
-    protected int maxThirst;
-    protected int maxHunger;
+    private double hunger;
+    private double thirst;
+    private double energy;
+
+    protected double maxThirst;
+    protected double maxHunger;
+    protected double maxEnergy;
+
+    protected double healthDepletionMultiplier = 1;
+    protected double hungerDepletionMultiplier = 1;
+    protected double thirstDepletionMultiplier = 1;
+
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
@@ -187,6 +199,8 @@ public abstract class AnimalModel extends EntityModel {
         double newX = getPosition().getPosX() + directionX * distance;
         double newY = getPosition().getPosY() + directionY * distance;
         move(newX, newY);
+        hunger -= distance * hungerDepletionRate * hungerDepletionMultiplier;
+        thirst -= distance * thirstDepletionRate * thirstDepletionMultiplier;
     }
 
     protected void headTowards(BlockCoordinate targetBlock){
@@ -220,10 +234,41 @@ public abstract class AnimalModel extends EntityModel {
         setDirection(directionX, directionY);
     }
 
-    public AnimalModel(EntityCoordinate position){
+    protected AnimalModel(EntityCoordinate position,
+                          double maxHealth,
+                          double maxHunger,
+                          double maxThirst,
+                          double maxEnergy
+                          ){
         super(position);
+        this.maxHealth = maxHealth;
+        this.maxHunger = maxHunger;
+        this.maxThirst = maxThirst;
+        this.maxEnergy = maxEnergy;
+        setupStats();
+    }
+
+    public AnimalModel(EntityCoordinate position){
+        this(position, 10, 10, 10, 10);
         this.survivalStrategy = "survival";
         this.direction = Direction.STAY();
+    }
+
+    @Override
+    protected void setupStats(){
+        super.setupStats();
+        this.hunger = maxHunger / 2;
+        this.thirst = maxThirst / 2;
+        this.energy = maxEnergy / 2;
+    }
+
+    // check if animal is hungry, can be overridden
+    protected boolean isHungry(){
+        return hunger <= maxHunger / 2;
+    }
+
+    protected boolean isThirsty(){
+        return thirst <= maxThirst / 2;
     }
 
     @Override
@@ -232,11 +277,11 @@ public abstract class AnimalModel extends EntityModel {
         // animals slowly dying of hunger and thirst
         if(hunger <= 0){
             hunger = 0;
-            health -= 1;
+            health -= healthDepletionRate * healthDepletionMultiplier;
         }
         if(thirst <= 0){
             thirst = 0;
-            health -= 1;
+            health -= healthDepletionRate * healthDepletionMultiplier;
         }
         birthCooldown++;
     }

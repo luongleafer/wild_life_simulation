@@ -6,17 +6,7 @@ import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
-import model.generation.DirtBlock;
-import model.generation.GrassBlock;
-import model.generation.MudBlock;
-import model.generation.WaterBlock;
-import model.generation.WoodBlock;
-import model.generation.NoiseGeneration;
-import model.generation.SandBlock;
-import model.generation.CobbleStoneBlock;
-import model.generation.DirtBlock;
-import model.generation.GrassBlock;
-import model.generation.WaterBlock;
+import model.generation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,6 +25,11 @@ public class WorldModel {
     private int entityPadding = 1;
     Random random = new Random();
     Random rand = new Random();
+    private Season currentSeason = Season.SPRING;
+    private final long seasonLength = 400; // 400 ticks, 20 seconds
+    private final int seasonVariance = 100;
+    private long ticksSinceLastSeason = 0;
+    private long currentSeasonLength = 400;
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -59,6 +54,22 @@ public class WorldModel {
 
     public void advanceTickCount(){
         tickCount += tickSpeed;
+        ticksSinceLastSeason += tickSpeed;
+    }
+
+    public void updateSeason(){
+        if(ticksSinceLastSeason < currentSeasonLength) return;
+        ticksSinceLastSeason = 0;
+        currentSeason = switch (currentSeason) {
+            case SPRING -> Season.SUMMER;
+            case SUMMER -> Season.AUTUMN;
+            case AUTUMN -> Season.WINTER;
+            case WINTER -> Season.SPRING;
+        };
+        currentSeasonLength = seasonLength + random.nextInt(seasonVariance);
+        AnimalModel.hungerDepletionRate = currentSeason.animalHungerDepletionRate;
+        AnimalModel.healthDepletionRate = currentSeason.animalHealthDepletionRate;
+        AnimalModel.thirstDepletionRate = currentSeason.animalThirstDepletionRate;
     }
 
     public void setTickSpeed(int tickSpeed) {
@@ -120,10 +131,11 @@ public class WorldModel {
         Random rand = new Random();
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
-                if(blocksData[x][y] instanceof DirtBlock
-                        && rand.nextDouble() < 0.02
-                ){
+                if(blocksData[x][y] instanceof DirtBlock && rand.nextDouble() < 0.02) {
                     overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0,0);
+                }
+                if ((blocksData[x][y] instanceof GrassBlock || blocksData[x][y] instanceof DirtBlock) && rand.nextDouble() < 0.03) {
+                    overlayBlocks[x][y] = new SeedBlock(x, y, 0);
                 }
             }
         }
@@ -141,6 +153,7 @@ public class WorldModel {
 
     public void update(){
         advanceTickCount();
+        updateSeason();
 
         // Slow down block updates so it's visible to the human eye.
         // Terrain updates once every 50 ticks (approx. 1 second if tick is 20ms)
@@ -255,6 +268,9 @@ public class WorldModel {
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
                 blocksData[x][y] = blocksData[x][y].interact(getSurroundingBlocks(blocksData[x][y].getPosition()));
+                if (overlayBlocks[x][y] != null) {
+                    overlayBlocks[x][y] = overlayBlocks[x][y].interact(getSurroundingBlocks(overlayBlocks[x][y].getPosition()));
+                }
             }
         }
     }
@@ -269,5 +285,9 @@ public class WorldModel {
 
     public int getLength() {
         return length;
+    }
+
+    public String getCurrentSeason(){
+        return currentSeason.getName();
     }
 }
