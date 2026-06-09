@@ -1,11 +1,17 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.block.BlockFactory;
 
 import java.util.List;
 import java.util.Random;
 
 public class SandBlock extends BlockModel {
+
+    static {
+        BlockFactory.register("sand", SandBlock::new);
+    }
+
     public SandBlock(int x, int y, int initialState) {
         super(x, y, initialState, 4);
         this.blockType = "sand";

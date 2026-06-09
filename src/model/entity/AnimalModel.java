@@ -9,7 +9,7 @@ import model.block.ObstacleBlockModel;
 import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
-    public static double mateChance = 0.01;
+    public static double mateChance = 0.001;
     public static final double mateDistance = 1;
     public static final long maxTicksBetweenBirth = 400; // animals can only mate each 20 seconds
 

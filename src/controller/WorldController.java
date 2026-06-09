@@ -3,11 +3,9 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
-import model.block.BlockModels;
-import model.entity.EntityCoordinate;
+import model.block.BlockFactory;
 import model.entity.EntityModel;
 import model.world.WorldModel;
 import view.audio.SoundEngine;
@@ -187,7 +185,7 @@ public class WorldController {
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
         BlockModel newBlock = null;
         try {
-            newBlock = BlockModels.from(block, xPos, yPos,0);
+            newBlock = BlockFactory.create(block.getBlockType(), xPos, yPos, 0);
         }
         catch(Exception e) {
             IO.println("Exception when trying to place block: " + e.getMessage());

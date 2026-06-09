@@ -1,12 +1,10 @@
 package view.block;
 
 import controller.WorldController;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import model.block.BlockModel;
-import model.block.BlockModels;
 
 /**
  * Render the world's terrain in a grid

@@ -1,12 +1,17 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.block.BlockFactory;
 import model.entity.Edible;
 
 import java.util.List;
-import java.util.Random;
 
 public class GrassBlock extends BlockModel implements Edible {
+
+    static {
+        BlockFactory.register("grass", GrassBlock::new);
+    }
+
     public GrassBlock(int x, int y, int initialState) {
         super(x, y, initialState, 3);
         this.blockType = "grass";
