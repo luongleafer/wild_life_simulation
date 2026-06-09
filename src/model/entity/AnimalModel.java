@@ -270,6 +270,25 @@ public abstract class AnimalModel extends EntityModel {
         this.survivalStrategy = "survival";
         this.direction = Direction.STAY();
     }
+    public float getHunger() {
+        return hunger;
+    }
+    public void setHunger(float hunger) {
+        this.hunger = Math.max(0f, Math.min(100f, hunger));
+    }
+    public float getThirst() {
+        return thirst;
+    }
+    public void setThirst(float thirst) {
+        this.thirst = Math.max(0f, Math.min(100f, thirst));
+    }
+
+    public float getEnergy() {
+        return energy;
+    }
+    public void setEnergy(float energy) {
+        this.energy = Math.max(0f, Math.min(100f, energy));
+    }
 
 
 }

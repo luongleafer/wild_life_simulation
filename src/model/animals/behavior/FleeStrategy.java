@@ -15,7 +15,7 @@ import java.util.List;
  * nhất, với tốc độ được nhân lên theo {@code fleeSpeedMultiplier} trong Species.</p>
  *
  * <p>Nếu không có kẻ săn mồi nào được truyền vào, strategy sẽ fallback về
- * {@link RoamStrategy} để tránh con vật đứng yên.</p>
+ * {RoamStrategy} để tránh con vật đứng yên.</p>
  */
 public class FleeStrategy implements BehaviorStrategy {
 

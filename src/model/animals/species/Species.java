@@ -1,8 +1,8 @@
 package model.animals.species;
 
-/**
- * Luu cac thong so di chuyen va cam nhan dung chung cho cung mot loai dong vat.
- */
+
+ // Luu cac thong so di chuyen va cam nhan dung chung cho cung mot loai dong vat.
+
 public class Species {
     private final String name;
     private final double minSpeed;
