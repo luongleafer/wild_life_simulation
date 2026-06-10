@@ -1,9 +1,16 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.block.BlockFactory;
 import model.entity.Drinkable;
 
+import java.util.List;
+
 public class WaterBlock extends BlockModel implements Drinkable {
+
+    static {
+        BlockFactory.register("water", WaterBlock::new);
+    }
 
     public WaterBlock(int x, int y, int initialState) {
         super(x, y, initialState, 5);
@@ -36,5 +43,10 @@ public class WaterBlock extends BlockModel implements Drinkable {
     @Override
     public boolean canBeDrank() {
         return true;
+    }
+
+    @Override
+    public BlockModel interact(List<BlockModel> surroundingBlocks) {
+        return this;
     }
 }

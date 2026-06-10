@@ -10,7 +10,8 @@ public abstract class EntityModel {
     // its coordinates
     protected EntityCoordinate position;
     // its health
-    protected int health;
+    protected double health;
+    protected double maxHealth;
     // its age and grow speed
     protected int age;
     // TEMPORARY METHOD: use 2 more values to dictate when switch to next grow stage
@@ -49,11 +50,11 @@ public abstract class EntityModel {
         this.position = position;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 
@@ -119,5 +120,11 @@ public abstract class EntityModel {
     // UPDATE: still unsure about this one
     public abstract void Interact(BlockModel block);
     public abstract void Interact(EntityModel entity);
-    public abstract void Interact(List<EntityModel> entities);
+    public void Interact(List<EntityModel> entities){
+        entities.forEach(this::Interact);
+    }
+
+    protected void setupStats(){
+        this.health = this.maxHealth;
+    }
 }

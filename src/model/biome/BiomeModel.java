@@ -2,7 +2,7 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
-import model.block.BlockModels;
+import model.block.BlockFactory;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public abstract class BiomeModel {
         BlockModel baseBlock = blockPalette.getFirst();
         for(int x = topLeft.x; x <  bottomRight.x; x++){
             for(int y =  topLeft.y; y <  bottomRight.y; y++){
-                blocks.add(BlockModels.from(baseBlock, x, y, 0));
+                blocks.add(BlockFactory.create(baseBlock.getBlockType(), x, y, 0));
             }
         }
         return blocks;

@@ -1,5 +1,9 @@
 package model.block;
 
+import model.entity.EntityCoordinate;
+
+import java.util.List;
+
 public abstract class BlockModel {
 
     // Represents how many stages this block can go through
@@ -159,6 +163,17 @@ public abstract class BlockModel {
     // Child classes can override this.
     public boolean isAffectedByGravity() {
         return false;
+    }
+
+    /**
+     * Interaction with surrounding blocks
+     * @param surroundingBlocks Blocks surrounding this block
+     * @return This block or new block
+     */
+    public abstract BlockModel interact(List<BlockModel> surroundingBlocks);
+
+    public EntityCoordinate blockCenter(){
+        return new EntityCoordinate(position.getX() + 0.5, position.getY() + 0.5);
     }
 
 }

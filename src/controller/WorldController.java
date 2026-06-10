@@ -3,25 +3,48 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import model.animals.Wolf;
 import model.block.BlockModel;
-import model.block.BlockModels;
+import model.block.BlockFactory;
 import model.entity.EntityModel;
 import model.world.WorldModel;
+import view.audio.SoundEngine;
 import view.block.BlockTextureMap;
 import view.WorldView;
 import view.entity.EntityTextureMap;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Controls everything
  */
 public class WorldController {
+    private final List<EntityModel> waitToSpawn;
     public static int WORLD_TILE_SIZE = 16;
+    public static WorldController controller;
+
+    public static WorldController getController() {
+        if(controller == null) {
+            controller = new WorldController();
+        }
+        return controller;
+    }
+
+    public void setWorldModel(WorldModel worldModel) {
+        this.worldModel = worldModel;
+    }
+
+    public void setWorldView(WorldView worldView) {
+        this.worldView = worldView;
+    }
+
     WorldModel worldModel;
     WorldView worldView;
+    Random random = new Random();
 
     // Update world in a separate thread.
     // ScheduledService is used to define a task that is run periodically
@@ -38,15 +61,20 @@ public class WorldController {
 //                    updateWorld();
                     refreshEntityViews();
                     worldModel.update();
+                    playSoundEvents();
+                    if(!waitToSpawn.isEmpty()) {
+                        waitToSpawn.forEach(WorldController.this::spawnEntity);
+                        waitToSpawn.clear();
+                    }
                     return null;
                 }
             };
         }
     };
 
-    public WorldController(WorldModel model, WorldView worldView) {
-        this.worldModel = model;
-        this.worldView = worldView;
+    private WorldController(){
+        waitToSpawn = new ArrayList<>();
+
     }
 
     /**
@@ -67,8 +95,25 @@ public class WorldController {
      */
     private void refreshEntityViews(){
         worldModel.getDeadEntities().forEach(
-                entityModel ->
-                        worldView.getAllEntitiesView().removeView(entityModel)
+                entityModel -> {
+                    worldView.getAllEntitiesView().removeView(entityModel);
+                    SoundEngine.getEngine().playSound(entityModel.getEntityType() + "_death");
+                }
+        );
+    }
+
+    private void playSoundEvents(){
+        if(worldModel.getEntities().stream()
+                .anyMatch(entityModel ->
+                                  entityModel instanceof Wolf wolf && wolf.hasJustAttacked())){
+            SoundEngine.getEngine().playSound("wolf_eat");
+        }
+        worldModel.getEntities().forEach(
+                entityModel -> {
+                    if(random.nextDouble() < 0.001) {
+                        SoundEngine.getEngine().playSound(entityModel.getEntityType()+"_idle");
+                    }
+                }
         );
     }
 
@@ -92,6 +137,18 @@ public class WorldController {
         blockTextureMap.registerTextures("mud", List.of(
                 Path.of("assets/minecraft_based/mud.png")
         ));
+        blockTextureMap.registerTextures("cobble_stone", List.of(
+                Path.of("assets/minecraft_based/cobblestone.png")
+        ));
+        blockTextureMap.registerTextures("seed", List.of(
+                Path.of("assets/minecraft_based/seed.png")
+        ));
+        blockTextureMap.registerTextures("sapling", List.of(
+                Path.of("assets/minecraft_based/acacia_sapling.png")
+        ));
+        blockTextureMap.registerTextures("tree", List.of(
+                Path.of("assets/minecraft_based/tree.png")
+        ));
         worldView.getTerrainView().setTextureMap(blockTextureMap);
     }
 
@@ -114,6 +171,18 @@ public class WorldController {
         worldView.getAllEntitiesView().setEntityTextureMap(entityTextureMap);
     }
 
+    public void registerSound(){
+        SoundEngine soundEngine = SoundEngine.getEngine();
+        soundEngine.registerSound("grass_step", Paths.get("assets/audio/grass1.mp3"));
+        soundEngine.registerSound("wolf_eat", Paths.get("assets/audio/wolf/growl1.mp3"));
+        soundEngine.registerSound("pig_idle", Paths.get("assets/audio/pig/pig_idle.mp3"));
+        soundEngine.registerSound("cow_idle", Paths.get("assets/audio/cow/idle.mp3"));
+        soundEngine.registerSound("wolf_idle", Paths.get("assets/audio/wolf/bark.mp3"));
+        soundEngine.registerSound("wolf_death", Paths.get("assets/audio/wolf/death.mp3"));
+        soundEngine.registerSound("pig_death", Paths.get("assets/audio/pig/death.mp3"));
+        soundEngine.registerSound("cow_death", Paths.get("assets/audio/cow/death.mp3"));
+    }
+
     /**
      * Attempt to place a new block in the world
      * @param block The type of block be cloned and place
@@ -125,7 +194,7 @@ public class WorldController {
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
         BlockModel newBlock = null;
         try {
-            newBlock = BlockModels.from(block, xPos, yPos,0);
+            newBlock = BlockFactory.create(block.getBlockType(), xPos, yPos, 0);
         }
         catch(Exception e) {
             IO.println("Exception when trying to place block: " + e.getMessage());
@@ -140,8 +209,18 @@ public class WorldController {
      * @param entity Entity to spawn
      */
     public void spawnEntity(EntityModel entity) {
+        if(entity == null) {
+            IO.println("Attempt to spawn null entity!");
+            return;
+        }
         worldModel.getEntities().add(entity);
-        worldView.getAllEntitiesView().addView(entity);
+//        worldView.getAllEntitiesView().addView(entity);
+        worldView.getAllEntitiesView().requestRender(entity);
+        IO.println("Spawned new " + entity.getEntityType() + ".");
+    }
+
+    public void requestSpawnEntity(EntityModel entity) {
+        waitToSpawn.add(entity);
     }
 
 }
