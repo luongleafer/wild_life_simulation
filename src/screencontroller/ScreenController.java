@@ -253,7 +253,7 @@ public class ScreenController {
         BlockModel[][] map =
                 world.getBlocksData();
 
-        double cellSize = 5;
+        double cellSize = 20;
 
         for(int x = 0 ; x < world.getWidth() ; x++) {
 
@@ -296,7 +296,7 @@ public class ScreenController {
     }
     private void drawEntities(GraphicsContext gc) {
 
-        double cellSize = 5;
+        double cellSize = 20;
 
         for(EntityModel entity : world.getEntities()) {
 
