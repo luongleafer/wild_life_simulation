@@ -2,13 +2,14 @@ package view.entity;
 
 import controller.WorldController;
 import javafx.scene.image.Image;
+import model.entity.EntityCoordinate;
+import model.entity.EntityFactory;
 import model.entity.EntityModel;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * Map an Entity with its texture, represent as Image
@@ -77,5 +78,25 @@ public class EntityTextureMap {
     // Get the texture associate with the entity
     public Image getEntityTexture(EntityModel model, int index) {
         return entityTextureMap.get(model.getEntityType()).get(index);
+    }
+
+    public static EntityTextureMap loadFrom(Path path){
+        int maxState = 8;
+        EntityTextureMap entityTextureMap = new EntityTextureMap();
+        Set<String> allEntityTypes = EntityFactory.allEntityString();
+        if(allEntityTypes.isEmpty()) return null;
+        for(String entityType : allEntityTypes){
+            for(int i = 0; i<maxState; i++){
+                Path thisStatePath = Paths.get(path.toString(), "entity", entityType + "_" + i + ".png");
+                if(Files.exists(thisStatePath)){
+                    entityTextureMap.registerEntity(entityType, thisStatePath, i
+                    );
+                }
+                else{
+                    IO.println("Try to load file at " + thisStatePath + " but doesn't exist");
+                }
+            }
+        }
+        return entityTextureMap;
     }
 }

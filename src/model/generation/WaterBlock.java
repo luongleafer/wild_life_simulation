@@ -9,7 +9,6 @@ import java.util.List;
 public class WaterBlock extends BlockModel implements Drinkable {
 
     static {
-        BlockFactory.register("water", WaterBlock::new);
     }
 
     public WaterBlock(int x, int y) {

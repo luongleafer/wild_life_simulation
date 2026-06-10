@@ -12,7 +12,6 @@ import java.util.Random;
 public class Cow extends LandAnimal implements Edible {
 
     static {
-        EntityFactory.register("cow", Cow::new);
     }
 
 

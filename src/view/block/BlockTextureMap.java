@@ -2,13 +2,16 @@ package view.block;
 
 import controller.WorldController;
 import javafx.scene.image.Image;
+import model.block.BlockFactory;
 import model.block.BlockModel;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manage graphical representation of a block.
@@ -65,5 +68,20 @@ public class BlockTextureMap {
      */
     public Image getBlockTexture(BlockModel blockModel){
         return blockTextureMap.getOrDefault(blockModel.getBlockType(), null);
+    }
+
+    public static BlockTextureMap loadFrom(Path path){
+        BlockTextureMap blockTextureMap = new BlockTextureMap();
+        Set<String> allBlockTypes = BlockFactory.allBlockType();
+        for(String blockType : allBlockTypes){
+            Path thisBlockPath = Paths.get(path.toString(), "block", blockType + ".png");
+            if(Files.exists(thisBlockPath)){
+                blockTextureMap.registerTextures(blockType, thisBlockPath);
+            }
+            else{
+                IO.println("Failed to load block texture at " + thisBlockPath);
+            }
+        }
+        return blockTextureMap;
     }
 }

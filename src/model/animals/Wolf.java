@@ -12,7 +12,6 @@ public class Wolf extends LandAnimal implements Edible {
     private int lastAttack = 0;
 
     static {
-        EntityFactory.register("wolf", Wolf::new);
     }
 
     @Override

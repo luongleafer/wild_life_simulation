@@ -8,7 +8,6 @@ import java.util.List;
 public class WoodBlock extends BlockModel {
 
     static {
-        BlockFactory.register("wood", WoodBlock::new);
     }
 
     public WoodBlock(int x, int y) {

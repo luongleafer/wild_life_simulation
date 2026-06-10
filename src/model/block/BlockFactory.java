@@ -2,6 +2,7 @@ package model.block;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class BlockFactory {
     private static final Map<String, BlockCreation> blockCreationMap = new HashMap<>();
@@ -20,6 +21,10 @@ public class BlockFactory {
 
     public static BlockModel createFrom(BlockModel block){
         return create(block.getBlockType(), block.position.x, block.position.y);
+    }
+
+    public static Set<String> allBlockType(){
+        return blockCreationMap.keySet();
     }
 
 }

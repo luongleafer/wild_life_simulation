@@ -9,7 +9,6 @@ import java.util.Random;
 public class SandBlock extends BlockModel {
 
     static {
-        BlockFactory.register("sand", SandBlock::new);
     }
 
     public SandBlock(int x, int y) {

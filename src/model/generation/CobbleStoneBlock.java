@@ -8,9 +8,6 @@ import java.util.List;
 
 public class CobbleStoneBlock extends ObstacleBlockModel {
 
-    static {
-        BlockFactory.register("cobble_stone", CobbleStoneBlock::new);
-    }
 
     public CobbleStoneBlock(int x, int y) {
         this(x, y, 0);

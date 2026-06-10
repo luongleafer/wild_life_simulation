@@ -9,7 +9,6 @@ import java.util.Random;
 public class DirtBlock extends BlockModel {
 
     static {
-        BlockFactory.register("dirt", DirtBlock::new);
     }
     public DirtBlock(int x, int y) {
         super(x, y, 2);

@@ -12,7 +12,6 @@ public class SaplingBlock extends ObstacleBlockModel implements Edible {
     private static final int growUpAge = 30;
 
     static {
-        BlockFactory.register("sapling", SaplingBlock::new);
     }
 
     public SaplingBlock(int x, int y) {

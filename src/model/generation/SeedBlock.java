@@ -9,7 +9,6 @@ public class SeedBlock extends ObstacleBlockModel implements Edible {
     private static final int growUpAge = 10;
 
     static {
-        BlockFactory.register("seed", SeedBlock::new);
     }
 
     public SeedBlock(int x, int y) {

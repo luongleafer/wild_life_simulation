@@ -11,7 +11,6 @@ public class TreeBlock extends ObstacleBlockModel {
     private static final int finalLifespan = 100;
 
     static {
-        BlockFactory.register("tree", TreeBlock::new);
     }
 
     public TreeBlock(int x, int y) {

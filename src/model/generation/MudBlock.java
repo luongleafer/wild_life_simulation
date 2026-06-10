@@ -9,7 +9,6 @@ import java.util.Random;
 public class MudBlock extends BlockModel {
 
     static{
-        BlockFactory.register("mud", MudBlock::new);
     }
 
     private boolean isWet;

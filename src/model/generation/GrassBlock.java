@@ -9,7 +9,6 @@ import java.util.List;
 public class GrassBlock extends BlockModel implements Edible {
 
     static {
-        BlockFactory.register("grass", GrassBlock::new);
     }
 
     public GrassBlock(int x, int y) {
