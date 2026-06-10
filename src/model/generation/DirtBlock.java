@@ -14,8 +14,9 @@ public class DirtBlock extends BlockModel {
 
     public DirtBlock(int x, int y, int initialState) {
         super(x, y, initialState, 2);
+    public DirtBlock(int x, int y) {
+        super(x, y, 2);
         this.blockType = "dirt";
-        this.totalStates = 1;
         this.sinkability = 2;
     }
 

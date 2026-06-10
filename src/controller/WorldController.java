@@ -119,36 +119,36 @@ public class WorldController {
 
     public void registerBlockTextures(){
         BlockTextureMap blockTextureMap = new BlockTextureMap();
-        blockTextureMap.registerTextures("dirt", List.of(
+        blockTextureMap.registerTextures("dirt",
                 Path.of("assets/minecraft_based/dirt.png")
-        ));
-        blockTextureMap.registerTextures("grass", List.of(
+        );
+        blockTextureMap.registerTextures("grass",
                 Path.of("assets/minecraft_based/grass_block_top.png")
-        ));
-        blockTextureMap.registerTextures("sand", List.of(
+        );
+        blockTextureMap.registerTextures("sand",
                 Path.of("assets/minecraft_based/sand.png")
-        ));
-        blockTextureMap.registerTextures("water", List.of(
+        );
+        blockTextureMap.registerTextures("water",
                 Path.of("assets/minecraft_based/water_still_oneblock.png")
-        ));
-        blockTextureMap.registerTextures("wood", List.of(
+        );
+        blockTextureMap.registerTextures("wood",
                 Path.of("assets/minecraft_based/oak_log.png")
-        ));
-        blockTextureMap.registerTextures("mud", List.of(
+        );
+        blockTextureMap.registerTextures("mud",
                 Path.of("assets/minecraft_based/mud.png")
-        ));
-        blockTextureMap.registerTextures("cobble_stone", List.of(
+        );
+        blockTextureMap.registerTextures("cobble_stone",
                 Path.of("assets/minecraft_based/cobblestone.png")
-        ));
-        blockTextureMap.registerTextures("seed", List.of(
+        );
+        blockTextureMap.registerTextures("seed",
                 Path.of("assets/minecraft_based/seed.png")
-        ));
-        blockTextureMap.registerTextures("sapling", List.of(
+        );
+        blockTextureMap.registerTextures("sapling",
                 Path.of("assets/minecraft_based/acacia_sapling.png")
-        ));
-        blockTextureMap.registerTextures("tree", List.of(
+        );
+        blockTextureMap.registerTextures("tree",
                 Path.of("assets/minecraft_based/tree.png")
-        ));
+        );
         worldView.getTerrainView().setTextureMap(blockTextureMap);
     }
 
@@ -194,7 +194,7 @@ public class WorldController {
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
         BlockModel newBlock = null;
         try {
-            newBlock = BlockFactory.create(block.getBlockType(), xPos, yPos, 0);
+            newBlock = BlockFactory.create(block, xPos, yPos);
         }
         catch(Exception e) {
             IO.println("Exception when trying to place block: " + e.getMessage());

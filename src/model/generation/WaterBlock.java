@@ -13,12 +13,11 @@ public class WaterBlock extends BlockModel implements Drinkable {
     }
 
     public WaterBlock(int x, int y, int initialState) {
-        super(x, y, initialState, 5);
+        super(x, y, 5);
         this.blockType = "water";
         // water might have 3 states (0, 1, 2) to represent
         // different frames of a flowing animation in the GUI
         // (its way too overkill lol)
-        this.totalStates = 3;
         this.sinkability = 5;
     }
 

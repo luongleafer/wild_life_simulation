@@ -19,8 +19,8 @@ public class ForestBiomeModel extends BiomeModel {
     public ForestBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
         super(topLeft, bottomRight);
         blockPalette = List.of(
-                new GrassBlock(0,0,0),
-                new MudBlock(0,0,0)
+                new GrassBlock(0,0),
+                new MudBlock(0,0)
         );
     }
 
@@ -36,9 +36,9 @@ public class ForestBiomeModel extends BiomeModel {
         for (int x = topLeft.x; x < bottomRight.x; x++) {
             for (int y = topLeft.y; y < bottomRight.y; y++) {
                 if (random.nextDouble() < mudChance) {
-                    generatedBlocks[index++] = BlockFactory.create(blockPalette.get(1).getBlockType(), x, y, 0); // Mud block
+                    generatedBlocks[index++] = BlockFactory.create(blockPalette.get(1).getBlockType(), x, y); // Mud block
                 } else {
-                    generatedBlocks[index++] = BlockFactory.create(blockPalette.getFirst().getBlockType(), x, y, 0) ;// Grass block
+                    generatedBlocks[index++] = BlockFactory.create(blockPalette.getFirst().getBlockType(), x, y) ;// Grass block
                 }
             }
         }
@@ -65,7 +65,7 @@ public class ForestBiomeModel extends BiomeModel {
                             int localX = targetX - topLeft.x;
                             int localY = targetY - topLeft.y;
                             int arrayIndex = localX * height + localY; // replaced y-major formula to x-major
-                            generatedBlocks[arrayIndex] = new WoodBlock(targetX, targetY, 0);
+                            generatedBlocks[arrayIndex] = new WoodBlock(targetX, targetY);
                         }
                     }
                 }

@@ -13,10 +13,9 @@ public class SandBlock extends BlockModel {
     }
 
     public SandBlock(int x, int y, int initialState) {
-        super(x, y, initialState, 4);
+        super(x, y, 4);
         this.blockType = "sand";
         this.sinkability = 4;
-        this.totalStates = 1;
     }
 
     @Override
