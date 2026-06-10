@@ -5,6 +5,7 @@ import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
 
+import java.util.List;
 import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
@@ -293,12 +294,6 @@ public abstract class AnimalModel extends EntityModel {
         }
     }
 
-    @Override
-    public void Interact(EntityModel entity) {
-        if(entity.getEntityType().equals(entityType)){
-            Interact((AnimalModel) entity);
-        }
-    }
 
     private void Interact(AnimalModel other){
         if(readyToMate() && other.readyToMate()
@@ -313,15 +308,23 @@ public abstract class AnimalModel extends EntityModel {
 
     @Override
     public void Interact(EntityModel entity) {
-        if(collideWithEntity(entity)){
-            headAwayFrom(new BlockCoordinate((int) entity.position.posX, (int) entity.position.posY));
-            if(entity instanceof AnimalModel animal){
-                animal.headAwayFrom(new BlockCoordinate( (int) position.posX, (int) position.posY));
-                animal.moveByDistance(animal.speed);
-            }
-            moveByDistance(speed);
-            IO.println("Collided");
+        if(entity.getEntityType().equals(entityType)){
+            Interact((AnimalModel) entity);
         }
+        if(collideWithEntity(entity)){
+            headAwayFrom(new BlockCoordinate((int) entity.position.posX, (int) entity.position.posY), 1.0);
+//            if(entity instanceof AnimalModel animal){
+//                animal.headAwayFrom(new BlockCoordinate( (int) position.posX, (int) position.posY), 1.0);
+//                animal.moveByDistance(animal.speed);
+//            }
+            moveByDistance(speed / 100); // move small distance
+            IO.println(entityType + " collided of entity at " + position.posX + ", " + position.posY + " with " + entity.entityType + " at " + entity.position.posX + ", " + entity.position.posY);
+        }
+    }
+
+    @Override
+    public void Interact(List<EntityModel> entities) {
+        super.Interact(entities);
     }
 
     protected void alterDirection(double deltaX, double deltaY, double priority){

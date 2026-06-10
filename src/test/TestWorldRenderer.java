@@ -40,14 +40,14 @@ public class TestWorldRenderer extends Application {
         controller.startUpdateWorldService(20);
         renderer.startRendering();
         Random random = new Random();
-        for(int i = 0; i<10;i++) {
+        for(int i = 0; i<3;i++) {
             controller.spawnEntity(new Wolf(new EntityCoordinate(5 * i, 5 * i)));
         }
-        for(int i = 0; i<20;i++){
+        for(int i = 0; i<10;i++){
             // let's just spawn 100 pigs cuz why not
             controller.spawnEntity(new Pig(new EntityCoordinate(random.nextDouble() * 80, random.nextDouble() * 60)));
         }
-        for(int i = 0; i<10;i++){
+        for(int i = 0; i<5;i++){
             controller.spawnEntity(new Cow(new EntityCoordinate(30, 30)));
         }
         stage.setTitle("Wild Life Simulation");

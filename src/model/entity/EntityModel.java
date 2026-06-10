@@ -131,7 +131,6 @@ public abstract class EntityModel {
     protected void setupStats(){
         this.health = this.maxHealth;
     }
-    public abstract void Interact(List<EntityModel> entities);
 
     public double getHitBoxWidth() {
         return hitBoxWidth;
@@ -153,8 +152,8 @@ public abstract class EntityModel {
     private boolean isInsideHitbox(EntityCoordinate coordinate){
         double minX = position.posX - hitBoxWidth / 2;
         double maxX = position.posX + hitBoxWidth / 2;
-        double minY = position.posX + hitBoxWidth / 2;
-        double maxY = position.posY - hitBoxLength / 2;
+        double minY = position.posY - hitBoxLength / 2;
+        double maxY = position.posY + hitBoxLength / 2;
         return coordinate.getPosX() >= minX && coordinate.getPosX() <= maxX
                 && coordinate.getPosY() >= minY && coordinate.getPosY() <= maxY;
     }

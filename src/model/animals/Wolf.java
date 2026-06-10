@@ -97,7 +97,6 @@ public class Wolf extends LandAnimal implements Edible {
     @Override
     public void Interact(List<EntityModel> entities) {
 //        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
-        entities.forEach(this::Interact);
        // filter out pigs
         EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
         Pig pig = (Pig) toFollow;
@@ -109,6 +108,8 @@ public class Wolf extends LandAnimal implements Edible {
         else{
             currentTarget = null;
         }
+
+        entities.forEach(this::Interact);
 
     }
 
