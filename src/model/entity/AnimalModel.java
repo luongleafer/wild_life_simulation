@@ -2,6 +2,7 @@ package model.entity;
 
 import model.animals.behavior.BehaviorStrategy;
 import model.animals.species.Species;
+import model.block.BlockModel;
 
 import java.util.Random;
 
@@ -41,17 +42,18 @@ public abstract class AnimalModel extends EntityModel {
         if (food == null || !food.canBeEaten()) {
             return;
         }
-        this.hunger += food.getHungerValue();
-        this.energy += food.getEnergyValue();
+        setHunger(this.hunger + food.getHungerValue());// công them vao thanh hunger
+        setEnergy(this.energy + food.getEnergyValue());
     }
 
     public void drink(Drinkable block) {
         if (block == null || !block.canBeDrank()) {
             return;
         }
-        this.thirst += block.getThirstValue();
-        this.energy += block.getEnergyValue();
+        setThirst(this.thirst + block.getThirstValue());
+        setEnergy(this.energy + block.getEnergyValue());
     }
+    public void updateMetabolism() {} // ham cap nhat qua trinh trao doi chat
 
     public double getSpeed() {
         return speed;
@@ -211,6 +213,10 @@ public abstract class AnimalModel extends EntityModel {
             setDirection(dx, dy); // hướng ngược lại kẻ săn mồi
         }
         moveByDistance(speed * Math.max(0.0, speedMultiplier));
+    }
+    public void updateAndMove(BlockModel[][] blocksData) {
+        updateMetabolism(); // cap nhat cac thanh nang luong, mau,...
+        move();
     }
 
     public boolean isInFieldOfView(EntityCoordinate target, double fovRadians, double maxDistance) {

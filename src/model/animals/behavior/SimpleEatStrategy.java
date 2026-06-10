@@ -14,7 +14,7 @@ public class SimpleEatStrategy implements EatStrategy {
     private static final double EAT_DISTANCE = 1.2;
 
     // Ngưỡng đói tối thiểu để ngừng tìm thức ăn
-    private static final float SATISFIED_HUNGER = 2f;
+    private static final float SATISFIED_HUNGER = 90f;// 90% tro len la no
 
     // Bán kính tìm kiếm thức ăn
     private static final int SEARCH_RADIUS = 15;
@@ -30,7 +30,7 @@ public class SimpleEatStrategy implements EatStrategy {
     ) {
 
         // Đã no thì không cần tìm thức ăn
-        if (animal.getHunger() <= SATISFIED_HUNGER) {
+        if (animal.getHunger() >= SATISFIED_HUNGER) {
             targetFoodPos = null;
             return;
         }
@@ -160,30 +160,16 @@ public class SimpleEatStrategy implements EatStrategy {
     }
 
     // Ăn một Entity
-    private void eatEntity(
-            AnimalModel animal,
-            EntityModel target
-    ) {
-
+    private void eatEntity(AnimalModel animal, EntityModel target) {
         Edible edible = (Edible) target;
-
-        // Giảm mức đói
-        animal.setHunger(Math.max(0, animal.getHunger() - edible.getHungerValue()));
-
-        // Tăng năng lượng
-        animal.setEnergy(animal.getEnergy() + edible.getEnergyValue());
-
-        // Tiêu diệt mục tiêu sau khi ăn
+        animal.setHunger(Math.min(100f, animal.getHunger() + edible.getHungerValue()));
+        animal.setEnergy(Math.min(100f, animal.getEnergy() + edible.getEnergyValue()));
         target.setHealth(0);
     }
 
     // Ăn một Block thức ăn
     private void eatBlock(AnimalModel animal) {
-
-        // Giảm mức đói
-        animal.setHunger(Math.max(0, animal.getHunger() - 5));
-
-        // Tăng năng lượng
-        animal.setEnergy(animal.getEnergy() + 2);
+        animal.setHunger(Math.min(100f, animal.getHunger() + 20)); // Cộng thêm khi ăn cỏ/lá
+        animal.setEnergy(Math.min(100f, animal.getEnergy() + 5));
     }
 }

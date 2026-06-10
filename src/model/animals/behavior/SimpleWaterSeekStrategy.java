@@ -69,7 +69,7 @@ public class SimpleWaterSeekStrategy implements DrinkStrategy {
      * Ngưỡng thirst để coi là đã uống đủ và dừng strategy.
      * Mặc định 2.0f — đã no nước, không cần tìm nữa.
      */
-    private static final float SATISFIED_THIRST = 2.0f;
+    private static final float SATISFIED_THIRST = 90.0f; // day 90 % nuoc thi ko tim kiem nuoc
 
     /**
      * Tọa độ world (block coordinate) của water block đang được nhắm tới.
@@ -188,7 +188,7 @@ public class SimpleWaterSeekStrategy implements DrinkStrategy {
      * @param animal con vật đang uống nước
      */
     private void applyDrinkEffect(AnimalModel animal) {
-        animal.setThirst(animal.getThirst() - THIRST_REDUCE_PER_TICK);
+        animal.setThirst(animal.getThirst() + THIRST_REDUCE_PER_TICK);
         animal.setEnergy(animal.getEnergy() + ENERGY_RESTORE_PER_TICK);
     }
 
