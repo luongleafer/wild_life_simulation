@@ -311,15 +311,6 @@ public abstract class AnimalModel extends EntityModel {
         if(entity.getEntityType().equals(entityType)){
             Interact((AnimalModel) entity);
         }
-        if(collideWithEntity(entity)){
-            headAwayFrom(new BlockCoordinate((int) entity.position.posX, (int) entity.position.posY), 1.0);
-//            if(entity instanceof AnimalModel animal){
-//                animal.headAwayFrom(new BlockCoordinate( (int) position.posX, (int) position.posY), 1.0);
-//                animal.moveByDistance(animal.speed);
-//            }
-            moveByDistance(speed / 100); // move small distance
-            IO.println(entityType + " collided of entity at " + position.posX + ", " + position.posY + " with " + entity.entityType + " at " + entity.position.posX + ", " + entity.position.posY);
-        }
     }
 
     @Override

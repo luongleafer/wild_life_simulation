@@ -140,26 +140,6 @@ public abstract class EntityModel {
         return hitBoxLength;
     }
 
-    public List<EntityCoordinate> getBoundingPoints(){
-        List<EntityCoordinate> boundingPoints = new ArrayList<>();
-        boundingPoints.add(new EntityCoordinate(position.posX - hitBoxWidth / 2, position.posY - hitBoxLength / 2));
-        boundingPoints.add(new EntityCoordinate(position.posX - hitBoxWidth / 2, position.posY + hitBoxLength / 2));
-        boundingPoints.add(new EntityCoordinate(position.posX + hitBoxWidth / 2, position.posY - hitBoxLength / 2));
-        boundingPoints.add(new EntityCoordinate(position.posX + hitBoxWidth / 2, position.posY + hitBoxLength / 2));
-        return boundingPoints;
-    }
 
-    private boolean isInsideHitbox(EntityCoordinate coordinate){
-        double minX = position.posX - hitBoxWidth / 2;
-        double maxX = position.posX + hitBoxWidth / 2;
-        double minY = position.posY - hitBoxLength / 2;
-        double maxY = position.posY + hitBoxLength / 2;
-        return coordinate.getPosX() >= minX && coordinate.getPosX() <= maxX
-                && coordinate.getPosY() >= minY && coordinate.getPosY() <= maxY;
-    }
 
-    protected boolean collideWithEntity(EntityModel entity){
-        List<EntityCoordinate> boundingPoints = getBoundingPoints();
-        return boundingPoints.stream().anyMatch(this::isInsideHitbox);
-    }
 }
