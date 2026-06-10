@@ -11,7 +11,7 @@ public class WoodBlock extends BlockModel {
         BlockFactory.register("wood", WoodBlock::new);
     }
 
-    public WoodBlock(int x, int y, int initialState) {
+    public WoodBlock(int x, int y) {
         super(x, y, 0);
         this.blockType = "wood";
         this.sinkability = 0;

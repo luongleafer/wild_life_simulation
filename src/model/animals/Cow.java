@@ -45,7 +45,7 @@ public class Cow extends LandAnimal implements Edible {
                 GrassBlock grassBlock = (GrassBlock)block;
                 setDirection(0, 0);
                 eat(grassBlock);
-                WorldController.getController().placeBlock(new DirtBlock(0,0,0), block.getPosition().x, block.getPosition().y);
+                WorldController.getController().placeBlock(new DirtBlock(0,0), block.getPosition().x, block.getPosition().y);
             }
         }
         // Temporarily blank

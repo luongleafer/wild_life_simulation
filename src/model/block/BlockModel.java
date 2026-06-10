@@ -112,15 +112,6 @@ public abstract class BlockModel {
             return;
         }
 
-        // Reduce state only if still above zero.
-        if (currentState > 0) {
-            currentState--;
-        }
-
-        // Destroy the block once state reaches zero.
-        if (currentState <= 0) {
-            destroy();
-        }
     }
 
     // Marks the block as destroyed.

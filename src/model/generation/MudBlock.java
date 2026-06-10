@@ -46,7 +46,7 @@ public class MudBlock extends BlockModel {
             return dryOut();
         }
         else if(new Random().nextDouble() < waterBlockCount * 0.005){
-            return new WaterBlock(position.x, position.y, 0);
+            return new WaterBlock(position.x, position.y);
         }
         return this;
     }

@@ -10,16 +10,16 @@ public class BlockFactory {
         blockCreationMap.put(blockType, blockCreation);
     }
 
-    public static BlockModel create(String blockType, int x, int y, int initialState) {
+    public static BlockModel create(String blockType, int x, int y) {
         BlockCreation blockCreation = blockCreationMap.get(blockType);
         if (blockCreation == null) {
             return null;
         }
-        return blockCreation.create(x, y, initialState);
+        return blockCreation.create(x, y);
     }
 
     public static BlockModel createFrom(BlockModel block){
-        return create(block.getBlockType(), block.position.x, block.position.y, block.getCurrentState());
+        return create(block.getBlockType(), block.position.x, block.position.y);
     }
 
 }

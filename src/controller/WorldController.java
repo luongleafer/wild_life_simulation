@@ -189,12 +189,12 @@ public class WorldController {
      * @param xPos The x position to place block, 0 <= x < world's width
      * @param yPos The y position to place block, 0 <= y < world's length
      */
-    public <T extends BlockModel> void placeBlock(T block, int xPos, int yPos) {
+    public void placeBlock(BlockModel block, int xPos, int yPos) {
         if(xPos < 0 || yPos < 0) return; // invalid coordinate
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
         BlockModel newBlock = null;
         try {
-            newBlock = BlockFactory.create(block, xPos, yPos);
+            newBlock = BlockFactory.create(block.getBlockType(), xPos, yPos);
         }
         catch(Exception e) {
             IO.println("Exception when trying to place block: " + e.getMessage());

@@ -12,7 +12,7 @@ public class WaterBlock extends BlockModel implements Drinkable {
         BlockFactory.register("water", WaterBlock::new);
     }
 
-    public WaterBlock(int x, int y, int initialState) {
+    public WaterBlock(int x, int y) {
         super(x, y, 5);
         this.blockType = "water";
         // water might have 3 states (0, 1, 2) to represent
@@ -23,10 +23,6 @@ public class WaterBlock extends BlockModel implements Drinkable {
 
 
 
-    // example method to cycle water animation state
-    public void animate() {
-        this.currentState = (this.currentState + 1) % this.totalStates;
-    }
 
     // Sample data for thirst and energy value for water
     @Override

@@ -1,5 +1,6 @@
 package model.generation;
 
+import model.block.BlockFactory;
 import model.block.ObstacleBlockModel;
 import model.entity.Edible;
 
@@ -7,8 +8,12 @@ public class SeedBlock extends ObstacleBlockModel implements Edible {
     private int age;
     private static final int growUpAge = 10;
 
-    public SeedBlock(int x, int y, int initialState) {
-        super(x, y, initialState, 2);
+    static {
+        BlockFactory.register("seed", SeedBlock::new);
+    }
+
+    public SeedBlock(int x, int y) {
+        super(x, y, 2);
         this.blockType = "seed";
         this.age = 0;
     }
@@ -38,7 +43,7 @@ public class SeedBlock extends ObstacleBlockModel implements Edible {
     public model.block.BlockModel interact(java.util.List<model.block.BlockModel> surroundingBlocks) {
         ageUp();
         if (age >= growUpAge) {
-            return new SaplingBlock(position.getX(), position.getY(), 0);
+            return new SaplingBlock(position.getX(), position.getY());
         }
         return this;
     }

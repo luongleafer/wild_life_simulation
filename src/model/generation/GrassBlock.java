@@ -12,7 +12,7 @@ public class GrassBlock extends BlockModel implements Edible {
         BlockFactory.register("grass", GrassBlock::new);
     }
 
-    public GrassBlock(int x, int y, int initialState) {
+    public GrassBlock(int x, int y) {
         super(x, y, 3);
         this.blockType = "grass";
         this.sinkability = 3;
