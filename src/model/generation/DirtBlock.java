@@ -1,11 +1,16 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.block.BlockFactory;
 
 import java.util.List;
 import java.util.Random;
 
 public class DirtBlock extends BlockModel {
+
+    static {
+        BlockFactory.register("dirt", DirtBlock::new);
+    }
 
     public DirtBlock(int x, int y, int initialState) {
         super(x, y, initialState, 2);

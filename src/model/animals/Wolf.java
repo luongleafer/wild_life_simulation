@@ -11,6 +11,10 @@ public class Wolf extends LandAnimal implements Edible {
     private final int attackCooldown = 20; // 1 second cooldown
     private int lastAttack = 0;
 
+    static {
+        EntityFactory.register("wolf", Wolf::new);
+    }
+
     @Override
     public void ageUp() {
         super.ageUp();
@@ -37,11 +41,12 @@ public class Wolf extends LandAnimal implements Edible {
 
     @Override
     public void Interact(EntityModel entity) {
+        super.Interact(entity);
         // They eat small animals, like cows and pigs I guess?
-        boolean isPrey = entity instanceof Pig || entity instanceof Cow;
-        if (isPrey) {
-            this.eat((Edible) entity);
-        }
+//        boolean isPrey = entity instanceof Pig || entity instanceof Cow;
+//        if (isPrey) {
+//            this.eat((Edible) entity);
+//        }
     }
 
     @Override
@@ -73,25 +78,31 @@ public class Wolf extends LandAnimal implements Edible {
         }
     }
 
+    private void attack(){
+        if(currentTarget == null) return;
+        if(getPosition().distance(currentTarget.getPosition()) < 5) {
+            if(lastAttack >= attackCooldown) {
+                currentTarget.receiveDamage(1);
+                if(currentTarget.getHealth() <= 0) {
+                    eat((Edible) currentTarget);
+                }
+                SoundEngine.getEngine().playSound("wolf_eat");
+                lastAttack = 0;
+            }
+        }
+    }
+
     @Override
     public void Interact(List<EntityModel> entities) {
 //        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
+        entities.forEach(this::Interact);
        // filter out pigs
         EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
         Pig pig = (Pig) toFollow;
         if(toFollow != null) {
             if(!isHungry()) return;
             currentTarget = toFollow;
-            if(getPosition().distance(toFollow.getPosition()) < 5) {
-                if(lastAttack >= attackCooldown) {
-                    toFollow.receiveDamage(1);
-                    if(toFollow.getHealth() <= 0) {
-                        eat(pig);
-                    }
-                    SoundEngine.getEngine().playSound("wolf_eat");
-                    lastAttack = 0;
-                }
-            }
+            attack();
         }
         else{
             currentTarget = null;

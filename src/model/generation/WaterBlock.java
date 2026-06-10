@@ -1,12 +1,16 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.block.BlockFactory;
 import model.entity.Drinkable;
 
 import java.util.List;
-import java.util.Random;
 
 public class WaterBlock extends BlockModel implements Drinkable {
+
+    static {
+        BlockFactory.register("water", WaterBlock::new);
+    }
 
     public WaterBlock(int x, int y, int initialState) {
         super(x, y, initialState, 5);

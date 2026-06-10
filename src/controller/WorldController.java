@@ -3,10 +3,9 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
-import model.block.BlockModels;
+import model.block.BlockFactory;
 import model.entity.EntityModel;
 import model.world.WorldModel;
 import view.audio.SoundEngine;
@@ -16,6 +15,7 @@ import view.entity.EntityTextureMap;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,6 +23,7 @@ import java.util.Random;
  * Controls everything
  */
 public class WorldController {
+    private final List<EntityModel> waitToSpawn;
     public static int WORLD_TILE_SIZE = 16;
     public static WorldController controller;
 
@@ -61,6 +62,10 @@ public class WorldController {
                     refreshEntityViews();
                     worldModel.update();
                     playSoundEvents();
+                    if(!waitToSpawn.isEmpty()) {
+                        waitToSpawn.forEach(WorldController.this::spawnEntity);
+                        waitToSpawn.clear();
+                    }
                     return null;
                 }
             };
@@ -68,6 +73,7 @@ public class WorldController {
     };
 
     private WorldController(){
+        waitToSpawn = new ArrayList<>();
 
     }
 
@@ -188,7 +194,7 @@ public class WorldController {
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
         BlockModel newBlock = null;
         try {
-            newBlock = BlockModels.from(block, xPos, yPos,0);
+            newBlock = BlockFactory.create(block.getBlockType(), xPos, yPos, 0);
         }
         catch(Exception e) {
             IO.println("Exception when trying to place block: " + e.getMessage());
@@ -203,8 +209,18 @@ public class WorldController {
      * @param entity Entity to spawn
      */
     public void spawnEntity(EntityModel entity) {
+        if(entity == null) {
+            IO.println("Attempt to spawn null entity!");
+            return;
+        }
         worldModel.getEntities().add(entity);
-        worldView.getAllEntitiesView().addView(entity);
+//        worldView.getAllEntitiesView().addView(entity);
+        worldView.getAllEntitiesView().requestRender(entity);
+        IO.println("Spawned new " + entity.getEntityType() + ".");
+    }
+
+    public void requestSpawnEntity(EntityModel entity) {
+        waitToSpawn.add(entity);
     }
 
 }

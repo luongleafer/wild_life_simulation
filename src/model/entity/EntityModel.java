@@ -120,7 +120,9 @@ public abstract class EntityModel {
     // UPDATE: still unsure about this one
     public abstract void Interact(BlockModel block);
     public abstract void Interact(EntityModel entity);
-    public abstract void Interact(List<EntityModel> entities);
+    public void Interact(List<EntityModel> entities){
+        entities.forEach(this::Interact);
+    }
 
     protected void setupStats(){
         this.health = this.maxHealth;

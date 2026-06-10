@@ -70,6 +70,7 @@ public class WorldModel {
         AnimalModel.hungerDepletionRate = currentSeason.animalHungerDepletionRate;
         AnimalModel.healthDepletionRate = currentSeason.animalHealthDepletionRate;
         AnimalModel.thirstDepletionRate = currentSeason.animalThirstDepletionRate;
+        AnimalModel.mateChance = currentSeason.animalMateChance;
     }
 
     public void setTickSpeed(int tickSpeed) {

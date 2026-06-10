@@ -11,6 +11,10 @@ import java.util.Random;
 
 public class Cow extends LandAnimal implements Edible {
 
+    static {
+        EntityFactory.register("cow", Cow::new);
+    }
+
 
     public Cow(EntityCoordinate position){
         super(position, 10, 10, 10, 10);
@@ -26,6 +30,7 @@ public class Cow extends LandAnimal implements Edible {
 
     @Override
     public void Interact(EntityModel entity) {
+        super.Interact(entity);
         // Cows are herbivores: they eat grass
         // Will they interact with other cows? Probably
         // Just make it walk randomly for now
@@ -44,11 +49,6 @@ public class Cow extends LandAnimal implements Edible {
             }
         }
         // Temporarily blank
-    }
-
-    @Override
-    public void Interact(List<EntityModel> entities) {
-
     }
 
     @Override

@@ -1,11 +1,16 @@
 package model.generation;
 
 import model.block.BlockModel;
+import model.block.BlockFactory;
 
 import java.util.List;
 import java.util.Random;
 
 public class MudBlock extends BlockModel {
+
+    static{
+        BlockFactory.register("mud", MudBlock::new);
+    }
 
     private boolean isWet;
 

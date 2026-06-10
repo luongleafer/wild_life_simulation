@@ -1,12 +1,20 @@
 package model.animals;
 
+import controller.WorldController;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.*;
 
 import java.util.List;
+import java.util.Random;
 
 public class Pig extends LandAnimal implements Edible {
+
+    static {
+        EntityFactory.register("pig", Pig::new);
+    }
+
+    private int birthCooldown = 0;
 
     public Pig(EntityCoordinate position){
         super(position, 10, 20, 15, 5);
@@ -19,6 +27,12 @@ public class Pig extends LandAnimal implements Edible {
         this.setSpeed(5.0/20);
         this.setDirection(1, 1);
         this.entityType = "pig";
+        birthCooldown = 0;
+    }
+
+    @Override
+    public void ageUp() {
+        super.ageUp();
     }
 
     @Override
@@ -27,6 +41,7 @@ public class Pig extends LandAnimal implements Edible {
         // Will they interact with other pigs? Probably
         // Just make it walk randomly for now
         // Which means this class is uh, blank
+        super.Interact(entity);
         if(entity instanceof Wolf wolf){
             setSpeed(7.0/20);
             headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
@@ -61,10 +76,7 @@ public class Pig extends LandAnimal implements Edible {
         headRandomly();
         moveByDistance(getSpeed());
     }
-
-    @Override
-    public void Interact(List<EntityModel> entities) {
-        entities.forEach(this::Interact);
-
+    public void mate(){
+        birthCooldown = 0;
     }
 }
