@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import model.animals.Rabbit;
 import model.animals.Wolf;
 import model.entity.EntityCoordinate;
 import model.world.WorldModel;
