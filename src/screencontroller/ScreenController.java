@@ -71,6 +71,8 @@ public class ScreenController {
 	    private Image wolfTexture;
 	    private Image pigTexture;
 
+	    @FXML
+	    private Label tickSpeedLabel;
     
     @FXML
     public void initialize() {
@@ -92,13 +94,32 @@ public class ScreenController {
 
     		pigTexture =
     		    new Image(getClass().getResourceAsStream("/assets/minecraft_based/pig.png"));
-    	    world = new WorldModel(100,100);
+    	    world = new WorldModel(25,15);
 
     	    world.generateTerrain();
 
     	    setupChoiceBoxes();
 
     	    redraw();
+    	    tickSpeedSlider.setMin(10);
+    	    tickSpeedSlider.setMax(200);
+    	    tickSpeedSlider.setValue(50);
+    	    tickSpeedLabel.setText(
+    	    	    "Tick speed: " +
+    	    	    (int)tickSpeedSlider.getValue()
+    	    	);
+    	    tickSpeedSlider.valueProperty().addListener(
+    	    	    (obs, oldVal, newVal) -> {
+
+    	    	        tickSpeedLabel.setText(
+    	    	            "Tick speed: " + newVal.intValue()
+    	    	        );
+
+    	    	        if(timeline != null) {
+    	    	            restartTimeline();
+    	    	        }
+    	    	    }
+    	    	);
     }
     
     private void setupChoiceBoxes() {
@@ -221,27 +242,7 @@ public class ScreenController {
     @FXML
     private void handleStart() {
 
-        if(timeline != null) {
-            timeline.stop();
-        }
-
-        timeline = new Timeline(
-                new KeyFrame(
-                        Duration.millis(50),
-                        e -> {
-
-                            world.update();
-
-                            redraw();
-                        }
-                )
-        );
-
-        timeline.setCycleCount(
-                Timeline.INDEFINITE
-        );
-
-        timeline.play();
+    	 restartTimeline();
     }
     private void redraw() {
 
@@ -407,6 +408,51 @@ public class ScreenController {
                     + animal.getEnergy()
             );
         }
+    }
+    @FXML
+    private void handleKillAll() {
+
+        world.getEntities().clear();
+
+        selectedEntity = null;
+
+        TypeLabel.setText("Type:");
+        PositionLabel.setText("Position:");
+        HungerLabel.setText("Hunger:");
+        ThirstLabel.setText("Thirst:");
+        EnergyLabel.setText("Energy:");
+
+        redraw();
+    }
+    private void restartTimeline() {
+
+        if(timeline != null) {
+            timeline.stop();
+        }
+
+        timeline = new Timeline(
+            new KeyFrame(
+                Duration.millis(
+                    tickSpeedSlider.getValue()
+                ),
+                e -> {
+
+                    world.update();
+
+                    if(selectedEntity != null) {
+                        updateStatistics();
+                    }
+
+                    redraw();
+                }
+            )
+        );
+
+        timeline.setCycleCount(
+            Timeline.INDEFINITE
+        );
+
+        timeline.play();
     }
     
 }

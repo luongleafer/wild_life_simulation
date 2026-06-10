@@ -19,7 +19,7 @@
             <Button mnemonicParsing="false" text="=" AnchorPane.bottomAnchor="369.33333333333337" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="143.33333333333334" AnchorPane.topAnchor="5.0" />
             <VBox alignment="TOP_CENTER" layoutX="27.0" prefHeight="400.0" prefWidth="120.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
                <children>
-                  <Label text="Tick speed: ">
+                  <Label fx:id="tickSpeedLabel" text="Tick speed: ">
                      <VBox.margin>
                         <Insets top="20.0" />
                      </VBox.margin>
@@ -55,7 +55,7 @@
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="Kill all">
+                  <Button mnemonicParsing="false" text="Kill all" onAction="#handleKillAll">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>

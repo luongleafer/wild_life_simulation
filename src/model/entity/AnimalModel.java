@@ -255,4 +255,5 @@ public abstract class AnimalModel extends EntityModel {
     public float getEnergy() {
         return energy;
     }
+    
 }
