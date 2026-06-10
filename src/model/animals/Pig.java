@@ -1,21 +1,24 @@
 package model.animals;
 
+import controller.WorldController;
+import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.*;
 
 import java.util.List;
+import java.util.Random;
 
 public class Pig extends LandAnimal implements Edible {
 
+    static {
+        EntityFactory.register("pig", Pig::new);
+    }
+
+    private int birthCooldown = 0;
+
     public Pig(EntityCoordinate position){
-        super(position);
-        // Default values for pigs, can be changed later if needed
-        this.health = 10;
-        this.energy = 5;
-        this.hunger = 5;
-        this.thirst = 5;
-        this.maxThirst = 15;
-        this.maxHunger = 20;
+        super(position, 10, 20, 15, 5);
+        this.hungerDepletionMultiplier = 0.2;
         this.survivalStrategy = "passive"; // Passive behavior, will never attack
         this.direction = Direction.SOUTH();
         this.currentState = 1; // Adult by default
@@ -26,6 +29,12 @@ public class Pig extends LandAnimal implements Edible {
         this.entityType = "pig";
         this.hitBoxWidth = 1.2;
         this.hitBoxLength = 0.9;
+        birthCooldown = 0;
+    }
+
+    @Override
+    public void ageUp() {
+        super.ageUp();
     }
 
     @Override
@@ -35,6 +44,10 @@ public class Pig extends LandAnimal implements Edible {
         // Just make it walk randomly for now
         // Which means this class is uh, blank
         super.Interact(entity);
+        if(entity instanceof Wolf wolf){
+            setSpeed(7.0/20);
+            headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
+        }
     }
 
     @Override
@@ -61,12 +74,11 @@ public class Pig extends LandAnimal implements Edible {
 
     @Override
     public void move() {
-        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+//        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+        headRandomly();
+        moveByDistance(getSpeed());
     }
-
-    @Override
-    public void Interact(List<EntityModel> entities) {
-        entities.forEach(this::Interact);
-
+    public void mate(){
+        birthCooldown = 0;
     }
 }

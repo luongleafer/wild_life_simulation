@@ -2,7 +2,7 @@ package model.biome;
 
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
-import model.block.BlockModels;
+import model.block.BlockFactory;
 import model.generation.SandBlock;
 import model.generation.WaterBlock;
 
@@ -31,9 +31,9 @@ public class WaterBiomeModel extends BiomeModel {
         for(int x = topLeft.x; x <  bottomRight.x; x++){
             for(int y =  topLeft.y; y <  bottomRight.y; y++){
                 if (random.nextDouble() < 0.2) { // 20% chance of sand
-                    generatedBlocks[i++] = BlockModels.from(blockPalette.get(1),x,y,0);
+                    generatedBlocks[i++] = BlockFactory.create(blockPalette.get(1).getBlockType(), x, y, 0);
                 } else {
-                    generatedBlocks[i++] = BlockModels.from(blockPalette.getFirst(),x,y,0);
+                    generatedBlocks[i++] = BlockFactory.create(blockPalette.getFirst().getBlockType(), x, y, 0);
                 }
             }
         }

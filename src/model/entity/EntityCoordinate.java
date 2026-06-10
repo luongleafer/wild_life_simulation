@@ -9,6 +9,11 @@ public class EntityCoordinate {
         this.posY = posY;
     }
 
+    public EntityCoordinate(EntityCoordinate other) {
+        this.posX = other.posX;
+        this.posY = other.posY;
+    }
+
     public double getPosX() {
         return posX;
     }

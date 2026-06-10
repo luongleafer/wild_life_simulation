@@ -3,12 +3,20 @@ package model.entity;
 import model.block.BlockModel;
 import model.generation.WaterBlock;
 
-import java.util.List;
-
 public abstract class LandAnimal extends AnimalModel{
 
     public LandAnimal(EntityCoordinate position) {
         super(position);
+    }
+
+
+    protected LandAnimal(EntityCoordinate position,
+                          double maxHealth,
+                          double maxHunger,
+                          double maxThirst,
+                          double maxEnergy
+    ){
+        super(position, maxHealth, maxHunger, maxThirst, maxEnergy);
     }
 
     @Override
@@ -18,12 +26,12 @@ public abstract class LandAnimal extends AnimalModel{
     }
 
     private void avoidWater(WaterBlock water) {
-        if(thirst <= maxThirst) {
+        if(isThirsty()) {
             setDirection(0, 0); // stop to have a sip
-            thirst += 1;
+            drink(water);
         }
         else{
-            headAwayFrom(water.getPosition()); // avoid water
+            headAwayFrom(water.getPosition(),1); // avoid water
         }
 
     }
