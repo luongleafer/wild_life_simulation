@@ -31,12 +31,12 @@ public class WaterBlock extends BlockModel implements Drinkable {
 
     // Sample data for thirst and energy value for water
     @Override
-    public float getThirstValue() {
+    public double getThirstValue() {
         return 5f;
     }
 
     @Override
-    public float getEnergyValue() {
+    public double getEnergyValue() {
         return 5f;
     }
 

@@ -1,4 +1,4 @@
-package model.animals.entity;
+package model.entity;
 
 import model.animals.behavior.FleeStrategy;
 import model.animals.behavior.FollowStrategy;
@@ -7,9 +7,6 @@ import model.animals.behavior.SimpleEatStrategy;
 import model.animals.behavior.SimpleWaterSeekStrategy;
 import model.animals.species.Species;
 import model.block.BlockModel;
-import model.entity.AnimalModel;
-import model.entity.EntityCoordinate;
-import model.entity.EntityModel;
 
 import java.util.List;
 
@@ -64,6 +61,7 @@ public abstract class PreyAnimalModel extends AnimalModel {
             activeStrategy = roamStrategy;
         }
     }
+
     @Override
     public void updateAndMove(BlockModel[][] blocksData) {
         // 1. Chạy trốn khỏi kẻ săn mồi
@@ -94,14 +92,15 @@ public abstract class PreyAnimalModel extends AnimalModel {
     public void updateMetabolism() {
         float speedFactor = (float) getSpeed();
         // Tiêu hao năng lượng và nước uống theo thời gian
-        setHunger(this.hunger - hungerRate * (1.0f + speedFactor));
-        setThirst(this.thirst - thirstRate * (1.0f + speedFactor));
+        setHunger(this.getHunger() - hungerRate * (1.0f + speedFactor));
+        setThirst(this.getThirst() - thirstRate * (1.0f + speedFactor));
 
-        if (hunger < 20f) {
-            this.health -= 1; // Giảm máu do đói
+        if (getHunger() < 20f) {
+            this.health -= 1;
         }
-        if (thirst < 20f) {
-            this.health -= 1; // Giảm máu do khát
+
+        if (getThirst() < 20f) {
+            this.health -= 1;
         }
     }
 

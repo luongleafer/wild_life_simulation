@@ -1,9 +1,6 @@
-package model.animals.entity;
+package model.entity;
 
 import model.block.BlockModel;
-import model.entity.Drinkable;
-import model.entity.EntityCoordinate;
-import model.entity.EntityModel;
 
 import java.util.List;
 
@@ -34,8 +31,8 @@ public abstract class HerbivorePreyModel extends PreyAnimalModel {
         if (waterSource == null || !waterSource.canBeDrank()) {
             return;
         }
-        setThirst(this.thirst + waterSource.getThirstValue());
-        setEnergy(this.energy + waterSource.getEnergyValue());
+        setThirst(this.getThirst() + waterSource.getThirstValue());
+        setEnergy(this.getEnergy() + waterSource.getEnergyValue());
     }
 
     @Override

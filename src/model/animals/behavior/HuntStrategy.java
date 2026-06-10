@@ -1,6 +1,6 @@
 package model.animals.behavior;
 
-import model.animals.entity.PredatorAnimalModel;
+import model.entity.PredatorAnimalModel;
 import model.animals.species.Species;
 import model.entity.AnimalModel;
 import model.entity.Edible;
@@ -114,7 +114,7 @@ public class HuntStrategy implements BehaviorStrategy {
                 // Đủ gần: tấn công nếu con mồi có thể ăn được
                 if (target instanceof Edible edible && edible.canBeEaten()) {
                     ((AnimalModel) animal).eat(edible); // cast an toàn vì Edible
-                    target.receiveDamage(target.getHealth()); // kill prey
+                    target.receiveDamage((int) target.getHealth()); // kill prey
                     target = null;
                 }
             } else {

@@ -1,7 +1,7 @@
 package model.entity;
 
 public interface Drinkable {
-    float getThirstValue();
-    float getEnergyValue();
+    double getThirstValue();
+    double getEnergyValue();
     boolean canBeDrank();
 }

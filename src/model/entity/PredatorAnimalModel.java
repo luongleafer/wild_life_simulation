@@ -1,13 +1,10 @@
-package model.animals.entity;
+package model.entity;
 
 import model.animals.behavior.HuntStrategy;
 import model.animals.behavior.RoamStrategy;
 import model.animals.behavior.SimpleWaterSeekStrategy;
 import model.animals.species.Species;
 import model.block.BlockModel;
-import model.entity.AnimalModel;
-import model.entity.EntityCoordinate;
-import model.entity.EntityModel;
 
 import java.util.List;
 
@@ -78,13 +75,13 @@ public abstract class PredatorAnimalModel extends AnimalModel {
     public void updateMetabolism() {
         float speedFactor = (float) getSpeed();
         // Tiêu hao đói và năng lượng
-        setHunger(this.hunger - hungerDecay * (1.0f + speedFactor));
-        setEnergy(this.energy - energyDrain * (1.0f + speedFactor));
+        setHunger(this.getHunger() - hungerDecay * (1.0f + speedFactor));
+        setEnergy(this.getEnergy() - energyDrain * (1.0f + speedFactor));
 
-        if (hunger < 15f) {
+        if (getHunger() < 15f) {
             this.health -= 2; // Thú ăn thịt mất máu nhanh khi đói
         }
-        if (energy <= 0f) {
+        if (getEnergy() <= 0f) {
             this.health -= 1; // Mất máu do kiệt sức
         }
     }

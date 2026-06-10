@@ -1,6 +1,6 @@
 package model.animals;
 
-import model.animals.entity.PreyAnimalModel;
+import model.entity.PreyAnimalModel;
 import model.animals.species.Species;
 import model.block.BlockModel;
 import model.entity.EntityCoordinate;

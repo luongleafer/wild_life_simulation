@@ -1,9 +1,6 @@
-package model.animals.entity;
+package model.entity;
 
 import model.block.BlockModel;
-import model.entity.Edible;
-import model.entity.EntityCoordinate;
-import model.entity.EntityModel;
 
 import java.util.List;
 

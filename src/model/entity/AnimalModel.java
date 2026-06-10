@@ -1,15 +1,13 @@
 package model.entity;
 
-<<<<<<< HEAD
 import model.animals.behavior.BehaviorStrategy;
 import model.animals.species.Species;
 import model.block.BlockModel;
-=======
 import controller.WorldController;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
->>>>>>> origin/main
+
 
 import java.util.Random;
 
@@ -68,16 +66,16 @@ public abstract class AnimalModel extends EntityModel {
         if (food == null || !food.canBeEaten()) {
             return;
         }
-        setHunger(this.hunger + food.getHungerValue());// công them vao thanh hunger
-        setEnergy(this.energy + food.getEnergyValue());
+        this.hunger += food.getHungerValue();// công them vao thanh hunger
+        this.energy += food.getEnergyValue();
     }
 
     public void drink(Drinkable block) {
         if (block == null || !block.canBeDrank()) {
             return;
         }
-        setThirst(this.thirst + block.getThirstValue());
-        setEnergy(this.energy + block.getEnergyValue());
+        this.thirst += block.getThirstValue();
+        this.energy += block.getEnergyValue();
     }
     public void updateMetabolism() {} // ham cap nhat qua trinh trao doi chat
 
@@ -338,23 +336,23 @@ public abstract class AnimalModel extends EntityModel {
         this.survivalStrategy = "survival";
         this.direction = Direction.STAY();
     }
-    public float getHunger() {
+    public double getHunger() {
         return hunger;
     }
-    public void setHunger(float hunger) {
+    public void setHunger(double hunger) {
         this.hunger = Math.max(0f, Math.min(100f, hunger));
     }
-    public float getThirst() {
+    public double getThirst() {
         return thirst;
     }
-    public void setThirst(float thirst) {
+    public void setThirst(double thirst) {
         this.thirst = Math.max(0f, Math.min(100f, thirst));
     }
 
-    public float getEnergy() {
+    public double getEnergy() {
         return energy;
     }
-    public void setEnergy(float energy) {
+    public void setEnergy(double energy) {
         this.energy = Math.max(0f, Math.min(100f, energy));
     }
 
