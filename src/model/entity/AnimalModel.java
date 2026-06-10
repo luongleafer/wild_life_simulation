@@ -244,4 +244,15 @@ public abstract class AnimalModel extends EntityModel {
     protected void alterDirection(double deltaX, double deltaY, double priority){
         setDirection(directionX + deltaX * priority, directionY + deltaY * priority);
     }
+    public float getHunger() {
+        return hunger;
+    }
+
+    public float getThirst() {
+        return thirst;
+    }
+
+    public float getEnergy() {
+        return energy;
+    }
 }

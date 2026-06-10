@@ -124,6 +124,13 @@ public class ScreenController {
 
         animalChoiceBox.getSelectionModel().selectFirst();
         blockChoiceBox.getSelectionModel().selectFirst();
+        canvas.setOnMouseClicked(e -> {
+
+            handleCanvasClick(
+                    e.getX(),
+                    e.getY()
+            );
+        });
     }
     
     @FXML
@@ -134,9 +141,13 @@ public class ScreenController {
         EntityModel entity = null;
 
         Random random = new Random();
+        double cellSize = 20;
 
-        int x = random.nextInt(world.getWidth());
-        int y = random.nextInt(world.getLength());
+        int maxX = (int)(canvas.getWidth() / cellSize);
+        int maxY = (int)(canvas.getHeight() / cellSize);
+
+        int x = random.nextInt(maxX);
+        int y = random.nextInt(maxY);
 
         switch (animal) {
 
@@ -322,6 +333,79 @@ public class ScreenController {
                     cellSize
                 );
             }
+        }
+    }
+    private void handleCanvasClick(
+            double mouseX,
+            double mouseY
+    ) {
+
+        double cellSize = 20;
+
+        for(EntityModel entity : world.getEntities()) {
+
+            double ex =
+                    entity.getPosition().getPosX()
+                            * cellSize;
+
+            double ey =
+                    entity.getPosition().getPosY()
+                            * cellSize;
+
+            if(mouseX >= ex &&
+               mouseX <= ex + cellSize &&
+               mouseY >= ey &&
+               mouseY <= ey + cellSize) {
+
+                selectedEntity = entity;
+
+                updateStatistics();
+
+                break;
+            }
+        }
+    }
+    private void updateStatistics() {
+
+        if(selectedEntity == null) {
+            return;
+        }
+
+        TypeLabel.setText(
+                "Type: "
+                + selectedEntity
+                        .getClass()
+                        .getSimpleName()
+        );
+
+        PositionLabel.setText(
+                "Position: ("
+                + selectedEntity
+                    .getPosition()
+                    .getPosX()
+                + ", "
+                + selectedEntity
+                    .getPosition()
+                    .getPosY()
+                + ")"
+        );
+
+        if(selectedEntity instanceof AnimalModel animal) {
+
+            HungerLabel.setText(
+                    "Hunger: "
+                    + animal.getHunger()
+            );
+
+            ThirstLabel.setText(
+                    "Thirst: "
+                    + animal.getThirst()
+            );
+
+            EnergyLabel.setText(
+                    "Energy: "
+                    + animal.getEnergy()
+            );
         }
     }
     
