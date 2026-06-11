@@ -82,8 +82,17 @@ public class WorldController {
      * @param tps: Tick speed
      */
     public void startUpdateWorldService(long tps) {
-        updateWorldService.setPeriod(Duration.seconds(1.0/tps));
-        updateWorldService.start();
+
+        updateWorldService.setPeriod(
+                Duration.seconds(1.0 / tps)
+        );
+
+        if(updateWorldService.isRunning()) {
+            updateWorldService.restart();
+        }
+        else {
+            updateWorldService.start();
+        }
     }
 
     public void stopUpdateWorldService() {
@@ -222,5 +231,6 @@ public class WorldController {
     public void requestSpawnEntity(EntityModel entity) {
         waitToSpawn.add(entity);
     }
+    
 
 }

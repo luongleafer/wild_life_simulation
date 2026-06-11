@@ -38,6 +38,8 @@ public class ScreenController {
     private WorldView worldView;
     @FXML
     private Button startButton;
+    @FXML
+    private Label PositionLabel;
 
     private WorldModel worldModel;
     
@@ -57,6 +59,8 @@ public class ScreenController {
     
     @FXML
     private Button insertButton;
+    @FXML
+    private Label BlockPosition;
     
     private int selectedX = -1;
     private int selectedY = -1;
@@ -242,8 +246,8 @@ public class ScreenController {
                 (int)e.getY()
                 / WorldController.WORLD_TILE_SIZE;
 
-        System.out.println(
-                "Tile: "
+        BlockPosition.setText(
+                "Block Position: "
                 + selectedX
                 + ", "
                 + selectedY

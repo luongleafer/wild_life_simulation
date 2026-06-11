@@ -291,4 +291,27 @@ public class WorldModel {
     public String getCurrentSeason(){
         return currentSeason.getName();
     }
+    public BlockModel getBlock(int x, int y){
+
+        if(x < 0 || x >= width ||
+           y < 0 || y >= length){
+
+            return null;
+        }
+
+        return blocksData[x][y];
+    }
+    public void setBlock(
+            int x,
+            int y,
+            BlockModel block
+    ){
+        if(x < 0 || x >= width ||
+           y < 0 || y >= length){
+
+            return;
+        }
+
+        blocksData[x][y] = block;
+    }
 }
