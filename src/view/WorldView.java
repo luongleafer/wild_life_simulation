@@ -13,7 +13,7 @@ import view.block.BlockTextureMap;
 import view.block.TerrainView;
 import view.entity.EntityTextureMap;
 import view.entity.AllEntitiesView;
-
+import javafx.scene.Node;
 import java.nio.file.Paths;
 
 /**
@@ -25,7 +25,7 @@ public class WorldView {
     TerrainView terrainView;
     WorldModel worldModel;
     Pane rootPane;
-
+    private Pane worldContainer;
     AudioClip test = new AudioClip(Paths.get("assets/audio/grass1.mp3").toUri().toString());
 
 
@@ -51,10 +51,17 @@ public class WorldView {
         this.worldModel = worldModel;
         AnchorPane entityPane = new AnchorPane();
         StackPane worldGridPane = new StackPane();
-        root.getChildren().add(worldGridPane);
-        root.getChildren().add(entityPane);
+        this.worldContainer = new Pane();
+        worldContainer.getChildren().add(worldGridPane);
+        worldContainer.getChildren().add(entityPane);
+        root.getChildren().add(worldContainer);
         allEntitiesView = new AllEntitiesView(null, entityPane);
-        terrainView = new TerrainView(worldModel.getWidth(), worldModel.getLength(), worldGridPane, null);
+        terrainView = new TerrainView(
+                worldModel.getWidth(),
+                worldModel.getLength(),
+                worldGridPane,
+                null
+        );
     }
 
     /**
@@ -71,5 +78,10 @@ public class WorldView {
     public TerrainView getTerrainView() {
         return terrainView;
     }
+    public void setZoom(double zoom) {
+        worldContainer.setScaleX(zoom);
+        worldContainer.setScaleY(zoom);
+    }
+    
 
 }

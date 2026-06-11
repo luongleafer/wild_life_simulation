@@ -1,42 +1,33 @@
 package model.biome;
 
-import model.block.BlockCoordinate;
 import model.block.BlockModel;
-import model.block.BlockFactory;
 import model.generation.SandBlock;
 import model.generation.WaterBlock;
 
-import java.util.List;
 import java.util.Random;
 
-// fills entire rectangle with one block type
 public class WaterBiomeModel extends BiomeModel {
-    public WaterBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
-        super(topLeft, bottomRight);
-        // palette could be populated here
-        blockPalette = List.of(
-                new WaterBlock(0,0),
-                new SandBlock(0,0)
-        );
+    @Override
+    public BiomeType getBiomeType() {
+        return BiomeType.WATER;
     }
 
     @Override
-    public BlockModel[] generate() {
-        int width = getWidth();
-        int height = getHeight();
-        BlockModel[] generatedBlocks = new BlockModel[width * height];
-        Random random = new Random();
-        int i = 0;
-
-        for(int x = topLeft.x; x <  bottomRight.x; x++){
-            for(int y =  topLeft.y; y <  bottomRight.y; y++){
-                if (random.nextDouble() < 0.2) { // 20% chance of sand
-                    generatedBlocks[i++] = BlockFactory.create(blockPalette.get(1).getBlockType(), x, y);
-                } else {
-                    generatedBlocks[i++] = BlockFactory.create(blockPalette.getFirst().getBlockType(), x, y);
-                }
+    public BlockModel createBlock(int xPos,
+                                  int yPos,
+                                  float elevation,
+                                  float moisture,
+                                  boolean shallowWater,
+                                  Random random) {
+        if(shallowWater){
+            if(random.nextDouble() < 0.75){
+                return new SandBlock(xPos, yPos);
             }
+            return new WaterBlock(xPos, yPos);
         }
-        return generatedBlocks;
+        if(elevation > -0.30f && random.nextDouble() < 0.5){
+            return new SandBlock(xPos, yPos);
+        }
+        return new WaterBlock(xPos, yPos);
     }
 }
