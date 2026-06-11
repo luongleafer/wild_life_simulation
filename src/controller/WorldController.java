@@ -4,6 +4,7 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
 import model.animals.Cow;
+import model.animals.Elephant;
 import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
@@ -222,6 +223,7 @@ public class WorldController {
         EntityFactory.register("cow", Cow::new);
         EntityFactory.register("pig", Pig::new);
         EntityFactory.register("wolf", Wolf::new);
+        EntityFactory.register("elephant", Elephant::new);
 
     }
 
