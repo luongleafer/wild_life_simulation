@@ -343,30 +343,32 @@ public class ScreenController {
                 "Type: " +
                 selectedEntity.getEntityType()
         );
-
         PositionLabel.setText(
-                "Position: "
-                + selectedEntity.getPosition().getPosX()
-                + ", "
-                + selectedEntity.getPosition().getPosY()
+                String.format(
+                        "Position: %.1f, %.1f",
+                        selectedEntity.getPosition().getPosX(),
+                        selectedEntity.getPosition().getPosY()
+                )
         );
-
         EnergyLabel.setText(
                 "Health: "
                 + selectedEntity.getHealth()
         );
 
         if(selectedEntity instanceof AnimalModel animal) {
+        	HungerLabel.setText(
+        	        String.format(
+        	                "Hunger: %.1f",
+        	                animal.getHunger()
+        	        )
+        	);
 
-            HungerLabel.setText(
-                    "Hunger: "
-                    + animal.getHunger()
-            );
-
-            ThirstLabel.setText(
-                    "Thirst: "
-                    + animal.getThirst()
-            );
+        	ThirstLabel.setText(
+        	        String.format(
+        	                "Thirst: %.1f",
+        	                animal.getThirst()
+        	        )
+        	);
         }
     }
     
