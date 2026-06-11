@@ -287,21 +287,34 @@ public class ScreenController {
         // tìm entity tại vị trí click
         selectedEntity = null;
 
+        double closestDistance = Double.MAX_VALUE;
+
         for(EntityModel entity : worldModel.getEntities()) {
 
-            if(entity.getPosition().getPosX() == tileX &&
-               entity.getPosition().getPosY() == tileY) {
+            double dx =
+                    entity.getPosition().getPosX() - tileX;
 
+            double dy =
+                    entity.getPosition().getPosY() - tileY;
+
+            double distance =
+                    Math.sqrt(dx * dx + dy * dy);
+
+            if(distance < 0.7 &&
+               distance < closestDistance) {
+
+                closestDistance = distance;
                 selectedEntity = entity;
-
-                System.out.println(
-                    "Selected: " +
-                    entity.getEntityType()
-                );
-
-                break;
             }
         }
+
+        if(selectedEntity != null) {
+            System.out.println(
+                    "Selected: " +
+                    selectedEntity.getEntityType()
+            );
+        }
+
 
         updateSelectedEntityInfo();
     }
