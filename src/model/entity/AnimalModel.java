@@ -1,9 +1,13 @@
 package model.entity;
 
+import model.animals.behavior.BehaviorStrategy;
+import model.animals.species.Species;
+import model.block.BlockModel;
 import controller.WorldController;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
+
 
 import java.util.Random;
 
@@ -36,6 +40,10 @@ public abstract class AnimalModel extends EntityModel {
     // Possible acceptable keywords: predator, camouflage, defensive, etc...
     // but that is for later, when those behaviors are defined better
     protected String survivalStrategy;
+    // Cau hinh loai vat, gom toc do, tam nhin va khoang cach follow.
+    protected Species species;
+    // Hanh vi dang duoc uu tien trong tick hien tai.
+    protected BehaviorStrategy activeStrategy;
     // direction may mean that this animal is chasing/fleeing from other entities.
     // new method: use enums for direction
     protected double directionChangeChance = 0;
@@ -58,7 +66,7 @@ public abstract class AnimalModel extends EntityModel {
         if (food == null || !food.canBeEaten()) {
             return;
         }
-        this.hunger += food.getHungerValue();
+        this.hunger += food.getHungerValue();// công them vao thanh hunger
         this.energy += food.getEnergyValue();
     }
 
@@ -69,11 +77,63 @@ public abstract class AnimalModel extends EntityModel {
         this.thirst += block.getThirstValue();
         this.energy += block.getEnergyValue();
     }
+    public void updateMetabolism() {} // ham cap nhat qua trinh trao doi chat
 
     public double getSpeed() {
         return speed;
     }
 
+    public Species getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(Species species) {
+        this.species = species;
+    }
+
+    public BehaviorStrategy getActiveStrategy() {
+        return activeStrategy;
+    }
+
+    public void setActiveStrategy(BehaviorStrategy activeStrategy) {
+        this.activeStrategy = activeStrategy;
+    }
+
+    /**
+     * Kiểm tra con vật có đang ở giai đoạn baby không (currentState == 0).
+     * 0 = Baby, 1 = Adult, 2 = Old
+     */
+    public boolean isBaby() {
+        return currentState == 0;
+    }
+
+    /**
+     * Kiểm tra con vật có đang ở giai đoạn trưởng thành không (currentState == 1).
+     */
+    public boolean isAdult() {
+        return currentState == 1;
+    }
+
+    /**
+     * Kiểm tra con vật có đang ở giai đoạn già không (currentState == 2).
+     */
+    public boolean isOld() {
+        return currentState == 2;
+    }
+
+    /**
+     * Cập nhật life stage dựa trên tuổi hiện tại so với adultAge và oldAge.
+     * Được gọi trong ageUp() hoặc override ở class con.
+     * Chỉ tăng stage, không bao giờ giảm (một chiều theo thời gian).
+     */
+    public void updateLifeStage() {
+        if (adultAge > 0 && age >= adultAge && currentState < 1) {
+            currentState = 1; // Baby → Adult
+        }
+        if (oldAge > 0 && age >= oldAge && currentState < 2) {
+            currentState = 2; // Adult → Old
+        }
+    }
     public void setSpeed(double speed) {
         // Keep speed non-negative so callers don't accidentally reverse movement.
         this.speed = Math.max(0.0, speed);
@@ -157,6 +217,30 @@ public abstract class AnimalModel extends EntityModel {
         }
         setDirection(target.getPosX() - getPosition().getPosX(), target.getPosY() - getPosition().getPosY());
         moveByDistance(speed * Math.max(0.0, speedMultiplier));
+    }
+    /**
+     * Di chuyển theo hướng ngược lại với vị trí nguồn nguy hiểm.
+     * Dùng cho FleeStrategy khi con mồi né kẻ săn mồi.
+     *
+     * @param threat         vị trí của mối đe dọa cần tránh xa
+     * @param speedMultiplier hệ số nhân tốc độ, thường là fleeSpeedMultiplier từ Species
+     */
+    public void moveAwayFrom(EntityCoordinate threat, double speedMultiplier) {
+        if (threat == null) return;
+
+        double dx = getPosition().getPosX() - threat.getPosX();
+        double dy = getPosition().getPosY() - threat.getPosY();
+
+        if (dx == 0.0 && dy == 0.0) {
+            randomizeDirection(); // trùng vị trí, chạy ngẫu nhiên
+        } else {
+            setDirection(dx, dy); // hướng ngược lại kẻ săn mồi
+        }
+        moveByDistance(speed * Math.max(0.0, speedMultiplier));
+    }
+    public void updateAndMove(BlockModel[][] blocksData) {
+        updateMetabolism(); // cap nhat cac thanh nang luong, mau,...
+        move();
     }
 
     public boolean isInFieldOfView(EntityCoordinate target, double fovRadians, double maxDistance) {
@@ -251,6 +335,25 @@ public abstract class AnimalModel extends EntityModel {
         this(position, 10, 10, 10, 10);
         this.survivalStrategy = "survival";
         this.direction = Direction.STAY();
+    }
+    public double getHunger() {
+        return hunger;
+    }
+    public void setHunger(double hunger) {
+        this.hunger = Math.max(0f, Math.min(100f, hunger));
+    }
+    public double getThirst() {
+        return thirst;
+    }
+    public void setThirst(double thirst) {
+        this.thirst = Math.max(0f, Math.min(100f, thirst));
+    }
+
+    public double getEnergy() {
+        return energy;
+    }
+    public void setEnergy(double energy) {
+        this.energy = Math.max(0f, Math.min(100f, energy));
     }
 
     @Override
