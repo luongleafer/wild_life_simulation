@@ -1,50 +1,31 @@
 package model.biome;
 
-import model.block.BlockCoordinate;
 import model.block.BlockModel;
-import model.block.BlockFactory;
 import model.generation.DirtBlock;
 import model.generation.GrassBlock;
-import model.generation.WaterBlock;
+import model.generation.MudBlock;
 
-import java.util.List;
 import java.util.Random;
 
-//places a background block, then randomly scatters another block type
 public class PlainBiomeModel extends BiomeModel {
-    private Random random = new Random();
-    private double grassChance = 0.15; // 15% chance to spawn grass
-    private double waterChance = 0.05; // 5% chance for water
-
-    public PlainBiomeModel(BlockCoordinate topLeft, BlockCoordinate bottomRight) {
-        super(topLeft, bottomRight);
-        blockPalette = List.of(
-                new DirtBlock(0,0),
-                new GrassBlock(0, 0),
-                new WaterBlock(0,0)
-        );
+    @Override
+    public BiomeType getBiomeType() {
+        return BiomeType.PLAIN;
     }
 
     @Override
-    public BlockModel[] generate() {
-        int width = getWidth();
-        int height = getHeight();
-        BlockModel[] generatedBlocks = new BlockModel[width * height];
-        generateBaseLayer().toArray(generatedBlocks);
-        int index = 0;
-
-        for (int x = topLeft.x; x < bottomRight.x; x++) {
-            for (int y = topLeft.y; y < bottomRight.y; y++) {
-                double roll = random.nextDouble();
-                if (roll < waterChance) {
-                    generatedBlocks[index++] = BlockFactory.create(blockPalette.get(2).getBlockType(), x, y); // Water block
-                } else if (roll < waterChance + grassChance) {
-                    generatedBlocks[index++] = BlockFactory.create(blockPalette.get(1).getBlockType(), x, y); // Grass block
-                } else {
-                    generatedBlocks[index++] = BlockFactory.create(blockPalette.getFirst().getBlockType(), x, y);  // Dirt block
-                }
-            }
+    public BlockModel createBlock(int xPos,
+                                  int yPos,
+                                  float elevation,
+                                  float moisture,
+                                  boolean shallowWater,
+                                  Random random) {
+        if(moisture > 0.5f){
+            return new MudBlock(xPos, yPos);
         }
-        return generatedBlocks;
+        if(random.nextDouble() < 0.3){
+            return new GrassBlock(xPos, yPos);
+        }
+        return new DirtBlock(xPos, yPos);
     }
 }

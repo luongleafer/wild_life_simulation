@@ -1,6 +1,10 @@
 package model.world;
 
 import model.biome.BiomeModel;
+import model.biome.BiomeType;
+import model.biome.ForestBiomeModel;
+import model.biome.PlainBiomeModel;
+import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.AnimalModel;
@@ -22,7 +26,11 @@ import java.util.Set;
 
 public class WorldModel {
     private static final long DROWNING_TICKS = 100; // 5 seconds at 20 ticks/sec
-    private BiomeModel[] biomes;
+    private final Map<BiomeType, BiomeModel> biomeRules;
+    private final BiomeType[][] biomeMap;
+    private final boolean[][] shallowWaterMap;
+    private final float[][] elevationMap;
+    private final float[][] moistureMap;
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
@@ -32,7 +40,6 @@ public class WorldModel {
     private List<EntityModel> entities =  new ArrayList<>();
     private int entityPadding = 1;
     Random random = new Random();
-    Random rand = new Random();
     private Season currentSeason = Season.SPRING;
     private final long seasonLength = 400; // 400 ticks, 20 seconds
     private final int seasonVariance = 100;
@@ -45,6 +52,13 @@ public class WorldModel {
         this.length = length;
         this.blocksData = new BlockModel[width][length];
         this.overlayBlocks = new BlockModel[width][length];
+        this.biomeMap = new BiomeType[width][length];
+        this.shallowWaterMap = new boolean[width][length];
+        this.elevationMap = new float[width][length];
+        this.moistureMap = new float[width][length];
+        this.biomeRules = Map.of(BiomeType.WATER, new WaterBiomeModel(),
+                                 BiomeType.PLAIN, new PlainBiomeModel(),
+                                 BiomeType.FOREST, new ForestBiomeModel());
         this.tickCount = 0;
         this.tickSpeed = 1; // 1 tick per update
     }
@@ -87,54 +101,46 @@ public class WorldModel {
     }
 
     public void generateTerrain() {
-        NoiseGeneration noise = new NoiseGeneration();
-        noise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
-        // Using a random seed for variation
-        noise.SetSeed(random.nextInt());
+        NoiseGeneration elevationNoise = new NoiseGeneration();
+        elevationNoise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
+        elevationNoise.SetSeed(random.nextInt());
 
         NoiseGeneration moistureNoise = new NoiseGeneration();
         moistureNoise.SetNoiseType(NoiseGeneration.NoiseType.Cellular);
         moistureNoise.SetSeed(random.nextInt());
 
+        // Pass 1: assign biome at each coordinate using noise fields.
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < length; y++) {
-                // Get noise values between -1.0 and 1.0 (approx)
-                float elevation = noise.GetNoise(x * 5.0f, y * 5.0f); // multiplying by a frequency scale
-
-                BlockModel blockToPlace;
-
-                if (elevation < -0.25f) {
-                    // Deep water / Beach
-                    if (elevation > -0.3f && random.nextDouble() < 0.5) {
-                        blockToPlace = new SandBlock(x, y);
-                    } else {
-                        blockToPlace = new WaterBlock(x, y);
-                    }
-                } else if (elevation < 0.4f) {
-                    // Plains
-                    float moisture = moistureNoise.GetNoise(x * 5.0f, y * 5.0f);
-                    if (moisture > 0.5f) {
-                        blockToPlace = new MudBlock(x, y);
-                    } else if (random.nextDouble() < 0.3) {
-                        blockToPlace = new GrassBlock(x, y);
-                    } else {
-                        blockToPlace = new DirtBlock(x, y);
-                    }
-                } else {
-                    // Forest / High elevation
-                    float moisture = moistureNoise.GetNoise(x * 10.0f, y * 10.0f);
-                    if (moisture > 0.6f) {
-                        blockToPlace = new WoodBlock(x, y );
-                    } else {
-                        blockToPlace = new GrassBlock(x, y);
-                    }
-                }
-
-                placeBlock(blockToPlace);
+                float elevation = elevationNoise.GetNoise(x * 5.0f, y * 5.0f);
+                float moisture = moistureNoise.GetNoise(x * 5.0f, y * 5.0f);
+                elevationMap[x][y] = elevation;
+                moistureMap[x][y] = moisture;
+                biomeMap[x][y] = provisionalBiomeFor(elevation);
             }
         }
-        placeObstacle();
 
+        // Pass 2: detect shallow/deep water region from the biome map.
+        rebuildShallowWaterMapFromBiomes();
+
+        // Final materialization: generate blocks from biome + local noise context.
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < length; y++) {
+                BiomeModel rule = biomeRules.get(biomeMap[x][y]);
+                blocksData[x][y] = rule.createBlock(x,
+                                                    y,
+                                                    elevationMap[x][y],
+                                                    moistureMap[x][y],
+                                                    shallowWaterMap[x][y],
+                                                    random);
+                overlayBlocks[x][y] = null;
+            }
+        }
+
+        // Keep shallow/deep classification aligned with actual water tiles after
+        // final block materialization.
+        rebuildShallowWaterMapFromBlocks();
+        placeObstacle();
     }
 
     public void placeObstacle(){
@@ -152,12 +158,14 @@ public class WorldModel {
     }
 
     public void placeBlock(BlockModel newBlock) {
+        if(newBlock == null) return;
         int x = newBlock.getPosition().x;
         int y = newBlock.getPosition().y;
 
         // check world boundaries before placing
         if (x >= 0 && x < width && y >= 0 && y < length) {
             blocksData[x][y] = newBlock;
+            rebuildShallowWaterMapFromBlocks();
         }
     }
 
@@ -169,6 +177,7 @@ public class WorldModel {
         // Terrain updates once every 50 ticks (approx. 1 second if tick is 20ms)
         if (tickCount % 50 == 0) {
             updateTerrain();
+            rebuildShallowWaterMapFromBlocks();
         }
 
         updateEntities();
@@ -298,17 +307,49 @@ public class WorldModel {
         if(!isWaterAt(x, y)){
             return false;
         }
-        return !isShallowWaterArea(x, y);
+        return !shallowWaterMap[x][y];
     }
 
-    private boolean isShallowWaterArea(int startX, int startY) {
-        if(!isWaterAt(startX, startY)){
-            return false;
+    private BiomeType provisionalBiomeFor(float elevation) {
+        if(elevation < -0.25f){
+            return BiomeType.WATER;
         }
-        Queue<int[]> queue = new ArrayDeque<>();
+        if(elevation < 0.4f){
+            return BiomeType.PLAIN;
+        }
+        return BiomeType.FOREST;
+    }
+
+    private void rebuildShallowWaterMapFromBiomes() {
+        rebuildShallowWaterMap(true);
+    }
+
+    private void rebuildShallowWaterMapFromBlocks() {
+        rebuildShallowWaterMap(false);
+    }
+
+    private void rebuildShallowWaterMap(boolean fromBiomeMap) {
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < length; y++){
+                shallowWaterMap[x][y] = false;
+            }
+        }
         Set<Integer> visited = new HashSet<>();
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < length; y++){
+                if(visited.contains(toCellId(x, y))) continue;
+                if(!isWaterTileForClassification(x, y, fromBiomeMap)) continue;
+                markWaterRegionDepth(x, y, fromBiomeMap, visited);
+            }
+        }
+    }
+
+    private void markWaterRegionDepth(int startX, int startY, boolean fromBiomeMap, Set<Integer> visitedGlobal) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        List<int[]> regionCells = new ArrayList<>();
+
         queue.add(new int[]{startX, startY});
-        visited.add(toCellId(startX, startY));
+        visitedGlobal.add(toCellId(startX, startY));
 
         int minX = startX;
         int minY = startY;
@@ -320,31 +361,36 @@ public class WorldModel {
             int[] cell = queue.poll();
             int x = cell[0];
             int y = cell[1];
+            regionCells.add(cell);
 
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
             maxX = Math.max(maxX, x);
             maxY = Math.max(maxY, y);
 
-            if((maxX - minX + 1) > 3 || (maxY - minY + 1) > 3 || visited.size() > 9){
-                return false;
-            }
-
             for(int[] direction : directions){
                 int nx = x + direction[0];
                 int ny = y + direction[1];
-                if(!isInBounds(nx, ny) || !isWaterAt(nx, ny)){
-                    continue;
-                }
+                if(!isInBounds(nx, ny)) continue;
+                if(!isWaterTileForClassification(nx, ny, fromBiomeMap)) continue;
                 int id = toCellId(nx, ny);
-                if(visited.contains(id)){
-                    continue;
-                }
-                visited.add(id);
+                if(visitedGlobal.contains(id)) continue;
+                visitedGlobal.add(id);
                 queue.add(new int[]{nx, ny});
             }
         }
-        return true;
+
+        boolean isShallow = (maxX - minX + 1) <= 3 && (maxY - minY + 1) <= 3 && regionCells.size() <= 9;
+        for(int[] cell : regionCells){
+            shallowWaterMap[cell[0]][cell[1]] = isShallow;
+        }
+    }
+
+    private boolean isWaterTileForClassification(int x, int y, boolean fromBiomeMap){
+        if(fromBiomeMap){
+            return biomeMap[x][y] == BiomeType.WATER;
+        }
+        return isWaterAt(x, y);
     }
 
     private boolean isInBounds(int x, int y){
