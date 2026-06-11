@@ -9,6 +9,7 @@ import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
 import model.block.BlockFactory;
+import model.block.ObstacleBlockModel;
 import model.entity.EntityFactory;
 import model.entity.EntityModel;
 import model.generation.*;
@@ -174,6 +175,11 @@ public class WorldController {
      * @param yPos The y position to place block, 0 <= y < world's length
      */
     public void placeBlock(BlockModel block, int xPos, int yPos) {
+        placeBlock(block, xPos, yPos, block instanceof ObstacleBlockModel);
+
+    }
+
+    public void placeBlock(BlockModel block, int xPos, int yPos, boolean isObstacle){
         if(block == null) return;
         if(xPos < 0 || yPos < 0) return; // invalid coordinate
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
@@ -185,7 +191,12 @@ public class WorldController {
             IO.println("Exception when trying to place block: " + e.getMessage());
         }
         if(newBlock != null){
-            worldModel.placeBlock(newBlock);
+            if(isObstacle){
+                worldModel.placeObstacle((ObstacleBlockModel) newBlock);
+            }
+            else {
+                worldModel.placeBlock(newBlock);
+            }
         }
     }
 
