@@ -77,7 +77,12 @@ public class EntityTextureMap {
 
     // Get the texture associate with the entity
     public Image getEntityTexture(EntityModel model, int index) {
-        return entityTextureMap.get(model.getEntityType()).get(index);
+        List<Image> textures = entityTextureMap.get(model.getEntityType());
+        if(textures == null || textures.isEmpty()) return null;
+        if(index >= 0 && index < textures.size() && textures.get(index) != null){
+            return textures.get(index);
+        }
+        return textures.stream().filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     public static EntityTextureMap loadFrom(Path path){
