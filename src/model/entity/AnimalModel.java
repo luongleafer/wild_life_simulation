@@ -327,7 +327,4 @@ public abstract class AnimalModel extends EntityModel {
         return (float) thirst;
     }
 
-    public float getEnergy() {
-        return (float) energy;
-    }
 }

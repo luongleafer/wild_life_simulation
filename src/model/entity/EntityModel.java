@@ -127,4 +127,5 @@ public abstract class EntityModel {
     protected void setupStats(){
         this.health = this.maxHealth;
     }
+    
 }

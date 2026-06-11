@@ -40,6 +40,15 @@ public class ScreenController {
     private Button startButton;
     @FXML
     private Label PositionLabel;
+    
+   @FXML
+    private Label TypeLabel;
+   @FXML
+    private Label HungerLabel;
+   @FXML
+    private Label ThirstLabel;
+   @FXML
+    private Label EnergyLabel;
 
     private WorldModel worldModel;
     
@@ -63,6 +72,7 @@ public class ScreenController {
     private Label BlockPosition;
     @FXML
     private ListView<String> entityStatsListView;
+    private EntityModel selectedEntity;
     
     private int selectedX = -1;
     private int selectedY = -1;
@@ -128,6 +138,22 @@ public class ScreenController {
         worldController.registerEntityTextures();
         worldController.registerSound();
         worldView.startRendering();
+        Timeline infoUpdater =
+                new Timeline(
+                        new KeyFrame(
+                                Duration.millis(200),
+                                e -> updateSelectedEntityInfo()
+                        )
+                );
+
+        infoUpdater.setCycleCount(
+                Timeline.INDEFINITE
+        );
+
+        infoUpdater.play();
+        if(selectedEntity == null) {
+            System.out.println("No entity selected");
+        }
         
     }
     @FXML
@@ -242,21 +268,42 @@ public class ScreenController {
     }
     private void handleMapClick(MouseEvent e) {
 
-        selectedX =
+        int tileX =
                 (int)e.getX()
                 / WorldController.WORLD_TILE_SIZE;
 
-        selectedY =
+        int tileY =
                 (int)e.getY()
                 / WorldController.WORLD_TILE_SIZE;
 
+        selectedX = tileX;
+        selectedY = tileY;
+
         BlockPosition.setText(
                 "Block Position: "
-                + selectedX
-                + ", "
-                + selectedY
+                + tileX + ", " + tileY
         );
-        
+
+        // tìm entity tại vị trí click
+        selectedEntity = null;
+
+        for(EntityModel entity : worldModel.getEntities()) {
+
+            if(entity.getPosition().getPosX() == tileX &&
+               entity.getPosition().getPosY() == tileY) {
+
+                selectedEntity = entity;
+
+                System.out.println(
+                    "Selected: " +
+                    entity.getEntityType()
+                );
+
+                break;
+            }
+        }
+
+        updateSelectedEntityInfo();
     }
     private void updateEntityStats() {
 
@@ -280,6 +327,50 @@ public class ScreenController {
                 "Pig: " + pigCount,
                 "Cow: " + cowCount
         );
+    }
+    private void updateSelectedEntityInfo() {
+        System.out.println("Update panel");
+
+        if(selectedEntity == null) {
+
+            TypeLabel.setText("Type:");
+            PositionLabel.setText("Position:");
+            EnergyLabel.setText("Health:");
+            HungerLabel.setText("Hunger:");
+            ThirstLabel.setText("Thirst:");
+
+            return;
+        }
+
+        TypeLabel.setText(
+                "Type: " +
+                selectedEntity.getEntityType()
+        );
+
+        PositionLabel.setText(
+                "Position: "
+                + selectedEntity.getPosition().getPosX()
+                + ", "
+                + selectedEntity.getPosition().getPosY()
+        );
+
+        EnergyLabel.setText(
+                "Health: "
+                + selectedEntity.getHealth()
+        );
+
+        if(selectedEntity instanceof AnimalModel animal) {
+
+            HungerLabel.setText(
+                    "Hunger: "
+                    + animal.getHunger()
+            );
+
+            ThirstLabel.setText(
+                    "Thirst: "
+                    + animal.getThirst()
+            );
+        }
     }
     
 }
