@@ -21,11 +21,11 @@ public class ForestBiomeModel extends BiomeModel {
             boolean shallowWater,
             Random random) {
 
-        if (forestDensity > 0.55f) {
+        if (forestDensity > 0.80f) {
             return new TreeBlock(xPos, yPos);
         }
 
-        if (forestDensity > 0.45f) {
+        if (forestDensity > 0.80f) {
             if (random.nextDouble() < 0.6) {
                 return new TreeBlock(xPos, yPos);
             }
