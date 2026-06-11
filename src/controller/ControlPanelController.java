@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.animation.KeyFrame;
+import javafx.scene.control.Slider;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -40,6 +41,8 @@ public class ControlPanelController {
     private ComboBox<String> spawnKindBox;
     @FXML
     private ComboBox<String> spawnTypeBox;
+    @FXML
+    private Slider zoomSlider;
 
     private WorldModel worldModel;
     private WorldController worldController;
@@ -82,6 +85,16 @@ public class ControlPanelController {
         refreshSpawnModeStatus();
         refreshDashboard();
         startDashboardTimer();
+        zoomSlider.valueProperty().addListener(
+                (obs, oldVal, newVal) -> {
+
+                    double zoom = newVal.doubleValue();
+
+                    worldController.setZoomFactor(zoom);
+
+                    worldController.getWorldView().setZoom(zoom);
+                }
+        );
     }
 
     public void handleWorldClick(double mouseX, double mouseY) {
@@ -95,8 +108,9 @@ public class ControlPanelController {
             return;
         }
 
-        int x = (int) Math.floor(mouseX / WorldController.WORLD_TILE_SIZE);
-        int y = (int) Math.floor(mouseY / WorldController.WORLD_TILE_SIZE);
+        double tileSize = WorldController.WORLD_TILE_SIZE * worldController.getZoomFactor();
+        int x = (int)Math.floor(mouseX / tileSize);
+        int y = (int)Math.floor(mouseY / tileSize);
         if(x < 0 || y < 0 || x >= worldModel.getWidth() || y >= worldModel.getLength()){
             return;
         }

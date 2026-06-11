@@ -245,5 +245,17 @@ public class WorldController {
     public Set<String> getTextureModes() {
         return texturePath.keySet();
     }
+    private double zoomFactor = 1.0;
+
+    public double getZoomFactor() {
+        return zoomFactor;
+    }
+
+    public void setZoomFactor(double zoomFactor) {
+        this.zoomFactor = zoomFactor;
+    }
+    public WorldView getWorldView() {
+        return worldView;
+    }
 
 }
