@@ -2,14 +2,15 @@ package model.entity;
 
 import model.animals.behavior.BehaviorStrategy;
 import model.animals.species.Species;
-import model.block.BlockModel;
 import controller.WorldController;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
+import model.world.WorldModel;
 
 
 import java.util.Random;
+import java.util.function.Predicate;
 
 public abstract class AnimalModel extends EntityModel {
     public static double mateChance = 0.001;
@@ -57,6 +58,12 @@ public abstract class AnimalModel extends EntityModel {
     protected Direction direction;
     // Shared RNG for wandering/turning behaviors.
     private static final Random MOVE_RANDOM = new Random();
+    private static final double DEFAULT_HITBOX_RADIUS = 0.35;
+    private static final double COLLISION_STEP_SIZE = 0.12;
+    private static final double NEEDS_THRESHOLD_RATIO = 0.4;
+    private static final double[] AVOIDANCE_ANGLE_OFFSETS_DEG = {
+            20, -20, 35, -35, 50, -50, 70, -70, 90, -90, 120, -120, 150, -150, 180
+    };
 
     protected long birthCooldown = 0;
 
@@ -279,11 +286,261 @@ public abstract class AnimalModel extends EntityModel {
         if (distance == 0.0 || (directionX == 0.0 && directionY == 0.0)) {
             return;
         }
-        double newX = getPosition().getPosX() + directionX * distance;
-        double newY = getPosition().getPosY() + directionY * distance;
-        move(newX, newY);
-        hunger -= distance * hungerDepletionRate * hungerDepletionMultiplier;
-        thirst -= distance * thirstDepletionRate * thirstDepletionMultiplier;
+        double effectiveDistance = distance * getTerrainSpeedMultiplier();
+        if(effectiveDistance <= 0) return;
+        double movedDistance = moveByDistanceWithCollision(effectiveDistance);
+        if(movedDistance <= 0) return;
+        hunger -= movedDistance * hungerDepletionRate * hungerDepletionMultiplier;
+        thirst -= movedDistance * thirstDepletionRate * thirstDepletionMultiplier;
+    }
+
+    private double getTerrainSpeedMultiplier() {
+        WorldModel worldModel = getWorldModel();
+        if(worldModel == null || getPosition() == null) return 1.0;
+        int x = (int)Math.floor(getPosition().getPosX());
+        int y = (int)Math.floor(getPosition().getPosY());
+        BlockModel standingBlock = worldModel.getBaseBlockAt(x, y);
+        if(standingBlock != null && "mud".equals(standingBlock.getBlockType())){
+            return 0.55;
+        }
+        return 1.0;
+    }
+
+    private WorldModel getWorldModel() {
+        WorldController controller = WorldController.getController();
+        if(controller == null) return null;
+        return controller.getWorldModel();
+    }
+
+    private double moveByDistanceWithCollision(double requestedDistance) {
+        double startX = getPosition().getPosX();
+        double startY = getPosition().getPosY();
+        WorldModel worldModel = getWorldModel();
+        if(worldModel == null){
+            move(startX + directionX * requestedDistance, startY + directionY * requestedDistance);
+            return requestedDistance;
+        }
+
+        int steps = Math.max(1, (int)Math.ceil(requestedDistance / COLLISION_STEP_SIZE));
+        double stepDistance = requestedDistance / steps;
+        double currentX = startX;
+        double currentY = startY;
+
+        for(int i = 0; i < steps; i++){
+            double nextX = currentX + directionX * stepDistance;
+            double nextY = currentY + directionY * stepDistance;
+            if(isPositionBlocked(nextX, nextY, worldModel)){
+                double[] avoidanceStep = findAvoidanceStep(currentX, currentY, stepDistance, worldModel);
+                if(avoidanceStep == null){
+                    break;
+                }
+                currentX = avoidanceStep[0];
+                currentY = avoidanceStep[1];
+                setDirection(avoidanceStep[2], avoidanceStep[3]);
+                continue;
+            }
+            currentX = nextX;
+            currentY = nextY;
+        }
+
+        if(currentX == startX && currentY == startY){
+            return 0;
+        }
+        move(currentX, currentY);
+        return Math.sqrt((currentX - startX) * (currentX - startX) + (currentY - startY) * (currentY - startY));
+    }
+
+    private double[] findAvoidanceStep(double currentX, double currentY, double stepDistance, WorldModel worldModel) {
+        double currentAngle = Math.atan2(directionY, directionX);
+        for(double offsetDeg : AVOIDANCE_ANGLE_OFFSETS_DEG){
+            double candidateAngle = currentAngle + Math.toRadians(offsetDeg);
+            double candidateDirX = Math.cos(candidateAngle);
+            double candidateDirY = Math.sin(candidateAngle);
+            double nextX = currentX + candidateDirX * stepDistance;
+            double nextY = currentY + candidateDirY * stepDistance;
+            if(!isPositionBlocked(nextX, nextY, worldModel)){
+                return new double[]{nextX, nextY, candidateDirX, candidateDirY};
+            }
+        }
+        return null;
+    }
+
+    private boolean isPositionBlocked(double xPos, double yPos, WorldModel worldModel) {
+        return collidesWithObstacles(xPos, yPos, worldModel) || collidesWithOtherAnimals(xPos, yPos, worldModel);
+    }
+
+    private boolean collidesWithObstacles(double xPos, double yPos, WorldModel worldModel) {
+        double radius = getHitboxRadius();
+        int minX = Math.max(0, (int)Math.floor(xPos - radius));
+        int maxX = Math.min(worldModel.getWidth() - 1, (int)Math.floor(xPos + radius));
+        int minY = Math.max(0, (int)Math.floor(yPos - radius));
+        int maxY = Math.min(worldModel.getLength() - 1, (int)Math.floor(yPos + radius));
+
+        for(int x = minX; x <= maxX; x++){
+            for(int y = minY; y <= maxY; y++){
+                BlockModel baseBlock = worldModel.getBaseBlockAt(x, y);
+                BlockModel overlayBlock = worldModel.getOverlayBlockAt(x, y);
+                if(isBlockingObstacle(baseBlock) && circleIntersectsTile(xPos, yPos, radius, x, y)){
+                    return true;
+                }
+                if(isBlockingObstacle(overlayBlock) && circleIntersectsTile(xPos, yPos, radius, x, y)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isBlockingObstacle(BlockModel block) {
+        return block instanceof ObstacleBlockModel obstacle && obstacle.blocksMovement();
+    }
+
+    private boolean circleIntersectsTile(double centerX, double centerY, double radius, int tileX, int tileY) {
+        double nearestX = clamp(centerX, tileX, tileX + 1.0);
+        double nearestY = clamp(centerY, tileY, tileY + 1.0);
+        double dx = centerX - nearestX;
+        double dy = centerY - nearestY;
+        return dx * dx + dy * dy < radius * radius;
+    }
+
+    private double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    private boolean collidesWithOtherAnimals(double xPos, double yPos, WorldModel worldModel) {
+        double myRadius = getHitboxRadius();
+        double currentX = getPosition().getPosX();
+        double currentY = getPosition().getPosY();
+        for(EntityModel entity : worldModel.getEntities()){
+            if(!(entity instanceof AnimalModel other) || other == this || other.getHealth() <= 0){
+                continue;
+            }
+            double combinedRadius = myRadius + other.getHitboxRadius();
+            double currentDx = currentX - other.getPosition().getPosX();
+            double currentDy = currentY - other.getPosition().getPosY();
+            double currentDistanceSquared = currentDx * currentDx + currentDy * currentDy;
+            double dx = xPos - other.getPosition().getPosX();
+            double dy = yPos - other.getPosition().getPosY();
+            double nextDistanceSquared = dx * dx + dy * dy;
+            if(nextDistanceSquared < combinedRadius * combinedRadius){
+                if(currentDistanceSquared < combinedRadius * combinedRadius && nextDistanceSquared > currentDistanceSquared){
+                    continue;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected double getHitboxRadius() {
+        return DEFAULT_HITBOX_RADIUS;
+    }
+
+    protected boolean shouldSeekFood() {
+        return hunger <= maxHunger * NEEDS_THRESHOLD_RATIO;
+    }
+
+    protected boolean shouldSeekWater() {
+        return thirst <= maxThirst * NEEDS_THRESHOLD_RATIO;
+    }
+
+    protected boolean moveTowardNearestWater(double trackingRadius, double speedMultiplier, double stopDistance) {
+        EntityCoordinate target = findNearestWaterTarget(trackingRadius);
+        if(target == null){
+            return false;
+        }
+        moveToward(target, speedMultiplier, stopDistance);
+        return true;
+    }
+
+    protected boolean moveTowardNearestFood(double trackingRadius, double speedMultiplier, double stopDistance) {
+        EntityCoordinate target = findNearestFoodTarget(trackingRadius);
+        if(target == null){
+            return false;
+        }
+        moveToward(target, speedMultiplier, stopDistance);
+        return true;
+    }
+
+    protected EntityCoordinate findNearestWaterTarget(double radius) {
+        return findNearestBlockCenterInRadius(radius, block -> block != null && "water".equals(block.getBlockType()));
+    }
+
+    protected EntityCoordinate findNearestFoodTarget(double radius) {
+        return null;
+    }
+
+    protected EntityCoordinate findNearestBlockCenterInRadius(double radius, Predicate<BlockModel> blockPredicate) {
+        if(blockPredicate == null) return null;
+        WorldModel worldModel = getWorldModel();
+        if(worldModel == null) return null;
+
+        EntityCoordinate myPos = getPosition();
+        int minX = Math.max(0, (int)Math.floor(myPos.getPosX() - radius));
+        int maxX = Math.min(worldModel.getWidth() - 1, (int)Math.floor(myPos.getPosX() + radius));
+        int minY = Math.max(0, (int)Math.floor(myPos.getPosY() - radius));
+        int maxY = Math.min(worldModel.getLength() - 1, (int)Math.floor(myPos.getPosY() + radius));
+
+        double bestDistance = Double.MAX_VALUE;
+        EntityCoordinate bestTarget = null;
+
+        for(int x = minX; x <= maxX; x++){
+            for(int y = minY; y <= maxY; y++){
+                bestTarget = selectNearestBlockTarget(worldModel.getBaseBlockAt(x, y), x, y, myPos, radius, blockPredicate, bestDistance, bestTarget);
+                if(bestTarget != null){
+                    bestDistance = myPos.distance(bestTarget);
+                }
+                bestTarget = selectNearestBlockTarget(worldModel.getOverlayBlockAt(x, y), x, y, myPos, radius, blockPredicate, bestDistance, bestTarget);
+                if(bestTarget != null){
+                    bestDistance = myPos.distance(bestTarget);
+                }
+            }
+        }
+        return bestTarget;
+    }
+
+    private EntityCoordinate selectNearestBlockTarget(BlockModel block,
+                                                      int xPos,
+                                                      int yPos,
+                                                      EntityCoordinate origin,
+                                                      double radius,
+                                                      Predicate<BlockModel> blockPredicate,
+                                                      double bestDistance,
+                                                      EntityCoordinate currentBest) {
+        if(block == null || !blockPredicate.test(block)){
+            return currentBest;
+        }
+        EntityCoordinate center = new EntityCoordinate(xPos + 0.5, yPos + 0.5);
+        double distance = origin.distance(center);
+        if(distance <= radius && distance < bestDistance){
+            return center;
+        }
+        return currentBest;
+    }
+
+    protected EntityModel findNearestEntityInRadius(double radius, Predicate<EntityModel> entityPredicate) {
+        if(entityPredicate == null) return null;
+        WorldModel worldModel = getWorldModel();
+        if(worldModel == null) return null;
+
+        EntityCoordinate myPos = getPosition();
+        double radiusSquared = radius * radius;
+        EntityModel best = null;
+        double bestDistanceSquared = Double.MAX_VALUE;
+
+        for(EntityModel entity : worldModel.getEntities()){
+            if(entity == null || entity == this || !entityPredicate.test(entity)){
+                continue;
+            }
+            double dx = entity.getPosition().getPosX() - myPos.getPosX();
+            double dy = entity.getPosition().getPosY() - myPos.getPosY();
+            double distanceSquared = dx * dx + dy * dy;
+            if(distanceSquared <= radiusSquared && distanceSquared < bestDistanceSquared){
+                best = entity;
+                bestDistanceSquared = distanceSquared;
+            }
+        }
+        return best;
     }
 
     protected void headTowards(BlockCoordinate targetBlock){

@@ -71,10 +71,25 @@ public class Pig extends LandAnimal implements Edible {
 
     @Override
     public void move() {
-//        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
+        setSpeed(5.5 / 20);
+        if(shouldSeekWater() && moveTowardNearestWater(10.0, 1.2, 0.8)){
+            return;
+        }
+        if(shouldSeekFood() && moveTowardNearestFood(7.0, 1.0, 0.8)){
+            return;
+        }
         headRandomly();
         moveByDistance(getSpeed());
     }
+
+    @Override
+    protected EntityCoordinate findNearestFoodTarget(double radius) {
+        return findNearestBlockCenterInRadius(radius, block -> {
+            String blockType = block.getBlockType();
+            return "grass".equals(blockType) || "seed".equals(blockType) || "sapling".equals(blockType);
+        });
+    }
+
     public void mate(){
         birthCooldown = 0;
     }

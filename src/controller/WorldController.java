@@ -3,7 +3,9 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import model.animals.ChuQuangLuong;
 import model.animals.Cow;
+import model.animals.Fish;
 import model.animals.Pig;
 import model.animals.Wolf;
 import model.block.BlockModel;
@@ -49,6 +51,10 @@ public class WorldController {
 
     public void setWorldView(WorldView worldView) {
         this.worldView = worldView;
+    }
+
+    public WorldModel getWorldModel() {
+        return worldModel;
     }
 
     WorldModel worldModel;
@@ -220,6 +226,8 @@ public class WorldController {
         BlockFactory.register("water", WaterBlock::new);
         BlockFactory.register("wood", WoodBlock::new);
         EntityFactory.register("cow", Cow::new);
+        EntityFactory.register("chuquangluong", ChuQuangLuong::new);
+        EntityFactory.register("fish", Fish::new);
         EntityFactory.register("pig", Pig::new);
         EntityFactory.register("wolf", Wolf::new);
 

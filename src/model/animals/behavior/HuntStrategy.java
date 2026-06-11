@@ -1,10 +1,12 @@
 package model.animals.behavior;
 
+import controller.WorldController;
 import model.entity.PredatorAnimalModel;
 import model.animals.species.Species;
 import model.entity.AnimalModel;
 import model.entity.Edible;
 import model.entity.EntityModel;
+import model.world.WorldModel;
 
 import java.util.List;
 
@@ -99,6 +101,12 @@ public class HuntStrategy implements BehaviorStrategy {
             return;
         }
 
+        if(isHuntBlockedByForest(animal, target)){
+            target = null;
+            animal.roamRandomly(species.getMinSpeed(), species.getMaxSpeed(), species.getTurnRate());
+            return;
+        }
+
         boolean inView = animal.isInFieldOfView(
                 target.getPosition(),
                 species.getFovRadians(),
@@ -134,5 +142,12 @@ public class HuntStrategy implements BehaviorStrategy {
                 animal.roamRandomly(species.getMinSpeed(), species.getMaxSpeed(), species.getTurnRate());
             }
         }
+    }
+
+    private boolean isHuntBlockedByForest(AnimalModel predator, EntityModel prey){
+        WorldModel worldModel = WorldController.getController().getWorldModel();
+        if(worldModel == null) return false;
+        return worldModel.isForestSafeZone(predator.getPosition())
+                || worldModel.isForestSafeZone(prey.getPosition());
     }
 }

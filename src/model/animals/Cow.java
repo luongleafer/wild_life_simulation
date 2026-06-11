@@ -24,6 +24,8 @@ public class Cow extends LandAnimal implements Edible {
         this.age = 0; // total lifespan is 10
         this.setSpeed(7.5/20);
         this.setDirection(0, 0);
+        this.hungerDepletionMultiplier = 0.28;
+        this.thirstDepletionMultiplier = 0.32;
         this.entityType = "cow";
     }
 
@@ -68,7 +70,19 @@ public class Cow extends LandAnimal implements Edible {
 
     @Override
     public void move() {
+        setSpeed(7.5 / 20);
+        if(getThirst() <= maxThirst * 0.65 && moveTowardNearestWater(12.0, 1.05, 0.8)){
+            return;
+        }
+        if(getHunger() <= maxHunger * 0.65 && moveTowardNearestFood(10.0, 1.0, 0.8)){
+            return;
+        }
         roamRandomly(7.5/20, 11.11/20,Math.PI/3);
+    }
+
+    @Override
+    protected EntityCoordinate findNearestFoodTarget(double radius) {
+        return findNearestBlockCenterInRadius(radius, block -> "grass".equals(block.getBlockType()));
     }
 
     @Override

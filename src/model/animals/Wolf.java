@@ -1,7 +1,9 @@
 package model.animals;
 
+import controller.WorldController;
 import model.block.BlockModel;
 import model.entity.*;
+import model.world.WorldModel;
 import view.audio.SoundEngine;
 
 import java.util.List;
@@ -68,9 +70,18 @@ public class Wolf extends LandAnimal implements Edible {
 
     @Override
     public void move() {
+        setSpeed(0.111);
+        if(shouldSeekWater() && moveTowardNearestWater(12.0, 1.2, 0.8)){
+            return;
+        }
+        if(currentTarget == null && shouldSeekFood()){
+            currentTarget = findNearestEntityInRadius(10.0, this::isValidPrey);
+        }
+        if(currentTarget != null && currentTarget.getHealth() <= 0){
+            currentTarget = null;
+        }
         if(currentTarget == null) {
             roamRandomly(0.111, 0.200, Math.PI / 3);
-            setSpeed(0.111);
         }
         else{
             moveToward(currentTarget.getPosition(), 2);
@@ -79,6 +90,12 @@ public class Wolf extends LandAnimal implements Edible {
 
     private void attack(){
         if(currentTarget == null) return;
+        WorldModel worldModel = WorldController.getController().getWorldModel();
+        if(worldModel != null &&
+                (worldModel.isForestSafeZone(getPosition())
+                        || worldModel.isForestSafeZone(currentTarget.getPosition()))){
+            return;
+        }
         if(getPosition().distance(currentTarget.getPosition()) < 5) {
             if(lastAttack >= attackCooldown) {
                 currentTarget.receiveDamage(1);
@@ -93,20 +110,32 @@ public class Wolf extends LandAnimal implements Edible {
 
     @Override
     public void Interact(List<EntityModel> entities) {
-//        IO.println("Wolf is interacting with a list of " + entities.size() + " entities");
         entities.forEach(this::Interact);
-       // filter out pigs
-        EntityModel toFollow = entities.stream().filter(entity -> entity instanceof Pig).findFirst().orElse(null);
-        Pig pig = (Pig) toFollow;
-        if(toFollow != null) {
-            if(!isHungry()) return;
-            currentTarget = toFollow;
-            attack();
+        if(!shouldSeekFood()){
+            currentTarget = null;
+            return;
         }
-        else{
+        EntityModel nearestPrey = entities.stream()
+                .filter(this::isValidPrey)
+                .min((left, right) -> Double.compare(getPosition().distance(left.getPosition()),
+                                                     getPosition().distance(right.getPosition())))
+                .orElse(null);
+        if(nearestPrey != null){
+            currentTarget = nearestPrey;
+            attack();
+            return;
+        }
+        if(currentTarget != null && !isValidPrey(currentTarget)){
             currentTarget = null;
         }
 
+    }
+
+    private boolean isValidPrey(EntityModel entity) {
+        if(entity == null || entity == this || entity.getHealth() <= 0){
+            return false;
+        }
+        return entity instanceof Pig || entity instanceof Cow;
     }
 
     public boolean hasJustAttacked(){

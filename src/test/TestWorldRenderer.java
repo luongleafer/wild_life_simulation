@@ -53,8 +53,12 @@ public class TestWorldRenderer extends Application {
         worldScroll.setPannable(true);
         worldScroll.setFitToHeight(false);
         worldScroll.setFitToWidth(false);
+        ScrollPane controlPanelScroll = new ScrollPane(loadControlPanel(controller));
+        controlPanelScroll.setFitToWidth(true);
+        controlPanelScroll.setFitToHeight(true);
+        controlPanelScroll.setPannable(true);
         root.setCenter(worldScroll);
-        root.setRight(loadControlPanel(controller));
+        root.setRight(controlPanelScroll);
 
         worldPane.setOnMouseClicked(mouseEvent ->
                                             controlPanelController.handleWorldClick(mouseEvent.getX(),
@@ -99,6 +103,10 @@ public class TestWorldRenderer extends Application {
         for(int i = 0; i < 10; i++) {
             controller.spawnEntity(EntityFactory.create("cow", new EntityCoordinate(30, 30)));
         }
+        for(int i = 0; i < 5; i++) {
+            controller.spawnEntity(EntityFactory.create("fish", new EntityCoordinate(10 + i * 2, 10 + i * 2)));
+        }
+        controller.spawnEntity(EntityFactory.create("chuquangluong", new EntityCoordinate(40, 40)));
     }
 
 }

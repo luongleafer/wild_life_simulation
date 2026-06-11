@@ -3,7 +3,6 @@ package model.biome;
 import model.block.BlockModel;
 import model.generation.DirtBlock;
 import model.generation.GrassBlock;
-import model.generation.MudBlock;
 
 import java.util.Random;
 
@@ -20,10 +19,7 @@ public class PlainBiomeModel extends BiomeModel {
                                   float moisture,
                                   boolean shallowWater,
                                   Random random) {
-        if(moisture > 0.5f){
-            return new MudBlock(xPos, yPos);
-        }
-        if(random.nextDouble() < 0.3){
+        if(moisture > 0.2f && random.nextDouble() < 0.4){
             return new GrassBlock(xPos, yPos);
         }
         return new DirtBlock(xPos, yPos);

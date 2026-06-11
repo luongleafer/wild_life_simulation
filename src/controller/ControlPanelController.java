@@ -1,16 +1,16 @@
 package controller;
 
 import javafx.animation.KeyFrame;
-import javafx.scene.control.Slider;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.util.Duration;
 import model.block.BlockFactory;
 import model.block.BlockModel;
+import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityFactory;
 import model.entity.EntityModel;
@@ -32,9 +32,9 @@ public class ControlPanelController {
     @FXML
     private Label activeAssetModeLabel;
     @FXML
-    private Label spawnModeStatusLabel;
+    private Label interactionStatusLabel;
     @FXML
-    private CheckBox spawnModeCheckBox;
+    private ComboBox<String> interactionModeBox;
     @FXML
     private ComboBox<String> assetModeBox;
     @FXML
@@ -42,7 +42,31 @@ public class ControlPanelController {
     @FXML
     private ComboBox<String> spawnTypeBox;
     @FXML
+    private ComboBox<String> selectKindBox;
+    @FXML
     private Slider zoomSlider;
+    @FXML
+    private Label selectedTypeValueLabel;
+    @FXML
+    private Label selectedNameValueLabel;
+    @FXML
+    private Label selectedBiomeValueLabel;
+    @FXML
+    private Label selectedHealthValueLabel;
+    @FXML
+    private Label selectedSpeedValueLabel;
+    @FXML
+    private Label selectedHungerValueLabel;
+    @FXML
+    private Label selectedThirstValueLabel;
+    @FXML
+    private Label selectedEnergyValueLabel;
+    @FXML
+    private Label selectedSinkabilityValueLabel;
+
+    private static final String MODE_SPAWN = "Spawn";
+    private static final String MODE_SELECT = "Select";
+    private static final String NONE_VALUE = "-";
 
     private WorldModel worldModel;
     private WorldController worldController;
@@ -51,14 +75,19 @@ public class ControlPanelController {
 
     @FXML
     private void initialize() {
-        spawnModeCheckBox.setSelected(false);
-        spawnModeCheckBox.setOnAction(event -> refreshSpawnModeStatus());
+        interactionModeBox.setItems(FXCollections.observableArrayList(MODE_SPAWN, MODE_SELECT));
+        interactionModeBox.getSelectionModel().select(MODE_SPAWN);
+        interactionModeBox.setOnAction(event -> refreshInteractionStatus());
 
         spawnKindBox.setItems(FXCollections.observableArrayList("Entity", "Block"));
         spawnKindBox.getSelectionModel().select("Entity");
         spawnKindBox.setOnAction(event -> refreshSpawnTypeOptions());
 
-        spawnTypeBox.setOnAction(event -> refreshSpawnModeStatus());
+        spawnTypeBox.setOnAction(event -> refreshInteractionStatus());
+
+        selectKindBox.setItems(FXCollections.observableArrayList("Entity", "Block"));
+        selectKindBox.getSelectionModel().select("Entity");
+        selectKindBox.setOnAction(event -> refreshInteractionStatus());
 
         assetModeBox.setOnAction(event -> {
             if(worldController == null) return;
@@ -70,7 +99,8 @@ public class ControlPanelController {
         });
 
         refreshSpawnTypeOptions();
-        refreshSpawnModeStatus();
+        clearSelectionInfo();
+        refreshInteractionStatus();
     }
 
     public void bind(WorldModel worldModel, WorldController worldController, int simulationTps) {
@@ -82,31 +112,18 @@ public class ControlPanelController {
         assetModeBox.getSelectionModel().select(worldController.getCurrentTextureMode());
 
         refreshSpawnTypeOptions();
-        refreshSpawnModeStatus();
+        refreshInteractionStatus();
         refreshDashboard();
         startDashboardTimer();
-        zoomSlider.valueProperty().addListener(
-                (obs, oldVal, newVal) -> {
-
-                    double zoom = newVal.doubleValue();
-
-                    worldController.setZoomFactor(zoom);
-
-                    worldController.getWorldView().setZoom(zoom);
-                }
-        );
+        zoomSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double zoom = newVal.doubleValue();
+            worldController.setZoomFactor(zoom);
+            worldController.getWorldView().setZoom(zoom);
+        });
     }
 
     public void handleWorldClick(double mouseX, double mouseY) {
         if(worldModel == null || worldController == null) return;
-        if(!spawnModeCheckBox.isSelected()) return;
-
-        String spawnKind = spawnKindBox.getValue();
-        String spawnType = spawnTypeBox.getValue();
-        if(spawnKind == null || spawnType == null){
-            refreshSpawnModeStatus();
-            return;
-        }
 
         double tileSize = WorldController.WORLD_TILE_SIZE * worldController.getZoomFactor();
         int x = (int)Math.floor(mouseX / tileSize);
@@ -115,9 +132,15 @@ public class ControlPanelController {
             return;
         }
 
-        spawnAt(spawnKind, spawnType, x, y);
+        String mode = interactionModeBox.getValue();
+        if(MODE_SELECT.equals(mode)){
+            selectAt(x, y, selectKindBox.getValue());
+            refreshInteractionStatus();
+            return;
+        }
+        spawnAtCurrentSelection(x, y);
         refreshDashboard();
-        refreshSpawnModeStatus();
+        refreshInteractionStatus();
     }
 
     public void stop() {
@@ -148,31 +171,106 @@ public class ControlPanelController {
         if(!options.isEmpty()){
             spawnTypeBox.getSelectionModel().select(0);
         }
-        refreshSpawnModeStatus();
+        refreshInteractionStatus();
     }
 
-    private void spawnAt(String spawnKind, String spawnType, int x, int y) {
+    private void spawnAtCurrentSelection(int xPos, int yPos) {
+        String spawnKind = spawnKindBox.getValue();
+        String spawnType = spawnTypeBox.getValue();
+        if(spawnKind == null || spawnType == null) return;
+
         if("Entity".equals(spawnKind)){
-            EntityModel entity = EntityFactory.create(spawnType, new EntityCoordinate(x + 0.5, y + 0.5));
+            EntityModel entity = EntityFactory.create(spawnType, new EntityCoordinate(xPos + 0.5, yPos + 0.5));
             worldController.requestSpawnEntity(entity);
             return;
         }
-        BlockModel block = BlockFactory.create(spawnType, x, y);
-        worldController.placeBlock(block, x, y);
+        BlockModel block = BlockFactory.create(spawnType, xPos, yPos);
+        worldController.placeBlock(block, xPos, yPos);
     }
 
-    private void refreshSpawnModeStatus() {
+    private void selectAt(int xPos, int yPos, String selectType) {
+        if("Block".equals(selectType)){
+            BlockModel block = worldModel.getBlockAt(xPos, yPos);
+            if(block != null){
+                updateBlockSelectionInfo(block, xPos, yPos);
+                return;
+            }
+            clearSelectionInfo();
+            return;
+        }
+
+        EntityModel entity = worldModel.getEntityAt(xPos, yPos);
+        if(entity != null){
+            updateEntitySelectionInfo(entity);
+            return;
+        }
+        clearSelectionInfo();
+    }
+
+    private void updateEntitySelectionInfo(EntityModel entity) {
+        selectedTypeValueLabel.setText("Entity");
+        selectedNameValueLabel.setText(entity.getEntityType());
+        selectedBiomeValueLabel.setText(worldModel.getBiomeNameAt(entity.getPosition()));
+        selectedHealthValueLabel.setText(formatValue(entity.getHealth()));
+
+        if(entity instanceof AnimalModel animal){
+            selectedSpeedValueLabel.setText(formatValue(animal.getSpeed()));
+            selectedHungerValueLabel.setText(formatValue(animal.getHunger()));
+            selectedThirstValueLabel.setText(formatValue(animal.getThirst()));
+            selectedEnergyValueLabel.setText(formatValue(animal.getEnergy()));
+        } else {
+            selectedSpeedValueLabel.setText(NONE_VALUE);
+            selectedHungerValueLabel.setText(NONE_VALUE);
+            selectedThirstValueLabel.setText(NONE_VALUE);
+            selectedEnergyValueLabel.setText(NONE_VALUE);
+        }
+        selectedSinkabilityValueLabel.setText(NONE_VALUE);
+    }
+
+    private void updateBlockSelectionInfo(BlockModel block, int xPos, int yPos) {
+        selectedTypeValueLabel.setText("Block");
+        selectedNameValueLabel.setText(block.getBlockType());
+        selectedBiomeValueLabel.setText(worldModel.getBiomeNameAt(xPos, yPos));
+        selectedHealthValueLabel.setText(NONE_VALUE);
+        selectedSpeedValueLabel.setText(NONE_VALUE);
+        selectedHungerValueLabel.setText(NONE_VALUE);
+        selectedThirstValueLabel.setText(NONE_VALUE);
+        selectedEnergyValueLabel.setText(NONE_VALUE);
+        selectedSinkabilityValueLabel.setText(String.valueOf(block.getSinkability()));
+    }
+
+    private void clearSelectionInfo() {
+        selectedTypeValueLabel.setText(NONE_VALUE);
+        selectedNameValueLabel.setText(NONE_VALUE);
+        selectedBiomeValueLabel.setText(NONE_VALUE);
+        selectedHealthValueLabel.setText(NONE_VALUE);
+        selectedSpeedValueLabel.setText(NONE_VALUE);
+        selectedHungerValueLabel.setText(NONE_VALUE);
+        selectedThirstValueLabel.setText(NONE_VALUE);
+        selectedEnergyValueLabel.setText(NONE_VALUE);
+        selectedSinkabilityValueLabel.setText(NONE_VALUE);
+    }
+
+    private void refreshInteractionStatus() {
+        String mode = interactionModeBox.getValue();
+        boolean spawnMode = MODE_SPAWN.equals(mode);
+        spawnKindBox.setDisable(!spawnMode);
+        spawnTypeBox.setDisable(!spawnMode);
+        selectKindBox.setDisable(spawnMode);
+        if(!spawnMode){
+            String selectType = selectKindBox.getValue();
+            interactionStatusLabel.setText("Select mode: Click map to inspect " +
+                                           (selectType == null ? "object" : selectType.toLowerCase(Locale.US)));
+            return;
+        }
+
         String kind = spawnKindBox.getValue();
         String type = spawnTypeBox.getValue();
-        if(!spawnModeCheckBox.isSelected()){
-            spawnModeStatusLabel.setText("Spawn mode: OFF");
-            return;
-        }
         if(kind == null || type == null){
-            spawnModeStatusLabel.setText("Spawn mode: ON (select kind/type)");
+            interactionStatusLabel.setText("Spawn mode: select kind/type");
             return;
         }
-        spawnModeStatusLabel.setText("Spawn mode: ON -> Click map to place " + kind + " [" + type + "]");
+        interactionStatusLabel.setText("Spawn mode: Click map to place " + kind + " [" + type + "]");
     }
 
     private void refreshDashboard() {
@@ -191,5 +289,9 @@ public class ControlPanelController {
                 .collect(Collectors.joining(", "));
         entityStatsLabel.setText("Entities: " + worldModel.getEntities().size() +
                                  (detail.isEmpty() ? "" : " (" + detail + ")"));
+    }
+
+    private String formatValue(double value){
+        return String.format(Locale.US, "%.2f", value);
     }
 }
