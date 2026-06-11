@@ -12,6 +12,7 @@ import model.block.BlockFactory;
 import model.block.ObstacleBlockModel;
 import model.entity.EntityFactory;
 import model.entity.EntityModel;
+import model.entity.Grass;
 import model.generation.*;
 import model.world.WorldModel;
 import view.audio.SoundEngine;
@@ -117,11 +118,11 @@ public class WorldController {
     }
 
     private void playSoundEvents(){
-        if(worldModel.getEntities().stream()
-                .anyMatch(entityModel ->
-                                  entityModel instanceof Wolf wolf && wolf.hasJustAttacked())){
-            SoundEngine.getEngine().playSound("wolf_eat");
-        }
+//        if(worldModel.getEntities().stream()
+//                .anyMatch(entityModel ->
+//                                  entityModel instanceof Wolf wolf && wolf.hasJustAttacked())){
+//            SoundEngine.getEngine().playSound("wolf_eat");
+//        }
         worldModel.getEntities().forEach(
                 entityModel -> {
                     if(random.nextDouble() < 0.001) {
@@ -166,6 +167,8 @@ public class WorldController {
         soundEngine.registerSound("wolf_death", Paths.get("assets/audio/wolf/death.mp3"));
         soundEngine.registerSound("pig_death", Paths.get("assets/audio/pig/death.mp3"));
         soundEngine.registerSound("cow_death", Paths.get("assets/audio/cow/death.mp3"));
+        soundEngine.registerSound("elephant_idle", Paths.get("assets/audio/elephant/elephant_idle.mp3"));
+        soundEngine.registerSound("elephant_death", Paths.get("assets/audio/elephant/elephant_death.mp3"));
     }
 
     /**
@@ -235,6 +238,7 @@ public class WorldController {
         EntityFactory.register("pig", Pig::new);
         EntityFactory.register("wolf", Wolf::new);
         EntityFactory.register("elephant", Elephant::new);
+        EntityFactory.register("grass", Grass::new);
 
     }
 

@@ -8,7 +8,7 @@ import model.entity.*;
 import java.util.List;
 import java.util.Random;
 
-public class Pig extends LandAnimal implements Edible {
+public class Pig extends HerbivoreLandAnimal implements Edible {
 
     static {
     }

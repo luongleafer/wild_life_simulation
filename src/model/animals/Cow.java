@@ -9,12 +9,7 @@ import model.generation.GrassBlock;
 import java.util.List;
 import java.util.Random;
 
-public class Cow extends LandAnimal implements Edible {
-
-    static {
-    }
-
-
+public class Cow extends HerbivoreLandAnimal implements Edible {
     public Cow(EntityCoordinate position){
         super(position, 10, 10, 10, 10);
         // Default values for cows, can be changed later if needed
@@ -30,10 +25,7 @@ public class Cow extends LandAnimal implements Edible {
     @Override
     public void Interact(EntityModel entity) {
         super.Interact(entity);
-        // Cows are herbivores: they eat grass
-        // Will they interact with other cows? Probably
-        // Just make it walk randomly for now
-        // Which means this class is uh, blank
+
     }
 
     @Override

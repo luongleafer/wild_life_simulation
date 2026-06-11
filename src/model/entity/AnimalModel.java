@@ -5,7 +5,6 @@ import model.animals.species.Species;
 import model.block.BlockModel;
 import controller.WorldController;
 import model.block.BlockCoordinate;
-import model.block.BlockModel;
 import model.block.ObstacleBlockModel;
 
 
@@ -34,6 +33,7 @@ public abstract class AnimalModel extends EntityModel {
     protected double healthDepletionMultiplier = 1;
     protected double hungerDepletionMultiplier = 1;
     protected double thirstDepletionMultiplier = 1;
+    protected double mateChanceMultiplier = 1;
 
     // As seen in issue #8, this will be temporarily implemented using String.
     // though I don't know a better way to do this yet.
@@ -399,14 +399,14 @@ public abstract class AnimalModel extends EntityModel {
     @Override
     public void Interact(EntityModel entity) {
         if(entity.getEntityType().equals(entityType)){
-            Interact((AnimalModel) entity);
+            mateWith((AnimalModel) entity);
         }
     }
 
-    private void Interact(AnimalModel other){
+    private void mateWith(AnimalModel other){
         if(readyToMate() && other.readyToMate()
                 && position.distance(other.position) <= mateDistance
-                && new Random().nextDouble() < mateChance
+                && new Random().nextDouble() < mateChance * mateChanceMultiplier
         ){
             birthCooldown = 0;
             other.birthCooldown = 0;
