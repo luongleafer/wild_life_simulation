@@ -94,8 +94,11 @@ public class EntityTextureMap {
             for(int i = 0; i<maxState; i++){
                 Path thisStatePath = Paths.get(path.toString(), "entity", entityType + "_" + i + ".png");
                 if(Files.exists(thisStatePath)){
-                    entityTextureMap.registerEntity(entityType, thisStatePath, i
-                    );
+                    double scale = 1.0;
+                    if ("elephant".equalsIgnoreCase(entityType)) {
+                        scale = 2.5; // Kích thước lớn cho voi
+                    }
+                    entityTextureMap.registerEntity(entityType, thisStatePath, i, scale, scale);
                 }
                 else{
                     IO.println("Try to load file at " + thisStatePath + " but doesn't exist");

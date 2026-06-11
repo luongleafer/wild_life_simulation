@@ -99,6 +99,9 @@ public class TestWorldRenderer extends Application {
         for(int i = 0; i < 10; i++) {
             controller.spawnEntity(EntityFactory.create("cow", new EntityCoordinate(30, 30)));
         }
+        for(int i = 0; i < 5; i++) {
+            controller.spawnEntity(EntityFactory.create("elephant", new EntityCoordinate(random.nextDouble() * model.getWidth(), random.nextDouble() * model.getLength())));
+        }
     }
 
 }

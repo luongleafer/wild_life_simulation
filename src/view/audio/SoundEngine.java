@@ -65,7 +65,7 @@ public class SoundEngine {
             IO.println("Sound event " + eventName + " unregistered");
         }
         AudioClip clip = allSounds.get(eventName);
-        if(!playingClips.contains(clip)){
+        if(clip != null && !playingClips.contains(clip)){
             playingClips.add(clip);
             clip.play();
         }
