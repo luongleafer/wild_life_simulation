@@ -73,7 +73,7 @@ public class ScreenController {
     @FXML
     private ListView<String> entityStatsListView;
     private EntityModel selectedEntity;
-    
+    private boolean paused = false;
     private int selectedX = -1;
     private int selectedY = -1;
     private GraphicsContext gc;
@@ -174,6 +174,9 @@ public class ScreenController {
 
             startButton.setText("Start");
         }
+    }
+    public void stopUpdateWorldService() {
+        paused = true;
     }
     @FXML
     private void handleSpawn() {

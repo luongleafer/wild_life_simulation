@@ -81,23 +81,6 @@ public class WorldController {
      * Start updating the world
      * @param tps: Tick speed
      */
-    public void startUpdateWorldService(long tps) {
-
-        updateWorldService.setPeriod(
-                Duration.seconds(1.0 / tps)
-        );
-
-        if(updateWorldService.isRunning()) {
-            updateWorldService.restart();
-        }
-        else {
-            updateWorldService.start();
-        }
-    }
-
-    public void stopUpdateWorldService() {
-        updateWorldService.reset();
-    }
 
     /**
      * Remove views for dead entities
@@ -247,6 +230,25 @@ public class WorldController {
 
         if(updateWorldService.isRunning()) {
             updateWorldService.restart();
+        }
+    }
+    public void stopUpdateWorldService() {
+        updateWorldService.cancel();
+    }
+    public void startUpdateWorldService(long tps) {
+
+        updateWorldService.setPeriod(
+                Duration.seconds(1.0 / tps)
+        );
+
+        if(updateWorldService.getState() ==
+                javafx.concurrent.Worker.State.CANCELLED) {
+
+            updateWorldService.reset();
+        }
+
+        if(!updateWorldService.isRunning()) {
+            updateWorldService.start();
         }
     }
 

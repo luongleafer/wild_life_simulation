@@ -30,6 +30,7 @@ public class WorldModel {
     private final int seasonVariance = 100;
     private long ticksSinceLastSeason = 0;
     private long currentSeasonLength = 400;
+    
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -314,4 +315,5 @@ public class WorldModel {
 
         blocksData[x][y] = block;
     }
+
 }
