@@ -9,16 +9,14 @@ import java.util.Random;
 public class MudBlock extends BlockModel {
 
     static{
-        BlockFactory.register("mud", MudBlock::new);
     }
 
     private boolean isWet;
 
-    public MudBlock(int x, int y, int initialState) {
-        super(x, y, initialState, 4);
+    public MudBlock(int x, int y) {
+        super(x, y, 4);
         this.blockType = "mud";
         this.sinkability = 4;
-        this.totalStates = 2; // could be 2 for wet/dry
         this.isWet = true; // assume it starts as wet
     }
 
@@ -35,7 +33,7 @@ public class MudBlock extends BlockModel {
      * @return a new DirtBlock at the same position.
      */
     public BlockModel dryOut() {
-        return new DirtBlock(this.position.getX(), this.position.getY(), 0);
+        return new DirtBlock(this.position.getX(), this.position.getY());
     }
 
 
@@ -47,7 +45,7 @@ public class MudBlock extends BlockModel {
             return dryOut();
         }
         else if(new Random().nextDouble() < waterBlockCount * 0.005){
-            return new WaterBlock(position.x, position.y, 0);
+            return new WaterBlock(position.x, position.y);
         }
         return this;
     }

@@ -4,12 +4,11 @@ import java.util.List;
 
 public class ObstacleBlock extends ObstacleBlockModel {
     public ObstacleBlock(int x, int y, String blockType) {
-        super(x, y, 1, 0);
+        super(x, y, 1);
         this.blockType = blockType;
-        this.totalStates = 1;
     }
 
-    public BlockModel newBlock(int x, int y, int initialState) {
+    public BlockModel newBlock(int x, int y) {
         return new ObstacleBlock(x, y, blockType);
     }
 

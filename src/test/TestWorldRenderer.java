@@ -34,8 +34,10 @@ public class TestWorldRenderer extends Application {
         SoundEngine.initEngine();
         model.generateTerrain();
         Scene scene = new Scene(worldPane, 640, 480);
-        controller.registerBlockTextures();
-        controller.registerEntityTextures();
+        controller.registerBlocksAndEntities();
+        controller.setTexturePath("basic");
+//        controller.registerBlockTextures();
+//        controller.registerEntityTextures();
         controller.registerSound();
         controller.startUpdateWorldService(20);
         renderer.startRendering();

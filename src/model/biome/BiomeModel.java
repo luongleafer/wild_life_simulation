@@ -35,7 +35,7 @@ public abstract class BiomeModel {
         BlockModel baseBlock = blockPalette.getFirst();
         for(int x = topLeft.x; x <  bottomRight.x; x++){
             for(int y =  topLeft.y; y <  bottomRight.y; y++){
-                blocks.add(BlockFactory.create(baseBlock.getBlockType(), x, y, 0));
+                blocks.add(BlockFactory.create(baseBlock.getBlockType(), x, y));
             }
         }
         return blocks;

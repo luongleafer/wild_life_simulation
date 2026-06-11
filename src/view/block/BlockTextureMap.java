@@ -2,20 +2,23 @@ package view.block;
 
 import controller.WorldController;
 import javafx.scene.image.Image;
+import model.block.BlockFactory;
 import model.block.BlockModel;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manage graphical representation of a block.
  * For now, it accepts a blockModel and return an Image to render on screen
  */
 public class BlockTextureMap {
-    private final Map<String, List<Image>> blockTextureMap = new HashMap<>();
+    private final Map<String, Image> blockTextureMap = new HashMap<>();
 
     // This class is implemented as a Singleton
     // This mean only one object of this class can be instantiated.
@@ -31,27 +34,26 @@ public class BlockTextureMap {
     /**
      * Register the blockType and associated textures to the globalMap.
      * @param blockType The type of block ("dirt", "grass",...).
-     * @param texturesPath The Path for texture files, each correspond with a state of the blockModel.
+     * @param imagePath The Path for texture files.
      */
-    public void registerTextures(String blockType, List<Path> texturesPath){
+    public void registerTextures(String blockType, Path imagePath){
         // check if blocks is already registered
         if(blockTextureMap.containsKey(blockType)){
             return;
         }
         // check if path exists
-        if(!texturesPath.stream().allMatch(Files::exists)) return; // temporary, should throw exception
+        if(!Files.exists(imagePath)) return;
 
         // map from path to JavaFX's Image objects to display on the screen.
         // texture is auto-scaled by the world's tile size
-        List<Image> imageList = texturesPath.stream()
-                .map(path -> new Image(path.toUri().toString(),
-                                       WorldController.WORLD_TILE_SIZE,
-                                       WorldController.WORLD_TILE_SIZE,
-                                       true,
-                                       true
-                                       ))
-                .toList();
-        blockTextureMap.put(blockType, imageList);
+        Image image = new Image(imagePath.toUri().toString(),
+                                WorldController.WORLD_TILE_SIZE,
+                                WorldController.WORLD_TILE_SIZE,
+                                true,
+                                true
+        );
+
+        blockTextureMap.put(blockType, image);
 
 
         IO.println("[BlockTextureMap] Block " + blockType + " has been registered");
@@ -65,11 +67,21 @@ public class BlockTextureMap {
      * or null if the block type is not registered
      */
     public Image getBlockTexture(BlockModel blockModel){
-        if(blockTextureMap.containsKey(blockModel.getBlockType())){
-            return blockTextureMap.get(blockModel.getBlockType()).get(blockModel.getCurrentState());
+        return blockTextureMap.getOrDefault(blockModel.getBlockType(), null);
+    }
+
+    public static BlockTextureMap loadFrom(Path path){
+        BlockTextureMap blockTextureMap = new BlockTextureMap();
+        Set<String> allBlockTypes = BlockFactory.allBlockType();
+        for(String blockType : allBlockTypes){
+            Path thisBlockPath = Paths.get(path.toString(), "block", blockType + ".png");
+            if(Files.exists(thisBlockPath)){
+                blockTextureMap.registerTextures(blockType, thisBlockPath);
+            }
+            else{
+                IO.println("Failed to load block texture at " + thisBlockPath);
+            }
         }
-        else{
-            return null;
-        }
+        return blockTextureMap;
     }
 }

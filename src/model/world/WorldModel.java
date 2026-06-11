@@ -97,27 +97,27 @@ public class WorldModel {
                 if (elevation < -0.25f) {
                     // Deep water / Beach
                     if (elevation > -0.3f && random.nextDouble() < 0.5) {
-                        blockToPlace = new SandBlock(x, y, 0);
+                        blockToPlace = new SandBlock(x, y);
                     } else {
-                        blockToPlace = new WaterBlock(x, y, 0);
+                        blockToPlace = new WaterBlock(x, y);
                     }
                 } else if (elevation < 0.4f) {
                     // Plains
                     float moisture = moistureNoise.GetNoise(x * 5.0f, y * 5.0f);
                     if (moisture > 0.5f) {
-                        blockToPlace = new MudBlock(x, y, 0);
+                        blockToPlace = new MudBlock(x, y);
                     } else if (random.nextDouble() < 0.3) {
-                        blockToPlace = new GrassBlock(x, y, 0);
+                        blockToPlace = new GrassBlock(x, y);
                     } else {
-                        blockToPlace = new DirtBlock(x, y, 0);
+                        blockToPlace = new DirtBlock(x, y);
                     }
                 } else {
                     // Forest / High elevation
                     float moisture = moistureNoise.GetNoise(x * 10.0f, y * 10.0f);
                     if (moisture > 0.6f) {
-                        blockToPlace = new WoodBlock(x, y, 0);
+                        blockToPlace = new WoodBlock(x, y );
                     } else {
-                        blockToPlace = new GrassBlock(x, y, 0);
+                        blockToPlace = new GrassBlock(x, y);
                     }
                 }
 
@@ -133,10 +133,10 @@ public class WorldModel {
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
                 if(blocksData[x][y] instanceof DirtBlock && rand.nextDouble() < 0.02) {
-                    overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0,0);
+                    overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0);
                 }
                 if ((blocksData[x][y] instanceof GrassBlock || blocksData[x][y] instanceof DirtBlock) && rand.nextDouble() < 0.03) {
-                    overlayBlocks[x][y] = new SeedBlock(x, y, 0);
+                    overlayBlocks[x][y] = new SeedBlock(x, y);
                 }
             }
         }
