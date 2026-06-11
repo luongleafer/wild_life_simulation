@@ -6,6 +6,8 @@ public class Grass extends PlantModel implements Edible{
         this.entityType = "grass";
         this.adultAge = 20;
         this.health = 10;
+        this.hitBoxWidth = 1;
+        this.hitBoxLength = 1;
     }
 
     @Override

@@ -26,8 +26,6 @@ public class Pig extends HerbivoreLandAnimal implements Edible {
         this.setSpeed(5.0/20);
         this.setDirection(1, 1);
         this.entityType = "pig";
-        this.hitBoxWidth = 1.2;
-        this.hitBoxLength = 0.9;
         birthCooldown = 0;
     }
 

@@ -30,7 +30,7 @@ public abstract class EntityModel {
 
 
     public EntityModel(EntityCoordinate position, int health, int age, int adultAge, int oldAge, int totalLifespan, int currentState) {
-        this.position = position;
+        this(position);
         this.health = health;
         this.age = age;
         this.adultAge = adultAge;
@@ -42,6 +42,8 @@ public abstract class EntityModel {
     // Constructor for position ONLY
     public EntityModel(EntityCoordinate position) {
         this.position = position;
+        this.hitBoxWidth = 1;
+        this.hitBoxLength = 1;
     }
 
     // Unlike blocks, I think everything here should be able to be modified if required

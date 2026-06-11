@@ -16,6 +16,7 @@ import java.util.*;
  * Model as Singleton for program-wide access
  */
 public class EntityTextureMap {
+    private static final int maxState = 4;
     Map<String, List<Image>> entityTextureMap = new HashMap<>();
     public EntityTextureMap() {
 
@@ -37,12 +38,7 @@ public class EntityTextureMap {
      * @throws IndexOutOfBoundsException When index is larger than the current entity's total number of state registered
      */
     public void registerEntity(String entityType, Path file, int index) throws IndexOutOfBoundsException{
-        Image image = new Image(file.toUri().toString(),
-                                WorldController.WORLD_TILE_SIZE,
-                                WorldController.WORLD_TILE_SIZE,
-                                false,
-                                true
-                                );
+        Image image = new Image(file.toUri().toString());
         if(entityTextureMap.containsKey(entityType)) {
             List<Image> entityTextures =  entityTextureMap.get(entityType);
             if(index < 0 || index > entityTextures.size()) {
@@ -68,6 +64,7 @@ public class EntityTextureMap {
 
     // Get the texture associate with the entity
     public Image getEntityTexture(EntityModel model, int index) {
+        if(index > maxState) index = maxState;
         List<Image> textures = entityTextureMap.get(model.getEntityType());
         if(textures == null || textures.isEmpty()) return null;
         if(index >= 0 && index < textures.size() && textures.get(index) != null){
@@ -77,7 +74,6 @@ public class EntityTextureMap {
     }
 
     public static EntityTextureMap loadFrom(Path path){
-        int maxState = 8;
         EntityTextureMap entityTextureMap = new EntityTextureMap();
         Set<String> allEntityTypes = EntityFactory.allEntityString();
         if(allEntityTypes.isEmpty()) return null;
@@ -85,11 +81,7 @@ public class EntityTextureMap {
             for(int i = 0; i<maxState; i++){
                 Path thisStatePath = Paths.get(path.toString(), "entity", entityType + "_" + i + ".png");
                 if(Files.exists(thisStatePath)){
-                    double scale = 1.0;
-                    if ("elephant".equalsIgnoreCase(entityType)) {
-                        scale = 2.5; // Kích thước lớn cho voi
-                    }
-                    entityTextureMap.registerEntity(entityType, thisStatePath, i, scale, scale);
+                    entityTextureMap.registerEntity(entityType, thisStatePath, i);
                 }
                 else{
                     IO.println("Try to load file at " + thisStatePath + " but doesn't exist");
