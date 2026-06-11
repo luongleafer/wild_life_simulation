@@ -232,7 +232,7 @@ public class ScreenController {
     @FXML
     private void handleKillAll() {
 
-        worldModel.getEntities().clear();
+        worldController.killAllEntities();
 
         System.out.println("All entities removed");
     }

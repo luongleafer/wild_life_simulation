@@ -231,6 +231,14 @@ public class WorldController {
     public void requestSpawnEntity(EntityModel entity) {
         waitToSpawn.add(entity);
     }
+    public void killAllEntities() {
+
+        for(EntityModel entity : new ArrayList<>(worldModel.getEntities())) {
+            worldView.getAllEntitiesView().removeView(entity);
+        }
+
+        worldModel.getEntities().clear();
+    }
     
 
 }
