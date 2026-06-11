@@ -5,4 +5,7 @@ module wild.life.simulation{
     requires javafx.media;
 
     opens test to javafx.graphics, javafx.fxml, javafx.media;
+    requires javafx.fxml;
+
+    opens screenController to javafx.fxml;
 }

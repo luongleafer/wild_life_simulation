@@ -319,4 +319,15 @@ public abstract class AnimalModel extends EntityModel {
         int maxTicksBetweenBirth = 400;
         return birthCooldown >= maxTicksBetweenBirth;
     }
+    public float getHunger() {
+        return (float) hunger;
+    }
+
+    public float getThirst() {
+        return (float) thirst;
+    }
+
+    public float getEnergy() {
+        return (float) energy;
+    }
 }
