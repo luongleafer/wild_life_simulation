@@ -42,7 +42,7 @@
                   <Insets left="10.0" />
                </VBox.margin>
             </Label>
-            <Slider fx:id="zoomSlider" min="0.2" max="5.0" value="1.0" showTickLabels="true" showTickMarks="true" majorTickUnit="1.0" blockIncrement="0.1">
+            <Slider fx:id="zoomSlider" blockIncrement="0.1" majorTickUnit="1.0" max="5.0" min="0.2" showTickLabels="true" showTickMarks="true" value="1.0">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
