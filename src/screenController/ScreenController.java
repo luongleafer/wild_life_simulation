@@ -61,6 +61,8 @@ public class ScreenController {
     private Button insertButton;
     @FXML
     private Label BlockPosition;
+    @FXML
+    private ListView<String> entityStatsListView;
     
     private int selectedX = -1;
     private int selectedY = -1;
@@ -184,10 +186,11 @@ public class ScreenController {
                 entity = new Cow(position);
                 break;
         }
-
         if(entity != null) {
 
-        	worldController.spawnEntity(entity);
+            worldController.spawnEntity(entity);
+
+            updateEntityStats();
 
             System.out.println(
                     "Spawned " +
@@ -233,6 +236,7 @@ public class ScreenController {
     private void handleKillAll() {
 
         worldController.killAllEntities();
+        updateEntityStats();
 
         System.out.println("All entities removed");
     }
@@ -251,6 +255,30 @@ public class ScreenController {
                 + selectedX
                 + ", "
                 + selectedY
+        );
+        
+    }
+    private void updateEntityStats() {
+
+        long wolfCount =
+                worldModel.getEntities().stream()
+                        .filter(e -> e instanceof Wolf)
+                        .count();
+
+        long pigCount =
+                worldModel.getEntities().stream()
+                        .filter(e -> e instanceof Pig)
+                        .count();
+
+        long cowCount =
+                worldModel.getEntities().stream()
+                        .filter(e -> e instanceof Cow)
+                        .count();
+
+        entityStatsListView.getItems().setAll(
+                "Wolf: " + wolfCount,
+                "Pig: " + pigCount,
+                "Cow: " + cowCount
         );
     }
     
