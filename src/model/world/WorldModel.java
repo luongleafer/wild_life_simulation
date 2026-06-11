@@ -152,12 +152,12 @@ public class WorldModel {
         }
     }
 
-    public void update(){
+    public void update() {
+        System.out.println("Tick: " + tickCount);
+
         advanceTickCount();
         updateSeason();
 
-        // Slow down block updates so it's visible to the human eye.
-        // Terrain updates once every 50 ticks (approx. 1 second if tick is 20ms)
         if (tickCount % 50 == 0) {
             updateTerrain();
         }

@@ -87,22 +87,19 @@ public class ScreenController {
         tickSpeedLabel.setText("Tick speed: 5 TPS");
 
         tickSpeedSlider.valueProperty().addListener(
-            (obs, oldVal, newVal) -> {
+        	    (obs, oldVal, newVal) -> {
 
-                int tps = newVal.intValue();
+        	        int tps = newVal.intValue();
 
-                tickSpeedLabel.setText(
-                        "Tick speed: " + tps + " TPS"
-                );
+        	        tickSpeedLabel.setText(
+        	                "Tick speed: " + tps + " TPS"
+        	        );
 
-                if (running) {
-
-                    worldController.stopUpdateWorldService();
-
-                    worldController.startUpdateWorldService(tps);
-                }
-            }
-        );
+        	        if(running) {
+        	            worldController.changeTPS(tps);
+        	        }
+        	    }
+        	);
         animalChoiceBox.getItems().addAll(
                 "Pig",
                 "Wolf",

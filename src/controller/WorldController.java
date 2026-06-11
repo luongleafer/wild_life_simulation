@@ -96,7 +96,7 @@ public class WorldController {
     }
 
     public void stopUpdateWorldService() {
-        updateWorldService.cancel();
+        updateWorldService.reset();
     }
 
     /**
@@ -239,6 +239,15 @@ public class WorldController {
 
         worldModel.getEntities().clear();
     }
-    
+    public void changeTPS(long tps) {
+
+        updateWorldService.setPeriod(
+                Duration.seconds(1.0 / tps)
+        );
+
+        if(updateWorldService.isRunning()) {
+            updateWorldService.restart();
+        }
+    }
 
 }
