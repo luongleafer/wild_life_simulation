@@ -4,16 +4,24 @@ import model.biome.BiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
 import model.entity.AnimalModel;
+import model.entity.AquaticCreature;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
 import model.generation.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 
 public class WorldModel {
+    private static final long DROWNING_TICKS = 100; // 5 seconds at 20 ticks/sec
     private BiomeModel[] biomes;
     private long tickCount;
     private int tickSpeed;
@@ -30,6 +38,7 @@ public class WorldModel {
     private final int seasonVariance = 100;
     private long ticksSinceLastSeason = 0;
     private long currentSeasonLength = 400;
+    private final Map<EntityModel, Long> deepWaterExposureTicks = new HashMap<>();
 
     public WorldModel(int width, int length) {
         this.width = width;
@@ -163,6 +172,7 @@ public class WorldModel {
         }
 
         updateEntities();
+        updateDeepWaterDrowning();
     }
 
     public List<EntityModel> getDeadEntities(){
@@ -252,6 +262,102 @@ public class WorldModel {
         entities.forEach(EntityModel::ageUp);
         entitiesMovement();
         entitiesInteraction();
+    }
+
+    private void updateDeepWaterDrowning() {
+        Set<EntityModel> aliveEntities = new HashSet<>(entities);
+        deepWaterExposureTicks.keySet().removeIf(entity ->
+                                                         !aliveEntities.contains(entity) || entity.getHealth() <= 0);
+
+        for(EntityModel entity : entities){
+            if(entity == null || entity.getHealth() <= 0){
+                continue;
+            }
+            if(isAquaticCreature(entity) || !isStandingOnDeepWater(entity)){
+                deepWaterExposureTicks.remove(entity);
+                continue;
+            }
+            long exposure = deepWaterExposureTicks.getOrDefault(entity, 0L) + tickSpeed;
+            deepWaterExposureTicks.put(entity, exposure);
+            if(exposure >= DROWNING_TICKS){
+                entity.setHealth(0);
+            }
+        }
+    }
+
+    private boolean isAquaticCreature(EntityModel entity) {
+        return entity instanceof AquaticCreature;
+    }
+
+    private boolean isStandingOnDeepWater(EntityModel entity) {
+        int x = (int) Math.floor(entity.getPosition().getPosX());
+        int y = (int) Math.floor(entity.getPosition().getPosY());
+        if(!isInBounds(x, y)){
+            return false;
+        }
+        if(!isWaterAt(x, y)){
+            return false;
+        }
+        return !isShallowWaterArea(x, y);
+    }
+
+    private boolean isShallowWaterArea(int startX, int startY) {
+        if(!isWaterAt(startX, startY)){
+            return false;
+        }
+        Queue<int[]> queue = new ArrayDeque<>();
+        Set<Integer> visited = new HashSet<>();
+        queue.add(new int[]{startX, startY});
+        visited.add(toCellId(startX, startY));
+
+        int minX = startX;
+        int minY = startY;
+        int maxX = startX;
+        int maxY = startY;
+        int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+
+        while(!queue.isEmpty()){
+            int[] cell = queue.poll();
+            int x = cell[0];
+            int y = cell[1];
+
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+
+            if((maxX - minX + 1) > 3 || (maxY - minY + 1) > 3 || visited.size() > 9){
+                return false;
+            }
+
+            for(int[] direction : directions){
+                int nx = x + direction[0];
+                int ny = y + direction[1];
+                if(!isInBounds(nx, ny) || !isWaterAt(nx, ny)){
+                    continue;
+                }
+                int id = toCellId(nx, ny);
+                if(visited.contains(id)){
+                    continue;
+                }
+                visited.add(id);
+                queue.add(new int[]{nx, ny});
+            }
+        }
+        return true;
+    }
+
+    private boolean isInBounds(int x, int y){
+        return x >= 0 && y >= 0 && x < width && y < length;
+    }
+
+    private boolean isWaterAt(int x, int y){
+        BlockModel block = blocksData[x][y];
+        return block != null && "water".equals(block.getBlockType());
+    }
+
+    private int toCellId(int x, int y){
+        return x * length + y;
     }
 
     private List<BlockModel> getSurroundingBlocks(BlockCoordinate origin){

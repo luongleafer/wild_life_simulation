@@ -16,20 +16,21 @@ import view.audio.SoundEngine;
 import view.block.BlockTextureMap;
 import view.WorldView;
 import view.entity.EntityTextureMap;
-import view.entity.EntityView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Controls everything
  */
 public class WorldController {
-    private final List<EntityModel> waitToSpawn;
+    private final Queue<EntityModel> waitToSpawn;
     public static int WORLD_TILE_SIZE = 16;
     public static WorldController controller;
     private final Map<String, Path> texturePath;
@@ -70,9 +71,8 @@ public class WorldController {
                     refreshEntityViews();
                     worldModel.update();
                     playSoundEvents();
-                    if(!waitToSpawn.isEmpty()) {
-                        waitToSpawn.forEach(WorldController.this::spawnEntity);
-                        waitToSpawn.clear();
+                    while(!waitToSpawn.isEmpty()) {
+                        spawnEntity(waitToSpawn.poll());
                     }
                     return null;
                 }
@@ -81,10 +81,11 @@ public class WorldController {
     };
 
     private WorldController(){
-        waitToSpawn = new ArrayList<>();
-        texturePath = Map.of("basic", Path.of("assets/basic"),
-                             "minecraft", Path.of("assets/minecraft_based"),
-                             "home_graphic", Path.of("assets/homemade"));
+        waitToSpawn = new ConcurrentLinkedQueue<>();
+        texturePath = new LinkedHashMap<>();
+        texturePath.put("basic", Path.of("assets/basic"));
+        texturePath.put("minecraft", Path.of("assets/minecraft_based"));
+        texturePath.put("homemade", Path.of("assets/homemade"));
 
     }
 
@@ -172,6 +173,7 @@ public class WorldController {
      * @param yPos The y position to place block, 0 <= y < world's length
      */
     public void placeBlock(BlockModel block, int xPos, int yPos) {
+        if(block == null) return;
         if(xPos < 0 || yPos < 0) return; // invalid coordinate
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
         BlockModel newBlock = null;
@@ -202,6 +204,7 @@ public class WorldController {
     }
 
     public void requestSpawnEntity(EntityModel entity) {
+        if(entity == null) return;
         waitToSpawn.add(entity);
     }
 
@@ -223,6 +226,9 @@ public class WorldController {
     }
 
     public void setTexturePath(String name){
+        if("home_graphic".equals(name)){
+            name = "homemade";
+        }
         if(texturePath.containsKey(name)){
             currentTexture = name;
             Path path = texturePath.get(name);
@@ -230,6 +236,14 @@ public class WorldController {
             worldView.getAllEntitiesView().setEntityTextureMap(EntityTextureMap.loadFrom(path));
         }
 
+    }
+
+    public String getCurrentTextureMode() {
+        return currentTexture;
+    }
+
+    public Set<String> getTextureModes() {
+        return texturePath.keySet();
     }
 
 }

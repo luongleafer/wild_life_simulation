@@ -5,18 +5,17 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import model.entity.EntityModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AllEntitiesView {
     // map an Entity to a View on screen
     private final Map<EntityModel, EntityView> modelViewMap = new ConcurrentHashMap<>();
     EntityTextureMap entityTextureMap;
     Pane allEntitiesPane;
-    List<EntityModel> waitToRender = new ArrayList<>();
+    Queue<EntityModel> waitToRender = new ConcurrentLinkedQueue<>();
 
     public AllEntitiesView(EntityTextureMap entityTextureMap, Pane allEntitiesPane) {
        this.entityTextureMap = entityTextureMap;
@@ -32,6 +31,7 @@ public class AllEntitiesView {
     }
 
     public void requestRender(EntityModel model){
+        if(model == null) return;
         waitToRender.add(model);
     }
 
@@ -53,16 +53,18 @@ public class AllEntitiesView {
 
         modelViewMap.forEach((model, entityView) -> {
             // update view for entities base on current state
-            entityView.setSprite(entityTextureMap.getEntityTexture(model, model.getCurrentState()));
+            Image texture = entityTextureMap.getEntityTexture(model, model.getCurrentState());
+            if(texture != null){
+                entityView.setSprite(texture);
+            }
             // update screen position for movement
             entityView.updateScreenPosition(WorldController.WORLD_TILE_SIZE, 0, 0);
             // add the ImageView to pane
             allEntitiesPane.getChildren().add(entityView.getSprite());
         });
 
-        if(!waitToRender.isEmpty()){
-            waitToRender.forEach(this::addView);
-            waitToRender.clear();
+        while(!waitToRender.isEmpty()){
+            addView(waitToRender.poll());
         }
     }
 }
