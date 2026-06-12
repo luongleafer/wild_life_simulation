@@ -119,7 +119,7 @@ public class WorldModel {
 
         forestNoise.SetSeed(random.nextInt());
 
-        forestNoise.SetFrequency(0.03f);
+        forestNoise.SetFrequency(0.01f);
 
         // Pass 1: assign biome at each coordinate using noise fields.
         for (int x = 0; x < width; x++) {

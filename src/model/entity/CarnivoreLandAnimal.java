@@ -23,6 +23,7 @@ public class CarnivoreLandAnimal extends LandAnimal{
         super(position, maxHealth, maxHunger, maxThirst, maxEnergy);
         currentTarget = null;
         lastAttack = 0;
+        level = 2;
     }
 
     @Override

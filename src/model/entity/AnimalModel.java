@@ -8,6 +8,7 @@ import model.block.BlockCoordinate;
 import model.block.ObstacleBlockModel;
 
 
+import java.util.List;
 import java.util.Random;
 
 public abstract class AnimalModel extends EntityModel {
@@ -19,6 +20,7 @@ public abstract class AnimalModel extends EntityModel {
     // hunger reduce when moving, per distance in moveByDistance()
     static public double hungerDepletionRate = 0.1;
     static public double thirstDepletionRate = 0.1;
+    protected int level = 0;
 
     // since we are following the Minecraft model here...
     // the values will be floats
@@ -400,6 +402,13 @@ public abstract class AnimalModel extends EntityModel {
     public void Interact(EntityModel entity) {
         if(entity.getEntityType().equals(entityType)){
             mateWith((AnimalModel) entity);
+        }
+        if(entity instanceof AnimalModel animal){
+            if(animal.level > level){
+                headAwayFrom(
+                        new BlockCoordinate((int) animal.position.posX, (int) animal.position.posY), 2.0
+                );
+            }
         }
     }
 

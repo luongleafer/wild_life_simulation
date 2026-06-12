@@ -16,6 +16,7 @@ public class HerbivoreLandAnimal extends LandAnimal{
     public HerbivoreLandAnimal(EntityCoordinate position, double maxHealth, double maxHunger, double maxThirst, double maxEnergy) {
         super(position, maxHealth, maxHunger, maxThirst, maxEnergy);
         threatTypes = new ArrayList<>();
+        level = 1;
     }
 
     @Override

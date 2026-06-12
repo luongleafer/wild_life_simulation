@@ -19,6 +19,7 @@ public class Elephant extends LandAnimal implements Edible {
         this.mateChanceMultiplier = 0.01; // elephant mate less often
         this.hitBoxLength = 4;
         this.hitBoxWidth = 4;
+        this.level = 3;
     }
 
     @Override
