@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefWidth="360.0" spacing="12.0" style="-fx-padding: 12; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControlPanelController">
@@ -26,13 +26,42 @@
       </VBox>
       <VBox spacing="6.0" style="-fx-padding: 8;">
          <children>
-            <Label text="Spawn Entity / Place Block" />
-            <CheckBox fx:id="spawnModeCheckBox" mnemonicParsing="false" text="Enable Spawn Mode" />
-            <Label fx:id="spawnModeStatusLabel" text="Spawn mode: OFF" />
+            <Label text="Interaction Mode" />
+            <ComboBox fx:id="interactionModeBox" maxWidth="1.7976931348623157E308" />
+            <Label fx:id="interactionStatusLabel" text="Spawn mode: select kind/type" />
+            <Label text="Select Type" />
+            <ComboBox fx:id="selectKindBox" maxWidth="1.7976931348623157E308" />
             <Label text="Spawn Kind" />
             <ComboBox fx:id="spawnKindBox" maxWidth="1.7976931348623157E308" />
             <Label text="Spawn Type" />
             <ComboBox fx:id="spawnTypeBox" maxWidth="1.7976931348623157E308" />
+         </children>
+      </VBox>
+      <VBox spacing="6.0" style="-fx-padding: 8;">
+         <children>
+            <Label text="Selection Details" />
+            <GridPane hgap="8.0" vgap="4.0">
+               <children>
+                  <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <Label fx:id="selectedTypeValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <Label fx:id="selectedNameValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Biome:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <Label fx:id="selectedBiomeValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Health:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <Label fx:id="selectedHealthValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Speed:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <Label fx:id="selectedSpeedValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Hunger:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  <Label fx:id="selectedHungerValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label text="Thirst:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                  <Label fx:id="selectedThirstValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label text="Energy:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                  <Label fx:id="selectedEnergyValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <Label text="Sinkability:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                  <Label fx:id="selectedSinkabilityValueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+               </children>
+            </GridPane>
          </children>
       </VBox>
       <VBox>
