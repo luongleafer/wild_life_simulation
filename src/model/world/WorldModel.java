@@ -26,28 +26,51 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * The core data model and simulation engine for the wild life simulation.
+ * This class acts as a central hub that holds all block data, biome data,
+ * and entity data. It is responsible for:
+ * 1. Procedurally generating the initial terrain using simplex noise.
+ * 2. Updating the simulation state (seasons, terrain interactions).
+ * 3. Ticking entities and enforcing physical constraints (like drowning and boundaries).
+ */
 public class WorldModel {
     private static final long DROWNING_TICKS = 100; // 5 seconds at 20 ticks/sec
+
+    // Core Data Grids
     private final Map<BiomeType, BiomeModel> biomeRules;
-    private final BiomeType[][] biomeMap;
-    private final boolean[][] shallowWaterMap;
+    private final BiomeType[][] biomeMap; // Assigns a biome to every coordinate
+    private final boolean[][] shallowWaterMap; // Tracks which water blocks are shallow vs deep
+
+    // Noise Maps used during generation
     private final float[][] elevationMap;
     private final float[][] moistureMap;
     private final float[][] forestDensityMap;
+
+    // Simulation Timing
     private long tickCount;
     private int tickSpeed;
-    private BlockModel[][] blocksData;
-    private BlockModel[][] overlayBlocks;
+
+    // Physical World State
+    private BlockModel[][] blocksData; // Base terrain (dirt, water, sand)
+    private BlockModel[][] overlayBlocks; // Objects placed on top of terrain (trees, bushes)
     private int width;
     private int length;
+
+    // Entities
     private List<EntityModel> entities =  new ArrayList<>();
-    private int entityPadding = 1;
+    private int entityPadding = 1; // Margin from the world border where entities cannot pass
+
     Random random = new Random();
+
+    // Seasons Logic
     private Season currentSeason = Season.SPRING;
     private final long seasonLength = 400; // 400 ticks, 20 seconds
     private final int seasonVariance = 100;
     private long ticksSinceLastSeason = 0;
     private long currentSeasonLength = 400;
+
+    // Tracks how long land animals have been standing in deep water
     private final Map<EntityModel, Long> deepWaterExposureTicks = new HashMap<>();
 
     public WorldModel(int width, int length) {
@@ -94,6 +117,9 @@ public class WorldModel {
         return overlayBlocks[xPos][yPos];
     }
 
+    /**
+     * Gets the nearest entity to the specified block coordinate.
+     */
     public EntityModel getEntityAt(int xPos, int yPos) {
         if(!isInBounds(xPos, yPos)) return null;
         double centerX = xPos + 0.5;
@@ -149,6 +175,10 @@ public class WorldModel {
         ticksSinceLastSeason += tickSpeed;
     }
 
+    /**
+     * Manages season transitions, updating global multipliers for entity metabolism
+     * and reproduction when a season changes.
+     */
     public void updateSeason(){
         if(ticksSinceLastSeason < currentSeasonLength) return;
         ticksSinceLastSeason = 0;
@@ -169,6 +199,14 @@ public class WorldModel {
         this.tickSpeed = tickSpeed;
     }
 
+    /**
+     * Procedurally generates the terrain using OpenSimplex2 noise.
+     * The generation happens in three passes:
+     * 1. Noise Maps -> Biomes: Generates elevation, moisture, and forest density, then assigns a biome.
+     * 2. Context Analysis: Analyzes the biome map to determine which water regions are shallow vs deep.
+     * 3. Block Materialization: Asks the assigned BiomeModel to instantiate the actual BlockModel
+     *    based on the exact noise values and water depth context for that coordinate.
+     */
     public void generateTerrain() {
         NoiseGeneration elevationNoise = new NoiseGeneration();
         elevationNoise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
@@ -178,12 +216,10 @@ public class WorldModel {
         moistureNoise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
         moistureNoise.SetSeed(random.nextInt());
         moistureNoise.SetFrequency(0.02f);
+
         NoiseGeneration forestNoise = new NoiseGeneration();
-
         forestNoise.SetNoiseType( NoiseGeneration.NoiseType.OpenSimplex2);
-
         forestNoise.SetSeed(random.nextInt());
-
         forestNoise.SetFrequency(0.03f);
 
         // Pass 1: assign biome at each coordinate using noise fields.
@@ -202,19 +238,19 @@ public class WorldModel {
         // Pass 2: detect shallow/deep water region from the biome map.
         rebuildShallowWaterMapFromBiomes();
 
-        // Final materialization: generate blocks from biome + local noise context.
+        // Pass 3: Final materialization: generate blocks from biome + local noise context.
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < length; y++) {
                 BiomeModel rule = biomeRules.get(biomeMap[x][y]);
                 blocksData[x][y] =
-                	    rule.createBlock(
-                	        x,
-                	        y,
-                	        elevationMap[x][y],
-                	        moistureMap[x][y],
-                	        forestDensityMap[x][y],
-                	        shallowWaterMap[x][y],
-                	        random);
+                            rule.createBlock(
+                                x,
+                                y,
+                                elevationMap[x][y],
+                                moistureMap[x][y],
+                                forestDensityMap[x][y],
+                                shallowWaterMap[x][y],
+                                random);
                 overlayBlocks[x][y] = null;
             }
         }
@@ -225,6 +261,10 @@ public class WorldModel {
         placeObstacle();
     }
 
+    /**
+     * Extracts block types that act as obstacles (trees, saplings, seeds) from the 
+     * base blocksData grid and moves them to the overlayBlocks grid.
+     */
     public void placeObstacle(){
         Random rand = new Random();
         for(int x = 0; x < width; x++){
@@ -256,6 +296,10 @@ public class WorldModel {
         overlayBlocks[x][y] = newObstacle;
     }
 
+    /**
+     * The main simulation loop entry point. Advances time, updates seasons,
+     * triggers slow terrain updates, and processes all entity logic.
+     */
     public void update(){
         advanceTickCount();
         updateSeason();
@@ -280,6 +324,11 @@ public class WorldModel {
         entities.removeAll(getDeadEntities());
     }
 
+    /**
+     * Prompts all animals to move and enforces world boundary constraints.
+     * Prevents entities from walking off the edge of the generated map by reversing
+     * their direction if they hit the padded border.
+     */
     private void entitiesMovement(){
         entities.stream()
                 .filter(entity -> entity instanceof AnimalModel)
@@ -342,6 +391,9 @@ public class WorldModel {
         return blocks;
     }
 
+    /**
+     * Processes interactions between entities, and between entities and nearby blocks.
+     */
     private void entitiesInteraction(){
         entities.forEach(
                 entityModel -> {
@@ -360,6 +412,9 @@ public class WorldModel {
         entitiesInteraction();
     }
 
+    /**
+     * Kills non-aquatic entities if they remain in deep water for too many consecutive ticks.
+     */
     private void updateDeepWaterDrowning() {
         Set<EntityModel> aliveEntities = new HashSet<>(entities);
         deepWaterExposureTicks.keySet().removeIf(entity ->
@@ -376,7 +431,7 @@ public class WorldModel {
             long exposure = deepWaterExposureTicks.getOrDefault(entity, 0L) + tickSpeed;
             deepWaterExposureTicks.put(entity, exposure);
             if(exposure >= DROWNING_TICKS){
-                entity.setHealth(0);
+                entity.setHealth(0); // Drown
             }
         }
     }
@@ -385,6 +440,9 @@ public class WorldModel {
         return entity instanceof AquaticCreature;
     }
 
+    /**
+     * Checks if the entity is currently standing on a tile identified as deep water.
+     */
     private boolean isStandingOnDeepWater(EntityModel entity) {
         int x = (int) Math.floor(entity.getPosition().getPosX());
         int y = (int) Math.floor(entity.getPosition().getPosY());
@@ -397,6 +455,9 @@ public class WorldModel {
         return !shallowWaterMap[x][y];
     }
 
+    /**
+     * Defines the hard elevation thresholds for biomes during generation.
+     */
     private BiomeType provisionalBiomeFor(float elevation) {
         if(elevation < -0.25f){
             return BiomeType.WATER;
@@ -415,6 +476,10 @@ public class WorldModel {
         rebuildShallowWaterMap(false);
     }
 
+    /**
+     * Iterates through the world to find contiguous regions of water and delegates 
+     * the depth calculation to a BFS algorithm.
+     */
     private void rebuildShallowWaterMap(boolean fromBiomeMap) {
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
@@ -431,6 +496,11 @@ public class WorldModel {
         }
     }
 
+    /**
+     * Breadth-First Search (BFS) to find contiguous bodies of water. 
+     * If a water region is extremely small (bounding box <= 3x3 AND total cells <= 9), 
+     * it is marked as "shallow water" (e.g. a small pond). Otherwise, it is deep water (e.g. an ocean).
+     */
     private void markWaterRegionDepth(int startX, int startY, boolean fromBiomeMap, Set<Integer> visitedGlobal) {
         Queue<int[]> queue = new ArrayDeque<>();
         List<int[]> regionCells = new ArrayList<>();
@@ -467,6 +537,7 @@ public class WorldModel {
             }
         }
 
+        // Depth heuristic: Small isolated ponds are shallow, large bodies are deep
         boolean isShallow = (maxX - minX + 1) <= 3 && (maxY - minY + 1) <= 3 && regionCells.size() <= 9;
         for(int[] cell : regionCells){
             shallowWaterMap[cell[0]][cell[1]] = isShallow;
@@ -499,6 +570,9 @@ public class WorldModel {
         return block != null && "water".equals(block.getBlockType());
     }
 
+    /**
+     * Converts a 2D coordinate to a 1D ID for efficient HashSet storage during BFS.
+     */
     private int toCellId(int x, int y){
         return x * length + y;
     }
@@ -514,6 +588,10 @@ public class WorldModel {
         return surroundingBlocks;
     }
 
+    /**
+     * Triggers the "interact" method on all blocks, allowing blocks to change
+     * state based on their neighbors (e.g. mud drying out, grass spreading).
+     */
     private void updateTerrain(){
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
@@ -539,7 +617,7 @@ public class WorldModel {
 
     public String getCurrentSeason(){
         return currentSeason.getName();
-        
+
     }
-    
+
 }
