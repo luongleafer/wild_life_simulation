@@ -81,10 +81,14 @@ public class EntityView {
      */
     public void updateScreenPosition(int tileSize, int cameraX, int cameraY) {
         EntityCoordinate position = entity.getPosition();
-        this.screenX = (int) (position.posX * tileSize) - cameraX;
-        this.screenY = (int) (position.posY * tileSize) - cameraY;
+        this.screenX = (int) ( (position.posX - entity.getHitBoxWidth() / 2)  * tileSize) - cameraX;
+        this.screenY = (int) ( (position.posY - entity.getHitBoxLength() / 2) * tileSize) - cameraY;
         sprite.setLayoutX(screenX);
         sprite.setLayoutY(screenY);
+//        sprite.setScaleX(entity.getHitBoxWidth());
+//        sprite.setScaleY(entity.getHitBoxLength());
+        sprite.setFitWidth(WorldController.WORLD_TILE_SIZE * entity.getHitBoxWidth());
+        sprite.setFitHeight(WorldController.WORLD_TILE_SIZE * entity.getHitBoxLength());
     }
 
     /**

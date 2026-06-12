@@ -102,6 +102,13 @@ public class TestWorldRenderer extends Application {
         for(int i = 0; i < 5; i++) {
             controller.spawnEntity(EntityFactory.create("elephant", new EntityCoordinate(random.nextDouble() * model.getWidth(), random.nextDouble() * model.getLength())));
         }
+        for(int i = 0; i< 300;i++){
+            int x = random.nextInt(model.getWidth());
+            int y = random.nextInt(model.getLength());
+            if(model.getBlocksData()[x][y].getBlockType().equals("grass")){
+                controller.spawnEntity(EntityFactory.create("grass", new EntityCoordinate(x, y)));
+            }
+        }
     }
 
 }

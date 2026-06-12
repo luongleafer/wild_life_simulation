@@ -8,10 +8,8 @@ import model.entity.*;
 import java.util.List;
 import java.util.Random;
 
-public class Pig extends LandAnimal implements Edible {
+public class Pig extends HerbivoreLandAnimal implements Edible {
 
-    static {
-    }
 
     private int birthCooldown = 0;
 
@@ -26,6 +24,8 @@ public class Pig extends LandAnimal implements Edible {
         this.setSpeed(5.0/20);
         this.setDirection(1, 1);
         this.entityType = "pig";
+        this.threatTypes = List.of("wolf", "fox");
+        this.fleeingSpeed = 13.0 / 20;
         birthCooldown = 0;
     }
 
@@ -41,10 +41,6 @@ public class Pig extends LandAnimal implements Edible {
         // Just make it walk randomly for now
         // Which means this class is uh, blank
         super.Interact(entity);
-        if(entity instanceof Wolf wolf){
-            setSpeed(7.0/20);
-            headAwayFrom(new BlockCoordinate((int)wolf.getPosition().posX, (int)wolf.getPosition().posY), 2.0);
-        }
     }
 
     @Override
@@ -71,9 +67,9 @@ public class Pig extends LandAnimal implements Edible {
 
     @Override
     public void move() {
-//        roamRandomly(5.0/20, 13.41/20, Math.PI/3);
-        headRandomly();
-        moveByDistance(getSpeed());
+        roamRandomly(5.0/20, 7.2/20, Math.PI/3);
+//        headRandomly();
+//        moveByDistance(getSpeed());
     }
     public void mate(){
         birthCooldown = 0;

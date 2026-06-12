@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.util.Duration;
 import model.block.BlockFactory;
 import model.block.BlockModel;
+import model.block.ObstacleBlockModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityFactory;
 import model.entity.EntityModel;
@@ -158,6 +159,9 @@ public class ControlPanelController {
             return;
         }
         BlockModel block = BlockFactory.create(spawnType, x, y);
+        if(block instanceof ObstacleBlockModel){
+
+        }
         worldController.placeBlock(block, x, y);
     }
 

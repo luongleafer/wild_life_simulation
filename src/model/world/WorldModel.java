@@ -7,6 +7,8 @@ import model.biome.PlainBiomeModel;
 import model.biome.WaterBiomeModel;
 import model.block.BlockCoordinate;
 import model.block.BlockModel;
+import model.block.ObstacleBlock;
+import model.block.ObstacleBlockModel;
 import model.entity.AnimalModel;
 import model.entity.AquaticCreature;
 import model.entity.EntityCoordinate;
@@ -155,7 +157,7 @@ public class WorldModel {
         // Keep shallow/deep classification aligned with actual water tiles after
         // final block materialization.
         rebuildShallowWaterMapFromBlocks();
-        placeObstacle();
+//        placeObstacle();
     }
 
     public void placeObstacle(){
@@ -182,6 +184,12 @@ public class WorldModel {
             blocksData[x][y] = newBlock;
             rebuildShallowWaterMapFromBlocks();
         }
+    }
+
+    public void placeObstacle(ObstacleBlockModel newObstacle){
+        int x = newObstacle.getPosition().x;
+        int y = newObstacle.getPosition().y;
+        overlayBlocks[x][y] = newObstacle;
     }
 
     public void update(){

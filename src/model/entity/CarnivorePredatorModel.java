@@ -1,5 +1,6 @@
 package model.entity;
 
+import controller.WorldController;
 import model.block.BlockModel;
 
 import java.util.List;
@@ -79,5 +80,10 @@ public abstract class CarnivorePredatorModel extends PredatorAnimalModel {
     @Override
     public void Interact(List<EntityModel> entities) {
         super.Interact(entities);
+    }
+
+    @Override
+    public void move() {
+        updateAndMove(WorldController.getController().getWorldModel().getBlocksData());
     }
 }

@@ -3,14 +3,13 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import model.animals.Cow;
-import model.animals.Elephant;
-import model.animals.Pig;
-import model.animals.Wolf;
+import model.animals.*;
 import model.block.BlockModel;
 import model.block.BlockFactory;
+import model.block.ObstacleBlockModel;
 import model.entity.EntityFactory;
 import model.entity.EntityModel;
+import model.entity.Grass;
 import model.generation.*;
 import model.world.WorldModel;
 import view.audio.SoundEngine;
@@ -116,11 +115,11 @@ public class WorldController {
     }
 
     private void playSoundEvents(){
-        if(worldModel.getEntities().stream()
-                .anyMatch(entityModel ->
-                                  entityModel instanceof Wolf wolf && wolf.hasJustAttacked())){
-            SoundEngine.getEngine().playSound("wolf_eat");
-        }
+//        if(worldModel.getEntities().stream()
+//                .anyMatch(entityModel ->
+//                                  entityModel instanceof Wolf wolf && wolf.hasJustAttacked())){
+//            SoundEngine.getEngine().playSound("wolf_eat");
+//        }
         worldModel.getEntities().forEach(
                 entityModel -> {
                     if(random.nextDouble() < 0.001) {
@@ -165,6 +164,9 @@ public class WorldController {
         soundEngine.registerSound("wolf_death", Paths.get("assets/audio/wolf/death.mp3"));
         soundEngine.registerSound("pig_death", Paths.get("assets/audio/pig/death.mp3"));
         soundEngine.registerSound("cow_death", Paths.get("assets/audio/cow/death.mp3"));
+        soundEngine.registerSound("elephant_idle", Paths.get("assets/audio/elephant/elephant_idle.mp3"));
+        soundEngine.registerSound("elephant_death", Paths.get("assets/audio/elephant/elephant_death.mp3"));
+        soundEngine.registerSound("deer_idle", Paths.get("assets/audio/deer/idle.mp3"));
     }
 
     /**
@@ -174,6 +176,11 @@ public class WorldController {
      * @param yPos The y position to place block, 0 <= y < world's length
      */
     public void placeBlock(BlockModel block, int xPos, int yPos) {
+        placeBlock(block, xPos, yPos, block instanceof ObstacleBlockModel);
+
+    }
+
+    public void placeBlock(BlockModel block, int xPos, int yPos, boolean isObstacle){
         if(block == null) return;
         if(xPos < 0 || yPos < 0) return; // invalid coordinate
         if(xPos >= worldModel.getWidth() || yPos >= worldModel.getLength()) return;
@@ -185,7 +192,12 @@ public class WorldController {
             IO.println("Exception when trying to place block: " + e.getMessage());
         }
         if(newBlock != null){
-            worldModel.placeBlock(newBlock);
+            if(isObstacle){
+                worldModel.placeObstacle((ObstacleBlockModel) newBlock);
+            }
+            else {
+                worldModel.placeBlock(newBlock);
+            }
         }
     }
 
@@ -224,6 +236,10 @@ public class WorldController {
         EntityFactory.register("pig", Pig::new);
         EntityFactory.register("wolf", Wolf::new);
         EntityFactory.register("elephant", Elephant::new);
+        EntityFactory.register("grass", Grass::new);
+        EntityFactory.register("fox", Fox::new);
+        EntityFactory.register("deer", Deer::new);
+        EntityFactory.register("turtle_god", TurtleGod::new);
 
     }
 
@@ -258,6 +274,10 @@ public class WorldController {
     }
     public WorldView getWorldView() {
         return worldView;
+    }
+
+    public WorldModel getWorldModel(){
+        return worldModel;
     }
 
 }

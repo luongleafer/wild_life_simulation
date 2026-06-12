@@ -16,6 +16,9 @@ public class Elephant extends LandAnimal implements Edible {
         this.setSpeed(2.0 / 20); // di chuyển rất chậm
         this.setDirection(0, 0);
         this.entityType = "elephant";
+        this.mateChanceMultiplier = 0.01; // elephant mate less often
+        this.hitBoxLength = 4;
+        this.hitBoxWidth = 4;
     }
 
     @Override
