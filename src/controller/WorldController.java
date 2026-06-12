@@ -240,6 +240,7 @@ public class WorldController {
         EntityFactory.register("fox", Fox::new);
         EntityFactory.register("deer", Deer::new);
         EntityFactory.register("turtle_god", TurtleGod::new);
+        EntityFactory.register("fish", Fish::new);
 
     }
 

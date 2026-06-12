@@ -484,6 +484,16 @@ public class WorldModel {
         return x >= 0 && y >= 0 && x < width && y < length;
     }
 
+    public boolean isDeepWater(int x, int y) {
+        if (!isInBounds(x, y)) {
+            return false;
+        }
+        if (!isWaterAt(x, y)) {
+            return false;
+        }
+        return !shallowWaterMap[x][y];
+    }
+
     private boolean isWaterAt(int x, int y){
         BlockModel block = blocksData[x][y];
         return block != null && "water".equals(block.getBlockType());

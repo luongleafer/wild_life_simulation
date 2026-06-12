@@ -180,6 +180,9 @@ public class ControlPanelController {
         if(spawnKind == null || spawnType == null) return;
 
         if("Entity".equals(spawnKind)){
+            if ("fish".equals(spawnType) && !worldModel.isDeepWater(xPos, yPos)) {
+                return; // Fish can only spawn in large bodies of water
+            }
             EntityModel entity = EntityFactory.create(spawnType, new EntityCoordinate(xPos + 0.5, yPos + 0.5));
             worldController.requestSpawnEntity(entity);
             return;
