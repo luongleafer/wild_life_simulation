@@ -53,8 +53,12 @@ public class Main extends Application {
         worldScroll.setPannable(true);
         worldScroll.setFitToHeight(false);
         worldScroll.setFitToWidth(false);
+        ScrollPane controlPanelScroll = new ScrollPane(loadControlPanel(controller));
+        controlPanelScroll.setFitToWidth(true);
+        controlPanelScroll.setFitToHeight(true);
+        controlPanelScroll.setPannable(true);
         root.setCenter(worldScroll);
-        root.setRight(loadControlPanel(controller));
+        root.setRight(controlPanelScroll);
 
         worldPane.setOnMouseClicked(mouseEvent ->
                                             controlPanelController.handleWorldClick(mouseEvent.getX(),

@@ -75,6 +75,71 @@ public class WorldModel {
         return overlayBlocks;
     }
 
+    public BlockModel getBlockAt(int xPos, int yPos) {
+        if(!isInBounds(xPos, yPos)) return null;
+        BlockModel overlayBlock = overlayBlocks[xPos][yPos];
+        if(overlayBlock != null){
+            return overlayBlock;
+        }
+        return blocksData[xPos][yPos];
+    }
+
+    public BlockModel getBaseBlockAt(int xPos, int yPos){
+        if(!isInBounds(xPos, yPos)) return null;
+        return blocksData[xPos][yPos];
+    }
+
+    public BlockModel getOverlayBlockAt(int xPos, int yPos){
+        if(!isInBounds(xPos, yPos)) return null;
+        return overlayBlocks[xPos][yPos];
+    }
+
+    public EntityModel getEntityAt(int xPos, int yPos) {
+        if(!isInBounds(xPos, yPos)) return null;
+        double centerX = xPos + 0.5;
+        double centerY = yPos + 0.5;
+        EntityModel nearest = null;
+        double nearestDistance = 0.75;
+        for(EntityModel entity : entities){
+            if(entity == null) continue;
+            EntityCoordinate position = entity.getPosition();
+            double dx = position.getPosX() - centerX;
+            double dy = position.getPosY() - centerY;
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            if(distance <= nearestDistance){
+                nearest = entity;
+                nearestDistance = distance;
+            }
+        }
+        return nearest;
+    }
+
+    public BiomeType getBiomeAt(int xPos, int yPos){
+        if(!isInBounds(xPos, yPos)) return null;
+        return biomeMap[xPos][yPos];
+    }
+
+    public BiomeType getBiomeAt(EntityCoordinate position){
+        if(position == null) return null;
+        int xPos = (int)Math.floor(position.getPosX());
+        int yPos = (int)Math.floor(position.getPosY());
+        return getBiomeAt(xPos, yPos);
+    }
+
+    public String getBiomeNameAt(int xPos, int yPos){
+        BiomeType biome = getBiomeAt(xPos, yPos);
+        return biome == null ? "Unknown" : biome.name();
+    }
+
+    public String getBiomeNameAt(EntityCoordinate position){
+        BiomeType biome = getBiomeAt(position);
+        return biome == null ? "Unknown" : biome.name();
+    }
+
+    public boolean isForestSafeZone(EntityCoordinate position){
+        return getBiomeAt(position) == BiomeType.FOREST;
+    }
+
     public List<EntityModel> getEntities() {
         return entities;
     }
