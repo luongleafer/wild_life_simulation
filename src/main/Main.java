@@ -1,4 +1,4 @@
-package test;
+package main;
 
 import controller.ControlPanelController;
 import controller.WorldController;
@@ -20,7 +20,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Random;
 
-public class TestWorldRenderer extends Application {
+public class Main extends Application {
     private static final int SIMULATION_TPS = 20;
     private final WorldModel model = new WorldModel(80, 60);
     private final Random random = new Random();

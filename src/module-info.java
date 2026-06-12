@@ -5,7 +5,7 @@ module wild.life.simulation{
     requires java.logging;
     requires javafx.media;
     
-    opens test to javafx.graphics, javafx.fxml, javafx.media;
+    opens main to javafx.graphics, javafx.fxml, javafx.media;
     opens controller to javafx.fxml;
     // Thêm nếu có lỗi reflection khi chạy JavaFX
 }
