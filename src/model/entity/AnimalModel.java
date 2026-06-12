@@ -404,6 +404,7 @@ public abstract class AnimalModel extends EntityModel {
     }
 
     private void mateWith(AnimalModel other){
+        if(this == other) return;
         if(readyToMate() && other.readyToMate()
                 && position.distance(other.position) <= mateDistance
                 && new Random().nextDouble() < mateChance * mateChanceMultiplier

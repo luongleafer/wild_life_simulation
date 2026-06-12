@@ -114,4 +114,10 @@ public abstract class PredatorAnimalModel extends AnimalModel {
         }
         return nearest;
     }
+
+    @Override
+    public void move() {
+//        roamRandomly(species.getMinSpeed(), species.getMaxSpeed(), species.getFovRadians());
+        roamRandomly(0.1, 0.5, Math.PI);
+    }
 }

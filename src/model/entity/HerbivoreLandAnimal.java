@@ -1,6 +1,13 @@
 package model.entity;
 
+import model.block.BlockCoordinate;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class HerbivoreLandAnimal extends LandAnimal{
+    protected List<String> threatTypes;
+    protected double fleeingSpeed;
 
     public HerbivoreLandAnimal(EntityCoordinate position) {
         super(position);
@@ -8,6 +15,7 @@ public class HerbivoreLandAnimal extends LandAnimal{
 
     public HerbivoreLandAnimal(EntityCoordinate position, double maxHealth, double maxHunger, double maxThirst, double maxEnergy) {
         super(position, maxHealth, maxHunger, maxThirst, maxEnergy);
+        threatTypes = new ArrayList<>();
     }
 
     @Override
@@ -18,6 +26,13 @@ public class HerbivoreLandAnimal extends LandAnimal{
         }
         else{
             super.Interact(entity);
+        }
+        if(threatTypes.contains(entity.getEntityType())){
+            setSpeed(fleeingSpeed);
+            headAwayFrom(new BlockCoordinate(
+                    (int) entity.position.posX,
+                    (int) entity.position.posY
+            ), 1.0);
         }
     }
 }

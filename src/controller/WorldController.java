@@ -3,10 +3,7 @@ package controller;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import model.animals.Cow;
-import model.animals.Elephant;
-import model.animals.Pig;
-import model.animals.Wolf;
+import model.animals.*;
 import model.block.BlockModel;
 import model.block.BlockFactory;
 import model.block.ObstacleBlockModel;
@@ -239,6 +236,7 @@ public class WorldController {
         EntityFactory.register("wolf", Wolf::new);
         EntityFactory.register("elephant", Elephant::new);
         EntityFactory.register("grass", Grass::new);
+        EntityFactory.register("fox", Fox::new);
 
     }
 
@@ -273,6 +271,10 @@ public class WorldController {
     }
     public WorldView getWorldView() {
         return worldView;
+    }
+
+    public WorldModel getWorldModel(){
+        return worldModel;
     }
 
 }
