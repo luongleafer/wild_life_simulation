@@ -239,6 +239,7 @@ public class WorldController {
         EntityFactory.register("grass", Grass::new);
         EntityFactory.register("fox", Fox::new);
         EntityFactory.register("deer", Deer::new);
+        EntityFactory.register("turtle_god", TurtleGod::new);
 
     }
 
