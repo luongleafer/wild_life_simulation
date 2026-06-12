@@ -157,18 +157,17 @@ public class WorldModel {
         // Keep shallow/deep classification aligned with actual water tiles after
         // final block materialization.
         rebuildShallowWaterMapFromBlocks();
-//        placeObstacle();
+        placeObstacle();
     }
 
     public void placeObstacle(){
         Random rand = new Random();
         for(int x = 0; x < width; x++){
             for(int y = 0; y < length; y++){
-                if(blocksData[x][y] instanceof DirtBlock && rand.nextDouble() < 0.02) {
-                    overlayBlocks[x][y] = new CobbleStoneBlock(x,y,0);
-                }
-                if ((blocksData[x][y] instanceof GrassBlock || blocksData[x][y] instanceof DirtBlock) && rand.nextDouble() < 0.03) {
-                    overlayBlocks[x][y] = new SeedBlock(x, y);
+                BlockModel blockModel = blocksData[x][y];
+                if(blockModel instanceof SeedBlock || blockModel instanceof SaplingBlock || blockModel instanceof TreeBlock){
+                    overlayBlocks[x][y] = blockModel;
+                    blocksData[x][y] = new DirtBlock(x,y);
                 }
             }
         }

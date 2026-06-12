@@ -1,5 +1,6 @@
 package model.animals;
 
+import model.block.BlockModel;
 import model.entity.AnimalModel;
 import model.entity.EntityCoordinate;
 import model.entity.EntityModel;
@@ -11,11 +12,12 @@ public class TurtleGod extends AnimalModel {
         super(position, 1000, 1000, 1000, 1000);
         this.entityType = "turtle_god";
         this.currentState = 0;
-        this.hitBoxWidth = 10;
-        this.hitBoxLength = 10;
+        this.hitBoxWidth = 5;
+        this.hitBoxLength = 5;
         this.healthDepletionMultiplier = 0;
         this.thirstDepletionMultiplier = 0;
         this.hungerDepletionMultiplier = 0;
+        this.level = 10;
     }
 
     @Override
@@ -28,6 +30,10 @@ public class TurtleGod extends AnimalModel {
             if(entityModel == this) return;
             entityModel.receiveDamage(1000);
         }); // guarantee death
+    }
+
+    @Override
+    public void Interact(BlockModel block) {
     }
 
     @Override
