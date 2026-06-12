@@ -210,6 +210,17 @@ public class WorldController {
             IO.println("Attempt to spawn null entity!");
             return;
         }
+
+        // Prevent land animals from spawning on water
+        if (entity instanceof model.entity.AnimalModel && !(entity instanceof model.entity.AquaticCreature)) {
+            int x = (int) entity.getPosition().getPosX();
+            int y = (int) entity.getPosition().getPosY();
+            BlockModel block = worldModel.getBlockAt(x, y);
+            if (block != null && block.getBlockType().equals("water")) {
+                return; // Do not spawn
+            }
+        }
+
         worldModel.getEntities().add(entity);
 //        worldView.getAllEntitiesView().addView(entity);
         worldView.getAllEntitiesView().requestRender(entity);
