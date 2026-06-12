@@ -166,6 +166,7 @@ public class WorldController {
         soundEngine.registerSound("cow_death", Paths.get("assets/audio/cow/death.mp3"));
         soundEngine.registerSound("elephant_idle", Paths.get("assets/audio/elephant/elephant_idle.mp3"));
         soundEngine.registerSound("elephant_death", Paths.get("assets/audio/elephant/elephant_death.mp3"));
+        soundEngine.registerSound("deer_idle", Paths.get("assets/audio/deer/idle.mp3"));
     }
 
     /**
@@ -237,6 +238,7 @@ public class WorldController {
         EntityFactory.register("elephant", Elephant::new);
         EntityFactory.register("grass", Grass::new);
         EntityFactory.register("fox", Fox::new);
+        EntityFactory.register("deer", Deer::new);
 
     }
 

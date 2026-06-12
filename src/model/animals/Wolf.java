@@ -25,7 +25,7 @@ public class Wolf extends CarnivoreLandAnimal {
         this.setSpeed(0.111);
         this.setDirection(0,0);
         this.entityType = "wolf";
-        this.preyTypes = List.of("pig");
+        this.preyTypes = List.of("pig", "deer");
     }
     @Override
     public void Interact(BlockModel block) {
