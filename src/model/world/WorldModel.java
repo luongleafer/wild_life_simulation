@@ -31,6 +31,7 @@ public class WorldModel {
     private final boolean[][] shallowWaterMap;
     private final float[][] elevationMap;
     private final float[][] moistureMap;
+    private final float[][] forestDensityMap;
     private long tickCount;
     private int tickSpeed;
     private BlockModel[][] blocksData;
@@ -56,6 +57,7 @@ public class WorldModel {
         this.shallowWaterMap = new boolean[width][length];
         this.elevationMap = new float[width][length];
         this.moistureMap = new float[width][length];
+        this.forestDensityMap = new float[width][length];
         this.biomeRules = Map.of(BiomeType.WATER, new WaterBiomeModel(),
                                  BiomeType.PLAIN, new PlainBiomeModel(),
                                  BiomeType.FOREST, new ForestBiomeModel());
@@ -106,16 +108,26 @@ public class WorldModel {
         elevationNoise.SetSeed(random.nextInt());
 
         NoiseGeneration moistureNoise = new NoiseGeneration();
-        moistureNoise.SetNoiseType(NoiseGeneration.NoiseType.Cellular);
+        moistureNoise.SetNoiseType(NoiseGeneration.NoiseType.OpenSimplex2);
         moistureNoise.SetSeed(random.nextInt());
+        moistureNoise.SetFrequency(0.02f);
+        NoiseGeneration forestNoise = new NoiseGeneration();
+
+        forestNoise.SetNoiseType( NoiseGeneration.NoiseType.OpenSimplex2);
+
+        forestNoise.SetSeed(random.nextInt());
+
+        forestNoise.SetFrequency(0.03f);
 
         // Pass 1: assign biome at each coordinate using noise fields.
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < length; y++) {
                 float elevation = elevationNoise.GetNoise(x * 5.0f, y * 5.0f);
                 float moisture = moistureNoise.GetNoise(x * 5.0f, y * 5.0f);
+                float forestDensity = forestNoise.GetNoise(x, y);
                 elevationMap[x][y] = elevation;
                 moistureMap[x][y] = moisture;
+                forestDensityMap[x][y] = forestDensity;
                 biomeMap[x][y] = provisionalBiomeFor(elevation);
             }
         }
@@ -127,12 +139,15 @@ public class WorldModel {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < length; y++) {
                 BiomeModel rule = biomeRules.get(biomeMap[x][y]);
-                blocksData[x][y] = rule.createBlock(x,
-                                                    y,
-                                                    elevationMap[x][y],
-                                                    moistureMap[x][y],
-                                                    shallowWaterMap[x][y],
-                                                    random);
+                blocksData[x][y] =
+                	    rule.createBlock(
+                	        x,
+                	        y,
+                	        elevationMap[x][y],
+                	        moistureMap[x][y],
+                	        forestDensityMap[x][y],
+                	        shallowWaterMap[x][y],
+                	        random);
                 overlayBlocks[x][y] = null;
             }
         }
@@ -442,5 +457,7 @@ public class WorldModel {
 
     public String getCurrentSeason(){
         return currentSeason.getName();
+        
     }
+    
 }

@@ -14,12 +14,14 @@ public class PlainBiomeModel extends BiomeModel {
     }
 
     @Override
-    public BlockModel createBlock(int xPos,
-                                  int yPos,
-                                  float elevation,
-                                  float moisture,
-                                  boolean shallowWater,
-                                  Random random) {
+    public BlockModel createBlock(
+            int xPos,
+            int yPos,
+            float elevation,
+            float moisture,
+            float forestDensity,
+            boolean shallowWater,
+            Random random) {
         if(moisture > 0.5f){
             return new MudBlock(xPos, yPos);
         }

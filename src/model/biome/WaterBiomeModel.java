@@ -13,12 +13,14 @@ public class WaterBiomeModel extends BiomeModel {
     }
 
     @Override
-    public BlockModel createBlock(int xPos,
-                                  int yPos,
-                                  float elevation,
-                                  float moisture,
-                                  boolean shallowWater,
-                                  Random random) {
+    public BlockModel createBlock(
+            int xPos,
+            int yPos,
+            float elevation,
+            float moisture,
+            float forestDensity,
+            boolean shallowWater,
+            Random random) {
         if(shallowWater){
             if(random.nextDouble() < 0.75){
                 return new SandBlock(xPos, yPos);
