@@ -281,11 +281,21 @@ public abstract class AnimalModel extends EntityModel {
         if (distance == 0.0 || (directionX == 0.0 && directionY == 0.0)) {
             return;
         }
-        double newX = getPosition().getPosX() + directionX * distance;
-        double newY = getPosition().getPosY() + directionY * distance;
+
+        double effectiveDistance = distance;
+        WorldController wc = WorldController.getController();
+        if (wc != null && wc.getWorldModel() != null) {
+            BlockModel currentBlock = wc.getWorldModel().getBlockAt((int) getPosition().getPosX(), (int) getPosition().getPosY());
+            if (currentBlock != null && currentBlock.getBlockType().equals("mud")) {
+                effectiveDistance *= 0.3; // significantly slower
+            }
+        }
+
+        double newX = getPosition().getPosX() + directionX * effectiveDistance;
+        double newY = getPosition().getPosY() + directionY * effectiveDistance;
         move(newX, newY);
-        hunger -= distance * hungerDepletionRate * hungerDepletionMultiplier;
-        thirst -= distance * thirstDepletionRate * thirstDepletionMultiplier;
+        hunger -= effectiveDistance * hungerDepletionRate * hungerDepletionMultiplier;
+        thirst -= effectiveDistance * thirstDepletionRate * thirstDepletionMultiplier;
     }
 
     protected void headTowards(BlockCoordinate targetBlock){
