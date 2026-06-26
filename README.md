@@ -1,5 +1,5 @@
 # Hệ thống mô phỏng Hệ sinh thái hoang dã
-Nhóm 67 
+Nhóm 14 
 -- THÀNH VIÊN -- 
 1. Chu Quang Lượng (nhóm trưởng)
 2. Nguyễn Lê Nhật Minh
